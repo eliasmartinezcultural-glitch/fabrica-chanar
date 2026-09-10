@@ -1,6 +1,6 @@
 # Fábrica Chañar
 
-Sistema interno de producción digital de Ocarina Producciones para transformar información documentada sobre San Patricio del Chañar en productos digitales e imprimibles.
+Sistema **interno de producción digital de Ocarina Producciones** para transformar información documentada sobre San Patricio del Chañar en productos digitales e imprimibles.
 
 ## Ley mundial del repositorio
 
@@ -12,31 +12,43 @@ Sistema interno de producción digital de Ocarina Producciones para transformar 
 - **Reutilización:** una investigación debe poder alimentar múltiples productos.
 - **Modularidad:** cada versión conserva lo que funciona y agrega una capacidad concreta.
 - **Producto terminado:** el objetivo es producir piezas listas para entregar, archivar o publicar.
+- **Sin destrucción silenciosa:** una mejora no debe romper ni eliminar capacidades existentes sin decisión explícita.
 
-## v0.2.2 — Producción rápida
+## v0.2.3 — Banco Chañar operativo
 
-La fábrica incorpora un primer motor de automatización productiva:
+La fábrica incorpora el primer circuito estructurado entre datos territoriales y fabricación:
 
-- panel explícito de **USO INTERNO**;
-- biblioteca local de producción ampliada hasta 100 piezas;
-- generación de una **colección** a partir del contenido de una pieza base;
-- transformación controlada hacia Postal, Ficha, Guía e Infografía;
-- conservación de fuente e imagen cuando existen;
-- identificación de piezas generadas por lote;
-- estado documental visible;
-- continuidad de PNG, JPG, impresión/PDF y enlaces compartibles.
+```text
+FUENTE → REGISTRO → BANCO CHAÑAR → FABRICAR → PRODUCTO → BIBLIOTECA
+```
 
-La automatización reutiliza información existente; no genera hechos nuevos ni inventa datos territoriales.
+Incluye:
+
+- `data/registros.json` como índice principal del Banco Chañar;
+- carga de registros, fuentes y categorías desde JSON;
+- búsqueda y filtros por estado y tipo;
+- estados documentales explícitos;
+- botón **Fabricar desde registro**;
+- prellenado de una ficha desde un registro seleccionado;
+- conservación del ID del registro en la pieza y en la biblioteca;
+- fuentes vinculadas visibles en el Banco;
+- biblioteca local de hasta 100 piezas;
+- generación por lote conservando el registro de origen;
+- manejo de error si el navegador no puede cargar los datos;
+- protección básica ante errores de almacenamiento local;
+- corrección del control de fuente: una fuente escrita se considera **declarada**, no automáticamente verificada.
+
+El Banco se entrega inicialmente vacío: no se cargan hechos territoriales inventados ni datos de prueba presentados como reales.
 
 ## Arquitectura actual
 
 ```text
 index.html          interfaz interna
 style.css           sistema visual base
-automation.css      estilos del módulo productivo
-app.js              motor de fabricación
+automation.css      producción rápida + Banco Chañar
+app.js              motor de fabricación y carga documental
 data/               base territorial y documental
-templates/          modelos de piezas
+templates/          modelos de piezas (catálogo)
 assets/             recursos propios y autorizados
 docs/               documentación futura
 ```
@@ -55,6 +67,7 @@ docs/               documentación futura
 - Biblioteca local con `localStorage`
 - Enlaces de piezas mediante hash sin servidor
 - Producción rápida de colecciones
+- Banco Chañar estructurado y filtrable
 
 ## Cartografía
 
@@ -62,14 +75,14 @@ Los mapas esquemáticos iniciales **no son navegación ni cartografía oficial**
 
 ## Seguridad y privacidad
 
-No se solicitan contraseñas ni datos privados innecesarios. Las imágenes seleccionadas desde el equipo se procesan localmente en el navegador.
+No se solicitan contraseñas ni datos privados innecesarios. Las imágenes seleccionadas desde el equipo se procesan localmente en el navegador. El Banco territorial publicado en el repositorio debe contener únicamente información que Ocarina decida mantener en ese espacio.
 
 ## Camino maestro
 
 ```text
 INVESTIGACIÓN
       ↓
-FUENTES
+FUENTES CHAÑAR
       ↓
 BANCO CHAÑAR
       ↓
@@ -88,4 +101,4 @@ BIBLIOTECA OCARINA
 
 ## Próxima prioridad
 
-La siguiente etapa debe fortalecer la automatización con **Banco Chañar + Fuentes Chañar**, de modo que las colecciones se generen desde registros territoriales estructurados y no solamente desde el formulario manual. Después se profundizará la cartografía real y el exportador documental.
+La siguiente etapa debe profundizar **Fuentes Chañar + validación documental** y después avanzar hacia **cartografía real verificable** y un **exportador documental más completo**, siempre conservando la arquitectura estática, gratuita, modular y auditable.
