@@ -1,57 +1,91 @@
 # Fábrica Chañar
 
-Herramienta digital independiente para transformar información documentada sobre San Patricio del Chañar en piezas digitales e imprimibles.
+Sistema interno de producción digital de Ocarina Producciones para transformar información documentada sobre San Patricio del Chañar en productos digitales e imprimibles.
 
-## Principios
+## Ley mundial del repositorio
 
-- Proyecto independiente.
-- Browser-first: no requiere instalación.
-- Sin cuenta para fabricar piezas.
-- Generación local siempre que sea posible.
-- No inventar datos.
-- Cada dato sensible debe poder vincularse con una fuente.
-- Tecnologías web abiertas y livianas.
-- Diseño adaptable a Android, iPhone, tablet, notebook y PC.
+- **Uso interno Ocarina:** no es una plataforma pública ni un editor para terceros.
+- **Browser-first:** funciona prioritariamente desde el navegador.
+- **Núcleo gratuito:** evitar servicios pagos, APIs pagas y dependencias innecesarias.
+- **No inventar datos:** fechas, nombres, coordenadas, estadísticas, direcciones, teléfonos y horarios deben tener respaldo o quedar marcados como no verificados.
+- **Trazabilidad:** cada producto debe poder conservar su fuente y procedencia.
+- **Reutilización:** una investigación debe poder alimentar múltiples productos.
+- **Modularidad:** cada versión conserva lo que funciona y agrega una capacidad concreta.
+- **Producto terminado:** el objetivo es producir piezas listas para entregar, archivar o publicar.
+
+## v0.2.2 — Producción rápida
+
+La fábrica incorpora un primer motor de automatización productiva:
+
+- panel explícito de **USO INTERNO**;
+- biblioteca local de producción ampliada hasta 100 piezas;
+- generación de una **colección** a partir del contenido de una pieza base;
+- transformación controlada hacia Postal, Ficha, Guía e Infografía;
+- conservación de fuente e imagen cuando existen;
+- identificación de piezas generadas por lote;
+- estado documental visible;
+- continuidad de PNG, JPG, impresión/PDF y enlaces compartibles.
+
+La automatización reutiliza información existente; no genera hechos nuevos ni inventa datos territoriales.
+
+## Arquitectura actual
+
+```text
+index.html          interfaz interna
+style.css           sistema visual base
+automation.css      estilos del módulo productivo
+app.js              motor de fabricación
+data/               base territorial y documental
+templates/          modelos de piezas
+assets/             recursos propios y autorizados
+docs/               documentación futura
+```
 
 ## Motor actual
 
-La primera versión funcional permite crear:
-
-- Postales
-- Fichas locales
-- Guías
-- Infografías
-- Mapas esquemáticos
-
-Incluye vista previa, carga local de imágenes, exportación PNG/JPG, impresión/PDF mediante el navegador y biblioteca local con `localStorage`.
-
-## Arquitectura prevista
-
-```text
-index.html      interfaz
-style.css       sistema visual
-app.js          motor de fabricación
-data/           información territorial y fuentes
-templates/      modelos de piezas
-assets/         recursos propios y autorizados
-docs/           documentación técnica/editorial
-```
+- Postales P01–P05
+- Mapas M01–M05 (actualmente esquemáticos)
+- Fichas F01–F05
+- Guías G01–G05
+- Archivos A01–A05
+- Vista previa local
+- Imágenes cargadas localmente
+- PNG/JPG
+- Impresión / guardado como PDF desde el navegador
+- Biblioteca local con `localStorage`
+- Enlaces de piezas mediante hash sin servidor
+- Producción rápida de colecciones
 
 ## Cartografía
 
-Las futuras capas cartográficas deberán respetar las licencias y atribuciones correspondientes. Los mapas esquemáticos de la versión inicial no deben utilizarse como navegación ni como sustituto de cartografía oficial.
+Los mapas esquemáticos iniciales **no son navegación ni cartografía oficial**. Las futuras capas reales deberán incorporar datos verificados, procedencia y las atribuciones/licencias correspondientes.
 
-## Publicación
+## Seguridad y privacidad
 
-El proyecto está preparado para GitHub Pages porque es una aplicación estática. La configuración de publicación puede hacerse desde **Settings → Pages** seleccionando la rama `main` y la carpeta raíz.
+No se solicitan contraseñas ni datos privados innecesarios. Las imágenes seleccionadas desde el equipo se procesan localmente en el navegador.
 
-## Próximas fases
+## Camino maestro
 
-1. Motor de plantillas P/M/F/G/A.
-2. Base documental territorial.
-3. Fuentes y estados de verificación.
-4. Cartografía real con atribución.
-5. Compartir piezas mediante enlaces sin servidor.
-6. Exportación PDF más controlada.
-7. Biblioteca de plantillas y colecciones.
-8. QA móvil/PC y pruebas de impresión.
+```text
+INVESTIGACIÓN
+      ↓
+FUENTES
+      ↓
+BANCO CHAÑAR
+      ↓
+PLANTILLA
+      ↓
+MOTOR VISUAL
+      ↓
+PRODUCCIÓN RÁPIDA
+      ↓
+PRODUCTO
+      ↓
+PDF / JPG / PNG / SVG / HTML
+      ↓
+BIBLIOTECA OCARINA
+```
+
+## Próxima prioridad
+
+La siguiente etapa debe fortalecer la automatización con **Banco Chañar + Fuentes Chañar**, de modo que las colecciones se generen desde registros territoriales estructurados y no solamente desde el formulario manual. Después se profundizará la cartografía real y el exportador documental.
