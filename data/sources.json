@@ -1,0 +1,15 @@
+{
+  "version": "5.0.0",
+  "sources": [
+    {
+      "id": "SRC-MUNI-001",
+      "titulo": "Municipalidad de San Patricio del Chañar",
+      "tipo": "oficial",
+      "url": "https://www.sanpatricio.gob.ar/",
+      "propietario": "Municipalidad de San Patricio del Chañar",
+      "licencia": "Consultar condiciones de uso en la fuente",
+      "estado": "registrada",
+      "nota": "Fuente de referencia institucional; no implica permiso automático para reutilizar fotografías o textos de terceros."
+    }
+  ]
+}
