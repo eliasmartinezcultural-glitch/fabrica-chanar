@@ -1,104 +1,98 @@
 # Fábrica Chañar
 
-Sistema **interno de producción digital de Ocarina Producciones** para transformar información documentada sobre San Patricio del Chañar en productos digitales e imprimibles.
+Sistema **interno de producción territorial de Ocarina Producciones** para investigar, organizar, preservar y transformar información documentada sobre San Patricio del Chañar en activos y productos digitales.
 
-## Ley mundial del repositorio
+## Ley mundial
 
-- **Uso interno Ocarina:** no es una plataforma pública ni un editor para terceros.
-- **Browser-first:** funciona prioritariamente desde el navegador.
-- **Núcleo gratuito:** evitar servicios pagos, APIs pagas y dependencias innecesarias.
-- **No inventar datos:** fechas, nombres, coordenadas, estadísticas, direcciones, teléfonos y horarios deben tener respaldo o quedar marcados como no verificados.
-- **Trazabilidad:** cada producto debe poder conservar su fuente y procedencia.
-- **Reutilización:** una investigación debe poder alimentar múltiples productos.
-- **Modularidad:** cada versión conserva lo que funciona y agrega una capacidad concreta.
-- **Producto terminado:** el objetivo es producir piezas listas para entregar, archivar o publicar.
-- **Sin destrucción silenciosa:** una mejora no debe romper ni eliminar capacidades existentes sin decisión explícita.
+- **Uso interno Ocarina:** no es plataforma pública ni editor para terceros.
+- **No inventar:** hechos, fechas, coordenadas, direcciones, teléfonos, horarios y estadísticas necesitan respaldo o estado explícito.
+- **Trazabilidad:** fuente, autoría, licencia/condición de uso y procedencia deben conservarse cuando corresponda.
+- **Reutilización:** un registro territorial puede alimentar múltiples productos.
+- **Browser-first:** el núcleo funciona en navegador y evita backend obligatorio.
+- **Sin destrucción silenciosa:** cada salto conserva las capacidades útiles anteriores.
 
-## v0.2.3 — Banco Chañar operativo
+## v5.0 x10 — Sistema operativo territorial
 
-La fábrica incorpora el primer circuito estructurado entre datos territoriales y fabricación:
+Esta versión es un salto estructural: incorpora una cabina de control sobre cuatro capas conectadas:
 
 ```text
-FUENTE → REGISTRO → BANCO CHAÑAR → FABRICAR → PRODUCTO → BIBLIOTECA
+TERRITORIO
+    ↓
+MEMORIA
+    ↓
+ACTIVOS
+    ↓
+PRODUCTOS / PROYECTOS
 ```
 
-Incluye:
+### Capacidades nuevas
 
-- `data/registros.json` como índice principal del Banco Chañar;
-- carga de registros, fuentes y categorías desde JSON;
-- búsqueda y filtros por estado y tipo;
-- estados documentales explícitos;
-- botón **Fabricar desde registro**;
-- prellenado de una ficha desde un registro seleccionado;
-- conservación del ID del registro en la pieza y en la biblioteca;
-- fuentes vinculadas visibles en el Banco;
-- biblioteca local de hasta 100 piezas;
-- generación por lote conservando el registro de origen;
-- manejo de error si el navegador no puede cargar los datos;
-- protección básica ante errores de almacenamiento local;
-- corrección del control de fuente: una fuente escrita se considera **declarada**, no automáticamente verificada.
+- tablero KPI de registros, activos, productos y oportunidades;
+- memoria territorial local persistente en `localStorage`;
+- importación de JSON y CSV desde el navegador;
+- exportación de la memoria completa como JSON;
+- constructor de proyectos internos;
+- radar de oportunidades como hipótesis de investigación, no como datos de mercado inventados;
+- Atlas territorial con Leaflet + OpenStreetMap;
+- carga de GeoJSON y visualización de sus geometrías;
+- popup de atributos territoriales;
+- banco de activos conectado al fabricante de fichas;
+- conservación de la biblioteca de productos existente;
+- fabricación de postales, fichas, guías, infografías y mapas;
+- exportación PNG/JPG e impresión/PDF desde navegador;
+- sistema de fuente declarada y advertencia documental.
 
-El Banco se entrega inicialmente vacío: no se cargan hechos territoriales inventados ni datos de prueba presentados como reales.
+## Núcleo de datos
 
-## Arquitectura actual
+- `data/chanar-core.json`: estructura base del sistema territorial, deliberadamente sin hechos ficticios.
+- `data/sources.json`: registro inicial de una fuente institucional oficial y su condición de uso.
+- `data/registros.json`: índice histórico del Banco Chañar cuando esté presente.
+
+La incorporación de material público **no significa automáticamente que sea reutilizable**. Para fotografías, mapas, textos y documentos se debe registrar propietario y licencia/condición de uso antes de convertirlos en producto.
+
+## Atlas
+
+El mapa utiliza OpenStreetMap como capa cartográfica y acepta GeoJSON cargado por el equipo. Las coordenadas del territorio no se inventan ni se generan por aproximación: deben entrar mediante datos documentados. La atribución de OpenStreetMap se mantiene visible en el mapa.
+
+## Arquitectura
 
 ```text
-index.html          interfaz interna
+index.html          cabina interna
 style.css           sistema visual base
-automation.css      producción rápida + Banco Chañar
-app.js              motor de fabricación y carga documental
-data/               base territorial y documental
-templates/          modelos de piezas (catálogo)
-assets/             recursos propios y autorizados
-docs/               documentación futura
+automation.css      producción rápida
+v5.css              dashboard, activos, proyectos y atlas
+app.js              motor operativo
+
+data/
+  chanar-core.json
+  sources.json
+  registros.json    (si existe en el repositorio)
+
+templates/          modelos de piezas
+assets/              recursos propios/autorizados
+docs/                documentación
 ```
 
-## Motor actual
-
-- Postales P01–P05
-- Mapas M01–M05 (actualmente esquemáticos)
-- Fichas F01–F05
-- Guías G01–G05
-- Archivos A01–A05
-- Vista previa local
-- Imágenes cargadas localmente
-- PNG/JPG
-- Impresión / guardado como PDF desde el navegador
-- Biblioteca local con `localStorage`
-- Enlaces de piezas mediante hash sin servidor
-- Producción rápida de colecciones
-- Banco Chañar estructurado y filtrable
-
-## Cartografía
-
-Los mapas esquemáticos iniciales **no son navegación ni cartografía oficial**. Las futuras capas reales deberán incorporar datos verificados, procedencia y las atribuciones/licencias correspondientes.
-
-## Seguridad y privacidad
-
-No se solicitan contraseñas ni datos privados innecesarios. Las imágenes seleccionadas desde el equipo se procesan localmente en el navegador. El Banco territorial publicado en el repositorio debe contener únicamente información que Ocarina decida mantener en ese espacio.
-
-## Camino maestro
+## Flujo productivo
 
 ```text
-INVESTIGACIÓN
-      ↓
-FUENTES CHAÑAR
-      ↓
-BANCO CHAÑAR
-      ↓
-PLANTILLA
-      ↓
-MOTOR VISUAL
-      ↓
-PRODUCCIÓN RÁPIDA
-      ↓
-PRODUCTO
-      ↓
-PDF / JPG / PNG / SVG / HTML
-      ↓
-BIBLIOTECA OCARINA
+IMPORTAR / INVESTIGAR
+        ↓
+REGISTRAR FUENTE
+        ↓
+ORDENAR ACTIVO
+        ↓
+UBICAR EN ATLAS
+        ↓
+FABRICAR
+        ↓
+REVISAR
+        ↓
+EXPORTAR
+        ↓
+ARCHIVAR
 ```
 
-## Próxima prioridad
+## Próximo gran salto
 
-La siguiente etapa debe profundizar **Fuentes Chañar + validación documental** y después avanzar hacia **cartografía real verificable** y un **exportador documental más completo**, siempre conservando la arquitectura estática, gratuita, modular y auditable.
+La siguiente generación x10 debe convertir el Atlas en un **sistema territorial de capas editables** y separar con mayor rigor tres almacenes: **datos estructurados, biblioteca multimedia y catálogo de productos**, incorporando además manifiestos de licencia y procedencia para cada recurso. Eso permitirá alimentar la fábrica con material real de San Patricio del Chañar sin confundir fuente, propiedad y permiso de reutilización.
