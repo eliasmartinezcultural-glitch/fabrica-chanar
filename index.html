@@ -44,6 +44,11 @@
       <div class="source-box"><strong>Control documental</strong><span id="sourceStatus">Completá la fuente para marcar la pieza como documentada.</span></div>
     </section>
   </div>
+  <section id="bankPanel" class="panel bank-panel">
+    <div class="library-head"><div><p class="eyebrow">BANCO CHAÑAR</p><h2>Registros territoriales</h2><p class="bank-intro">Fuente estructurada para fabricar piezas. Los registros no verificados nunca se presentan como hechos confirmados.</p></div><span id="bankCount" class="bank-count">0 registros</span></div>
+    <div class="bank-tools"><input id="bankSearch" type="search" placeholder="Buscar por nombre, resumen o categoría" aria-label="Buscar en Banco Chañar"><select id="bankStatus" aria-label="Filtrar por estado"><option value="">Todos los estados</option><option value="verificado">Verificado</option><option value="pendiente">Pendiente</option><option value="a_confirmar">A confirmar</option><option value="aporte_ocarina">Aporte Ocarina</option><option value="material_propio">Material propio</option><option value="fuente_externa">Fuente externa</option></select><select id="bankType" aria-label="Filtrar por tipo"><option value="">Todos los tipos</option><option value="lugar">Lugar</option><option value="persona">Persona</option><option value="institucion">Institución</option><option value="comercio">Comercio</option><option value="patrimonio">Patrimonio</option><option value="historia">Historia</option><option value="evento">Evento</option></select></div>
+    <div id="bankList" class="bank-list"><div class="bank-empty">Cargando Banco Chañar…</div></div>
+  </section>
   <section id="libraryPanel" class="panel library-panel hidden"><div class="library-head"><div><p class="eyebrow">ARCHIVO LOCAL</p><h2>Biblioteca de producción</h2></div><button id="btnCloseLibrary" class="ghost">Cerrar</button></div><div id="libraryList" class="library-list"></div></section>
 </main>
 <footer><span>Fábrica Chañar · sistema interno Ocarina</span><span>Contenido verificable · sin datos inventados · generación local</span></footer>
