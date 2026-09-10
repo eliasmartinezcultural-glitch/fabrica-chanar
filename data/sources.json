@@ -3,13 +3,63 @@
   "sources": [
     {
       "id": "SRC-MUNI-001",
-      "titulo": "Municipalidad de San Patricio del Chañar",
+      "titulo": "Municipalidad de San Patricio del Chañar — sitio institucional",
       "tipo": "oficial",
       "url": "https://www.sanpatricio.gob.ar/",
       "propietario": "Municipalidad de San Patricio del Chañar",
       "licencia": "Consultar condiciones de uso en la fuente",
       "estado": "registrada",
       "nota": "Fuente de referencia institucional; no implica permiso automático para reutilizar fotografías o textos de terceros."
+    },
+    {
+      "id": "SRC-MUNI-002",
+      "titulo": "Municipalidad — Cómo llegar",
+      "tipo": "oficial",
+      "url": "https://www.sanpatricio.gob.ar/llegar",
+      "propietario": "Municipalidad de San Patricio del Chañar",
+      "licencia": "Consultar condiciones de uso en la fuente",
+      "estado": "registrada",
+      "uso": "Referencia territorial y vial"
+    },
+    {
+      "id": "SRC-MUNI-003",
+      "titulo": "Municipalidad — Nuestra ciudad",
+      "tipo": "oficial",
+      "url": "https://sanpatricio.gob.ar/nuestra",
+      "propietario": "Municipalidad de San Patricio del Chañar",
+      "licencia": "Consultar condiciones de uso en la fuente",
+      "estado": "registrada",
+      "uso": "Patrimonio, naturaleza, instituciones y producción local"
+    },
+    {
+      "id": "SRC-MUNI-004",
+      "titulo": "Municipalidad — Identidad",
+      "tipo": "oficial",
+      "url": "https://sanpatricio.gob.ar/identidad",
+      "propietario": "Municipalidad de San Patricio del Chañar",
+      "licencia": "Consultar condiciones de uso en la fuente",
+      "estado": "registrada",
+      "uso": "Historia e identidad local"
+    },
+    {
+      "id": "SRC-MUNI-005",
+      "titulo": "Municipalidad — Qué hacer",
+      "tipo": "oficial",
+      "url": "https://sanpatricio.gob.ar/quehacer",
+      "propietario": "Municipalidad de San Patricio del Chañar",
+      "licencia": "Consultar condiciones de uso en la fuente",
+      "estado": "registrada",
+      "uso": "Turismo, producción y actividades locales"
+    },
+    {
+      "id": "SRC-LEG-001",
+      "titulo": "Legislatura del Neuquén — documentación sobre el aniversario/fundación de San Patricio del Chañar",
+      "tipo": "oficial",
+      "url": "https://www.legislaturaneuquen.gob.ar/SVRFILES/hln/documentos/VerTaqui/XLVII/ApendiceReunion8/Proyecto11627.pdf",
+      "propietario": "Honorable Legislatura de la Provincia del Neuquén",
+      "licencia": "Consultar condiciones de uso en la fuente",
+      "estado": "registrada",
+      "uso": "Referencia histórica"
     }
   ]
 }
