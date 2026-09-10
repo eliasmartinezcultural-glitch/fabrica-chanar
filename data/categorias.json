@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "categorias": [
+    {"id":"lugar","nombre":"Lugar"},
+    {"id":"persona","nombre":"Persona"},
+    {"id":"institucion","nombre":"Institución"},
+    {"id":"comercio","nombre":"Comercio"},
+    {"id":"patrimonio","nombre":"Patrimonio"},
+    {"id":"historia","nombre":"Historia"},
+    {"id":"turismo","nombre":"Turismo"},
+    {"id":"cultura","nombre":"Cultura"},
+    {"id":"rural","nombre":"Rural"},
+    {"id":"produccion","nombre":"Producción"},
+    {"id":"servicios","nombre":"Servicios"},
+    {"id":"naturaleza","nombre":"Naturaleza"}
+  ]
+}
