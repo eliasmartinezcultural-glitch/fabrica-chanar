@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "plantillas": [
+    {"id":"P01","tipo":"postal","nombre":"Paisaje","descripcion":"Postal visual de paisaje"},
+    {"id":"P02","tipo":"postal","nombre":"Historia","descripcion":"Postal con contenido histórico documentado"},
+    {"id":"P03","tipo":"postal","nombre":"Turismo","descripcion":"Postal orientada a visita y territorio"},
+    {"id":"P04","tipo":"postal","nombre":"Persona","descripcion":"Postal centrada en una persona o protagonista local"},
+    {"id":"P05","tipo":"postal","nombre":"Efeméride","descripcion":"Postal para una fecha o conmemoración documentada"},
+    {"id":"M01","tipo":"mapa","nombre":"General","descripcion":"Mapa territorial de referencia"},
+    {"id":"M02","tipo":"mapa","nombre":"Turismo","descripcion":"Mapa de atractivos y recorridos turísticos"},
+    {"id":"M03","tipo":"mapa","nombre":"Histórico","descripcion":"Mapa basado en información histórica documentada"},
+    {"id":"M04","tipo":"mapa","nombre":"Cultural","descripcion":"Mapa de espacios y referencias culturales"},
+    {"id":"M05","tipo":"mapa","nombre":"Rural","descripcion":"Mapa de referencias rurales"},
+    {"id":"F01","tipo":"ficha","nombre":"Lugar","descripcion":"Ficha de un lugar"},
+    {"id":"F02","tipo":"ficha","nombre":"Persona","descripcion":"Ficha biográfica o de trayectoria"},
+    {"id":"F03","tipo":"ficha","nombre":"Institución","descripcion":"Ficha institucional"},
+    {"id":"F04","tipo":"ficha","nombre":"Comercio","descripcion":"Ficha descriptiva de un comercio"},
+    {"id":"F05","tipo":"ficha","nombre":"Patrimonio","descripcion":"Ficha de patrimonio cultural o territorial"},
+    {"id":"G01","tipo":"guide","nombre":"Turismo","descripcion":"Guía turística"},
+    {"id":"G02","tipo":"guide","nombre":"Historia","descripcion":"Guía histórica"},
+    {"id":"G03","tipo":"guide","nombre":"Cultura","descripcion":"Guía cultural"},
+    {"id":"G04","tipo":"guide","nombre":"Paseo","descripcion":"Guía breve de paseo"},
+    {"id":"G05","tipo":"guide","nombre":"Familia","descripcion":"Guía de recorrido familiar"},
+    {"id":"A01","tipo":"infographic","nombre":"Calendario","descripcion":"Calendario local"},
+    {"id":"A02","tipo":"infographic","nombre":"Directorio","descripcion":"Directorio estructurado"},
+    {"id":"A03","tipo":"infographic","nombre":"Cronología","descripcion":"Línea de tiempo o cronología"},
+    {"id":"A04","tipo":"infographic","nombre":"Infografía","descripcion":"Información visual resumida"},
+    {"id":"A05","tipo":"infographic","nombre":"Documento educativo","descripcion":"Lámina o documento educativo"}
+  ]
+}
