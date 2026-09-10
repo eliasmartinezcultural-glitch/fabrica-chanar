@@ -4,7 +4,54 @@
   "provincia": "Neuquén",
   "pais": "Argentina",
   "proposito": "Base estructural interna para investigación, producción y archivo de Ocarina Producciones.",
-  "registros": [],
+  "registros": [
+    {
+      "id": "CHA-HIS-001",
+      "tipo": "historia",
+      "nombre": "Fundación de San Patricio del Chañar",
+      "resumen": "La fundación de la localidad está fechada el 21 de mayo de 1973.",
+      "categoria": "Historia",
+      "estado": "verificado",
+      "fuentes": ["SRC-LEG-001"],
+      "nota": "Conservar la formulación y el alcance de la fuente; no ampliar la afirmación sin investigación adicional."
+    },
+    {
+      "id": "CHA-TERR-001",
+      "tipo": "territorio",
+      "nombre": "Intersección de las rutas provinciales 7 y 8",
+      "resumen": "La Municipalidad describe la intersección de las rutas provinciales 7 y 8 dentro del ejido municipal como un punto clave para logística y distribución.",
+      "categoria": "Territorio",
+      "estado": "verificado",
+      "fuentes": ["SRC-MUNI-002"]
+    },
+    {
+      "id": "CHA-PAT-001",
+      "tipo": "patrimonio",
+      "nombre": "Dique Compensador",
+      "resumen": "La Municipalidad informa que el Dique Compensador fue declarado Área Natural Protegida Municipal en octubre de 2006.",
+      "categoria": "Naturaleza",
+      "estado": "verificado",
+      "fuentes": ["SRC-MUNI-003"]
+    },
+    {
+      "id": "CHA-PAT-002",
+      "tipo": "patrimonio",
+      "nombre": "Parroquia San Patricio",
+      "resumen": "La Municipalidad informa que el templo fue construido por la comunidad y bendecido el 11 de septiembre de 1983.",
+      "categoria": "Patrimonio",
+      "estado": "verificado",
+      "fuentes": ["SRC-MUNI-003"]
+    },
+    {
+      "id": "CHA-PROD-001",
+      "tipo": "produccion",
+      "nombre": "Chacra Municipal Valles del Chañar",
+      "resumen": "La Municipalidad informa una chacra municipal de 10 hectáreas, ubicada en Picada 5, donde 40 familias producen hortalizas.",
+      "categoria": "Producción",
+      "estado": "verificado",
+      "fuentes": ["SRC-MUNI-003"]
+    }
+  ],
   "colecciones": [],
   "proyectos": [],
   "activos": [],
