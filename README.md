@@ -12,26 +12,24 @@ Sistema **interno de producción territorial de Ocarina Producciones** para inve
 - **Despliegue simple:** GitHub Pages es la ruta primaria; cada push a `main` intenta publicar el sitio estático mediante Actions.
 - **Sin destrucción silenciosa:** cada salto conserva las capacidades útiles anteriores.
 
-## v9.0 x10 — Operación productiva
+## v10.0 x10 — Control de entrega
 
-La v9 cambia el centro de gravedad: **la fábrica empieza a administrar trabajo, no solamente contenido**. Sobre la línea v8 agrega órdenes productivas locales con destinatario, proyecto, registro, productos, estado y manifiesto exportable.
+La v10 agrega el último tramo necesario para acercarse a una operación real: **una orden no se considera terminada solamente porque exista una pieza**. Ahora tiene checklist, control de derechos, revisión visual, exportación de expediente y cierre condicionado.
 
 ```text
-REGISTRO → ORDEN → PRODUCCIÓN → CONTROL → PRODUCTO → ARCHIVO
+REGISTRO → ORDEN → PRODUCCIÓN → CONTROL → ENTREGA → ARCHIVO
 ```
 
 ### Capacidades nuevas
 
-- tablero local de órdenes;
-- creación de una orden desde cero o a partir del registro seleccionado en v8;
-- destinatario/cliente y proyecto asociados a cada orden;
-- selección de productos por orden: ficha, postal, guía, infografía y mapa;
-- estados: Idea → Investigación → Lista para producir → En producción → Terminada;
-- porcentaje de avance calculado por estado;
-- manifiesto JSON de cada orden;
-- estado de derechos conservado como pendiente hasta su verificación;
-- almacenamiento local sin backend obligatorio;
-- continuidad entre v8 y v9 sin eliminar el fabricante anterior.
+- expediente local de la orden activa;
+- checklist de contenido, fuentes, derechos, formato, calidad y archivo;
+- porcentaje de preparación para entrega;
+- bloqueo del cierre mientras falten controles críticos;
+- exportación de expediente JSON;
+- conservación local del estado junto a la orden v9;
+- carga automática de la capa v10 desde v9 para conservar compatibilidad;
+- estilos v10 inyectados localmente para que la capa funcione incluso sin modificar el HTML principal.
 
 ## Despliegue
 
@@ -43,7 +41,7 @@ URL:
 
 `https://eliasmartinezcultural-glitch.github.io/fabrica-chanar/`
 
-El pipeline de Pages ya fue verificado anteriormente como exitoso. Cada modificación posterior vuelve a generar una ejecución de Actions; el estado de cada nueva versión debe comprobarse antes de declararla desplegada.
+El run v10 se dispara automáticamente con cada push. El estado se conserva en `data/deployment-manifest.json` y debe comprobarse antes de declarar una versión desplegada.
 
 ## Núcleo de datos
 
@@ -64,11 +62,13 @@ v6.css              banco multimedia y auditoría
 v7.css              puesta en marcha
 v8.css              línea de producción
 v9.css              tablero de órdenes
+v10.css             estilos de control de entrega
 app.js              motor de fabricación
 v6.js               memoria/procedencia
 v7.js               readiness y despliegue
 v8.js               registros y primera línea de producción
-v9.js               órdenes productivas
+v9.js               órdenes productivas + activación v10
+v10.js              control de entrega y expediente
 
 .github/workflows/
   pages.yml         despliegue automático
@@ -90,7 +90,9 @@ CONTROL DE PUESTA EN MARCHA
      ↓
 CARGA AUTOMÁTICA DE MEMORIA
      ↓
-ELEGIR REGISTRO O CREAR ORDEN
+ELEGIR REGISTRO
+     ↓
+CREAR ORDEN
      ↓
 DEFINIR DESTINATARIO + PRODUCTOS
      ↓
@@ -100,17 +102,19 @@ CARGAR FOTO PROPIA / ACTIVO CON DERECHOS
      ↓
 FABRICAR
      ↓
-AVANZAR ESTADO DE PRODUCCIÓN
+REVISAR
      ↓
-AUDITAR
+CONTROLAR DERECHOS Y FORMATO
      ↓
-EXPORTAR MANIFIESTO / PRODUCTO
+EXPORTAR
      ↓
 ARCHIVAR
+     ↓
+CERRAR ORDEN
 ```
 
 ## Estado real
 
-La fábrica ya tiene una ruta concreta para pasar de datos documentados a órdenes de trabajo y productos. Todavía no debe considerarse una línea comercial completa: faltan activos audiovisuales propios cargados, una auditoría más profunda de licencias por activo y persistencia fuera del navegador para trabajo multi-dispositivo.
+Fábrica Chañar ya tiene un circuito operativo completo a nivel de navegador: memoria territorial → registro → orden → fabricación → control → expediente. La persistencia sigue siendo local al navegador y todavía falta probar el ciclo con un encargo real y activos propios.
 
-La siguiente prioridad es **producir el primer encargo real**, medir el tiempo de fabricación y usar ese aprendizaje para construir la v10 alrededor de lo que realmente se repite, no alrededor de funciones decorativas.
+La prioridad siguiente es **hacer el primer ciclo completo con material real**, medir tiempos y convertir las tareas repetidas en automatizaciones. No agregar funciones por acumulación: cada nueva versión debe reducir trabajo, errores o tiempo de producción.
