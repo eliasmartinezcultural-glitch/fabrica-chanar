@@ -1,90 +1,24 @@
-/* FÁBRICA CHAÑAR — CURADURÍA FOTOGRÁFICA EXCLUSIVA v1
-   Selección de materia prima encontrada en búsqueda web intensiva.
-   Regla: solo material con licencia explícita se marca usable/commercialSafe.
-   Las referencias periodísticas quedan separadas y NO habilitan venta.
+/* FÁBRICA CHAÑAR — CURADURÍA FOTOGRÁFICA EXCLUSIVA v2
+   Banco editorial separado por función y derechos.
+   Regla dura: usable/commercialSafe solo con licencia o autorización explícita.
+   Referencia pública sirve para prototipar, nunca para habilitar venta.
 */
 (function(){
   const FACTORY_PHOTO_CURATED=[
-    {
-      id:'fp-01', master:'mp-puerta-chanar', asset:'acceso-chanar', priority:1,
-      role:'hero', status:'usable', commercialSafe:true,
-      title:'Ingreso a San Patricio del Chañar',
-      author:'Cartago TV', license:'CC BY 3.0',
-      source:'Wikimedia Commons',
-      sourceUrl:'https://commons.wikimedia.org/wiki/File:San_Patricio_del_Chañar.png',
-      directUrl:'https://commons.wikimedia.org/wiki/Special:FilePath/San_Patricio_del_Chañar.png',
-      editorialUse:'Maestra 1 · bienvenida. El cartel debe ser reconocible y la ruta/entorno deben conservar sensación de llegada.',
-      credit:'Foto: Cartago TV · CC BY 3.0 · Wikimedia Commons'
-    },
-    {
-      id:'fp-02', master:'mp-pedacitos-territorio', asset:'dique-chanar-01', priority:1,
-      role:'hero', status:'usable', commercialSafe:true,
-      title:'Dique Compensador El Chañar · paisaje',
-      author:'psanetti', license:'CC BY-SA 3.0',
-      source:'Wikimedia Commons / Panoramio',
-      sourceUrl:'https://commons.wikimedia.org/wiki/File:Dique_Compensador_Chañar,_Neuquen_-_panoramio.jpg',
-      directUrl:'https://commons.wikimedia.org/wiki/Special:FilePath/Dique_Compensador_Cha%C3%B1ar%2C_Neuquen_-_panoramio.jpg',
-      editorialUse:'Maestra 6 · apertura territorial. Agua como estructura del territorio, no como paisaje decorativo.',
-      credit:'Foto: psanetti · CC BY-SA 3.0 · Wikimedia Commons'
-    },
-    {
-      id:'fp-03', master:'mp-pedacitos-territorio', asset:'dique-chanar-02', priority:2,
-      role:'alternate', status:'usable', commercialSafe:true,
-      title:'Dique Compensador El Chañar · vista 2',
-      author:'psanetti', license:'CC BY-SA 3.0',
-      source:'Wikimedia Commons / Panoramio',
-      sourceUrl:'https://commons.wikimedia.org/wiki/File:Dique_Compensador_Chañar,_Neuquen_-_panoramio_(1).jpg',
-      directUrl:'https://commons.wikimedia.org/wiki/Special:FilePath/Dique_Compensador_Cha%C3%B1ar%2C_Neuquen_-_panoramio_(1).jpg',
-      editorialUse:'Alternativa para la guía. Buscar profundidad y contraste agua-estepa.',
-      credit:'Foto: psanetti · CC BY-SA 3.0 · Wikimedia Commons'
-    },
-    {
-      id:'fp-04', master:'mp-pedacitos-territorio', asset:'dique-chanar-03', priority:3,
-      role:'alternate', status:'usable', commercialSafe:true,
-      title:'Dique Compensador El Chañar · vista 3',
-      author:'psanetti', license:'CC BY-SA 3.0',
-      source:'Wikimedia Commons / Panoramio',
-      sourceUrl:'https://commons.wikimedia.org/wiki/File:Dique_Compensador_Chañar,_Neuquen_-_panoramio_(2).jpg',
-      directUrl:'https://commons.wikimedia.org/wiki/Special:FilePath/Dique_Compensador_Cha%C3%B1ar%2C_Neuquen_-_panoramio_(2).jpg',
-      editorialUse:'Alternativa para la guía. Elegir solo si aporta una lectura territorial distinta a la foto hero.',
-      credit:'Foto: psanetti · CC BY-SA 3.0 · Wikimedia Commons'
-    },
-    {
-      id:'fp-r01', master:'mp-vinedos-estepa', asset:'malma2', priority:1,
-      role:'reference', status:'reference', commercialSafe:false,
-      title:'Viñedos de San Patricio del Chañar',
-      source:'Neuquén Informa',
-      sourceUrl:'https://www.neuqueninforma.gob.ar/noticias/2024/10/21/246534-buscan-desarrollar-un-circuito-de-bodegas-gastronomia-y-hoteles',
-      editorialUse:'Prototipo editorial únicamente. Sustituir por fotografía propia/autoriza antes de venta.',
-      credit:'Foto de referencia: Neuquén Informa · derechos pendientes'
-    },
-    {
-      id:'fp-r02', master:'mp-tiempo-cosecha', asset:'vendimia1', priority:1,
-      role:'reference', status:'reference', commercialSafe:false,
-      title:'Vendimia · trabajo de cosecha',
-      source:'LM Neuquén',
-      sourceUrl:'https://www.lmneuquen.com/neuquen/en-17-fotos-la-vendimia-neuquina-se-lucio-bodega-malma-n1231663',
-      editorialUse:'Prototipo editorial únicamente. Sustituir por fotografía propia/autoriza antes de venta.',
-      credit:'Foto de referencia: LM Neuquén · derechos pendientes'
-    },
-    {
-      id:'fp-r03', master:'mp-fiestas-raices', asset:'pelon', priority:1,
-      role:'reference', status:'reference', commercialSafe:false,
-      title:'Fiesta Provincial del Pelón 2026',
-      source:'Neuquén Informa',
-      sourceUrl:'https://www.neuqueninforma.gob.ar/noticias/2026/02/10/255111-san-patricio-del-chanar-se-prepara-para-la-fiesta-del-pelon',
-      editorialUse:'Prototipo editorial únicamente. Sustituir por fotografía propia/autoriza antes de venta.',
-      credit:'Foto de referencia: Neuquén Informa · derechos pendientes'
-    },
-    {
-      id:'fp-r04', master:'mp-pequenas-historias', asset:'chical', priority:1,
-      role:'reference', status:'reference', commercialSafe:false,
-      title:'Bodega El Chical',
-      source:'Neuquén Informa',
-      sourceUrl:'https://www.neuqueninforma.gob.ar/noticias/2026/04/03/255930-el-chical-se-suma-a-la-oferta-vitivinicola-de-san-patricio-del-chanar',
-      editorialUse:'Prototipo editorial únicamente. Sustituir por fotografía propia/autoriza antes de venta.',
-      credit:'Foto de referencia: Neuquén Informa · derechos pendientes'
-    }
+    {id:'fp-01',master:'mp-puerta-chanar',asset:'acceso-chanar',priority:1,role:'hero',status:'usable',commercialSafe:true,title:'Ingreso a San Patricio del Chañar',author:'Cartago TV',license:'CC BY 3.0',source:'Wikimedia Commons',sourceUrl:'https://commons.wikimedia.org/wiki/File:San_Patricio_del_Chañar.png',directUrl:'https://commons.wikimedia.org/wiki/Special:FilePath/San_Patricio_del_Chañar.png',editorialUse:'Bienvenida. Cartel inequívoco + entorno de llegada.',credit:'Foto: Cartago TV · CC BY 3.0 · Wikimedia Commons'},
+    {id:'fp-02',master:'mp-pedacitos-territorio',asset:'dique-chanar-01',priority:1,role:'hero',status:'usable',commercialSafe:true,title:'Dique Compensador El Chañar · paisaje',author:'psanetti',license:'CC BY-SA 3.0',source:'Wikimedia Commons / Panoramio',sourceUrl:'https://commons.wikimedia.org/wiki/File:Dique_Compensador_Chañar,_Neuquen_-_panoramio.jpg',directUrl:'https://commons.wikimedia.org/wiki/Special:FilePath/Dique_Compensador_Cha%C3%B1ar%2C_Neuquen_-_panoramio.jpg',editorialUse:'Territorio. Agua como estructura, no como decoración.',credit:'Foto: psanetti · CC BY-SA 3.0 · Wikimedia Commons'},
+    {id:'fp-03',master:'mp-pedacitos-territorio',asset:'dique-chanar-02',priority:2,role:'alternate',status:'usable',commercialSafe:true,title:'Dique Compensador El Chañar · vista 2',author:'psanetti',license:'CC BY-SA 3.0',source:'Wikimedia Commons / Panoramio',sourceUrl:'https://commons.wikimedia.org/wiki/File:Dique_Compensador_Chañar,_Neuquen_-_panoramio_(1).jpg',directUrl:'https://commons.wikimedia.org/wiki/Special:FilePath/Dique_Compensador_Cha%C3%B1ar,_Neuquen_-_panoramio_(1).jpg',editorialUse:'Alternativa territorial; profundidad agua-estepa.',credit:'Foto: psanetti · CC BY-SA 3.0 · Wikimedia Commons'},
+    {id:'fp-04',master:'mp-pedacitos-territorio',asset:'dique-chanar-03',priority:3,role:'alternate',status:'usable',commercialSafe:true,title:'Dique Compensador El Chañar · vista 3',author:'psanetti',license:'CC BY-SA 3.0',source:'Wikimedia Commons / Panoramio',sourceUrl:'https://commons.wikimedia.org/wiki/File:Dique_Compensador_Chañar,_Neuquen_-_panoramio_(2).jpg',directUrl:'https://commons.wikimedia.org/wiki/Special:FilePath/Dique_Compensador_Cha%C3%B1ar%2C_Neuquen_-_panoramio_(2).jpg',editorialUse:'Alternativa territorial; recorrido y dirección.',credit:'Foto: psanetti · CC BY-SA 3.0 · Wikimedia Commons'},
+    {id:'fp-r01',master:'mp-vinedos-estepa',asset:'malma2',priority:1,role:'reference',status:'reference',commercialSafe:false,title:'Viñedos de San Patricio del Chañar',source:'Neuquén Informa',sourceUrl:'https://www.neuqueninforma.gob.ar/noticias/2024/10/21/246534-buscan-desarrollar-un-circuito-de-bodegas-gastronomia-y-hoteles',editorialUse:'Referencia para paisaje productivo; pedir autorización o reemplazar por foto propia.',credit:'Foto de referencia: Neuquén Informa · derechos pendientes'},
+    {id:'fp-r02',master:'mp-tiempo-cosecha',asset:'vendimia1',priority:1,role:'reference',status:'reference',commercialSafe:false,title:'Vendimia · trabajo de cosecha',source:'LM Neuquén',sourceUrl:'https://www.lmneuquen.com/neuquen/en-17-fotos-la-vendimia-neuquina-se-lucio-bodega-malma-n1231663',editorialUse:'Referencia para acción, manos, racimos y trabajo.',credit:'Foto de referencia: LM Neuquén · derechos pendientes'},
+    {id:'fp-r03',master:'mp-fiestas-raices',asset:'pelon',priority:1,role:'reference',status:'reference',commercialSafe:false,title:'Fiesta Provincial del Pelón 2026',source:'Neuquén Informa',sourceUrl:'https://www.neuqueninforma.gob.ar/noticias/2026/02/10/255111-san-patricio-del-chanar-se-prepara-para-la-fiesta-del-pelon',editorialUse:'Referencia para memoria popular, ruralidad y comunidad.',credit:'Foto de referencia: Neuquén Informa · derechos pendientes'},
+    {id:'fp-r04',master:'mp-pequenas-historias',asset:'chical',priority:1,role:'reference',status:'reference',commercialSafe:false,title:'Bodega El Chical',source:'Neuquén Informa',sourceUrl:'https://www.neuqueninforma.gob.ar/noticias/2026/04/03/255930-el-chical-se-suma-a-la-oferta-vitivinicola-de-san-patricio-del-chanar',editorialUse:'Referencia documental para fachada/interior/objeto.',credit:'Foto de referencia: Neuquén Informa · derechos pendientes'},
+    {id:'fp-r05',master:'mp-tiempo-cosecha',asset:'vendimia-schroeder-2026',priority:2,role:'reference',status:'reference',commercialSafe:false,title:'Vendimia Neuquina · Familia Schroeder 2026',source:'LM Neuquén',sourceUrl:'https://www.lmneuquen.com/neuquen/en-23-fotos-asi-se-vivio-la-vendimia-neuquina-bodega-familia-schroeder-n1232435',editorialUse:'Nueva referencia de escena humana, atardecer y viñedos.',credit:'Foto de referencia: Omar Novoa / LM Neuquén · derechos pendientes'},
+    {id:'fp-r06',master:'mp-vinedos-estepa',asset:'vendimia-malma-2026',priority:2,role:'reference',status:'reference',commercialSafe:false,title:'Vendimia Neuquina · Bodega Malma 2026',source:'Neuquén Informa',sourceUrl:'https://www.neuqueninforma.gob.ar/amp/noticias/2026/03/12/255578-vinos-musica-sinfonica-djs-y-arte-en-bodega-malma',editorialUse:'Referencia de viñedo + naturaleza + experiencia; no comercial.',credit:'Foto de referencia: Neuquén Informa · derechos pendientes'},
+    {id:'fp-r07',master:'mp-puerta-chanar',asset:'tripadvisor-local',priority:3,role:'reference',status:'reference',commercialSafe:false,title:'Galería local de San Patricio del Chañar',source:'Tripadvisor',sourceUrl:'https://www.tripadvisor.com/LocationPhotos-g3750325-San_Patricio_del_Chanar_Province_of_Neuquen_Patagonia.html',editorialUse:'Banco de observación de lugares y encuadres; solicitar permiso al autor individual.',credit:'Referencia de usuario: Tripadvisor · permiso individual requerido'},
+    {id:'fp-r08',master:'mp-pedacitos-territorio',asset:'official-dique',priority:2,role:'reference',status:'reference',commercialSafe:false,title:'Dique Compensador · referencia institucional',source:'Municipalidad de San Patricio del Chañar',sourceUrl:'https://sanpatricio.gob.ar/nuestra',editorialUse:'Referencia institucional del paisaje protegido; no copiar sin autorización.',credit:'Imagen de referencia institucional · permiso pendiente'},
+    {id:'fp-r09',master:'mp-pedacitos-territorio',asset:'official-chacra',priority:2,role:'reference',status:'reference',commercialSafe:false,title:'Chacra Municipal Valles del Chañar',source:'Municipalidad de San Patricio del Chañar',sourceUrl:'https://sanpatricio.gob.ar/nuestra',editorialUse:'Materia prima conceptual: chacras, riego, invernaderos y producción local.',credit:'Imagen de referencia institucional · permiso pendiente'},
+    {id:'fp-r10',master:'mp-vinedos-estepa',asset:'tripadvisor-vinedos',priority:3,role:'reference',status:'reference',commercialSafe:false,title:'Viñedos en otoño · Secreto Patagónico',source:'Tripadvisor',sourceUrl:'https://www.tripadvisor.com/LocationPhotos-g3750325-San_Patricio_del_Chanar_Province_of_Neuquen-Patagonia.html',editorialUse:'Referencia cromática y de paisaje productivo; permiso individual requerido.',credit:'Referencia de usuario/management · Tripadvisor · permiso requerido'}
   ];
-  window.FabricaPhotoCuration={version:1,items:FACTORY_PHOTO_CURATED,forMaster:id=>FACTORY_PHOTO_CURATED.filter(x=>x.master===id),usable:FACTORY_PHOTO_CURATED.filter(x=>x.commercialSafe)};
+  window.FabricaPhotoCuration={version:2,items:FACTORY_PHOTO_CURATED,forMaster:id=>FACTORY_PHOTO_CURATED.filter(x=>x.master===id),usable:FACTORY_PHOTO_CURATED.filter(x=>x.commercialSafe),references:FACTORY_PHOTO_CURATED.filter(x=>!x.commercialSafe)};
 })();
