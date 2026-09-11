@@ -1,1 +1,0 @@
-Control operativo incorporado en main: los trabajos requieren registro y controles explícitos de fuente, derechos, producción, revisión y entrega antes de avanzar a etapas posteriores.
