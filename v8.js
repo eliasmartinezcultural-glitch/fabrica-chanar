@@ -1,0 +1,29 @@
+(()=>{
+const V8KEY='fabrica-chanar-v8-production';
+const v8={core:null,sources:null,media:null,maps:null,selected:null,checks:{}};
+const q=s=>document.querySelector(s); const esc8=v=>String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#039;'}[c]));
+function save8(){localStorage.setItem(V8KEY,JSON.stringify({selected:v8.selected,checks:v8.checks}));}
+function load8(){try{Object.assign(v8,JSON.parse(localStorage.getItem(V8KEY)||'{}'));}catch{}}
+async function getJSON(path){const r=await fetch(path,{cache:'no-store'});if(!r.ok)throw new Error(path);return r.json();}
+async function boot8(){
+  load8();
+  try{v8.core=await getJSON('data/chanar-core.json');v8.checks.core=true;}catch{v8.checks.core=false;}
+  try{v8.sources=await getJSON('data/sources.json');v8.checks.sources=true;}catch{v8.checks.sources=false;}
+  try{v8.media=await getJSON('data/media-manifest.json');v8.checks.media=true;}catch{v8.checks.media=false;}
+  try{v8.maps=await getJSON('data/map-layers.json');v8.checks.maps=true;}catch{v8.checks.maps=false;}
+  render8();
+}
+function records(){return v8.core?.registros||[];}
+function render8(){
+ const host=q('#v8Production');if(!host)return;
+ const rs=records();
+ host.innerHTML=`<div class="v8-head"><div><div class="v8-eyebrow">v8.0 · PRIMERA LÍNEA DE PRODUCCIÓN REAL</div><h2>De registro documentado a producto terminado</h2><p class="v8-sub">La fábrica deja de esperar una investigación completa para empezar a operar: carga su memoria automáticamente, permite elegir un registro real y arma una orden de producción sin inventar contenido ni derechos.</p></div><span class="v8-status">${rs.length} registros cargados</span></div><div class="v8-flow"><div>01 Registro</div><div>02 Fuente</div><div>03 Activo</div><div>04 Producto</div><div>05 Archivo</div></div><div class="v8-grid"><div class="v8-card"><strong>Cola de producción</strong><p class="v8-note">Elegí un registro documentado para enviarlo al fabricante existente.</p><div class="v8-records">${rs.length?rs.map(r=>`<div class="v8-record"><div><strong>${esc8(r.nombre)}</strong><small>${esc8(r.id)} · ${esc8(r.categoria||r.tipo||'')}</small></div><button class="v8-btn" data-v8-record="${esc8(r.id)}">Producir</button></div>`).join(''):'<p>No se pudo cargar la base. Ejecutá el control de puesta en marcha.</p>'}</div></div><div class="v8-card"><strong>Control de la orden</strong><div class="v8-checks"><div class="v8-check"><span>Base territorial</span><b>${v8.checks.core?'OK':'FALTA'}</b></div><div class="v8-check"><span>Fuentes</span><b>${v8.checks.sources?'OK':'FALTA'}</b></div><div class="v8-check"><span>Manifiesto multimedia</span><b>${v8.checks.media?'OK':'FALTA'}</b></div><div class="v8-check"><span>Capas cartográficas</span><b>${v8.checks.maps?'OK':'FALTA'}</b></div><div class="v8-check"><span>Derechos de imagen</span><b>VERIFICAR</b></div></div><div id="v8Selected"><p class="v8-note">Todavía no hay una orden seleccionada.</p></div><div class="v8-actions"><button class="v8-btn alt" id="v8Reload">Recargar base</button><button class="v8-btn" id="v8Manifest">Exportar orden</button></div><p class="v8-note">La exportación de una orden es un manifiesto de trabajo. No declara que una imagen sea reutilizable si sus derechos no están documentados.</p></div></div>`;
+ host.querySelectorAll('[data-v8-record]').forEach(b=>b.onclick=()=>select8(b.dataset.v8Record));
+ q('#v8Reload').onclick=boot8; q('#v8Manifest').onclick=exportOrder8; renderSelected8();
+}
+function select8(id){v8.selected=records().find(r=>r.id===id)||null;save8();renderSelected8();if(v8.selected&&typeof recordToState==='function'){recordToState(v8.selected);}}
+function renderSelected8(){const el=q('#v8Selected');if(!el)return;if(!v8.selected){el.innerHTML='<p class="v8-note">Todavía no hay una orden seleccionada.</p>';return}const r=v8.selected;el.innerHTML=`<div><strong>${esc8(r.nombre)}</strong><p class="v8-note">${esc8(r.resumen||'Sin resumen')}</p><div class="v8-actions"><button class="v8-btn" id="v8OwnPhoto">Agregar foto propia de Ocarina</button><input id="v8Photo" class="v8-upload" type="file" accept="image/*"><button class="v8-btn alt" id="v8BatchNow">Generar colección</button></div><p class="v8-note">La foto propia se procesa localmente en el navegador. No se sube automáticamente a un servidor.</p></div>`;q('#v8OwnPhoto').onclick=()=>q('#v8Photo').click();q('#v8Photo').onchange=e=>{const f=e.target.files?.[0];if(!f)return;const reader=new FileReader();reader.onload=()=>{if(window.state){state.image=reader.result;renderPreview();}q('#v8OwnPhoto').textContent='Foto cargada localmente';};reader.readAsDataURL(f);};q('#v8BatchNow').onclick=()=>{if(typeof batch==='function')batch();};}
+function exportOrder8(){if(!v8.selected){alert('Elegí un registro primero.');return}const r=v8.selected;const order={version:'8.0.0',orden_id:`ORD-${r.id}`,creada:new Date().toISOString(),registro:r,fuentes:r.fuentes||[],productos_sugeridos:['ficha','postal','guide'],activo_prioritario:'foto propia de Ocarina o activo con derechos documentados',estado_derechos:'pendiente_de_verificacion',regla:'No exportar comercialmente una imagen si licencia/autoría/condiciones de uso no están documentadas.'};const blob=new Blob([JSON.stringify(order,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`orden-${r.id}.json`;a.click();URL.revokeObjectURL(a.href);}
+function inject8(){if(q('#v8Production'))return;const main=document.querySelector('.app-shell');const anchor=document.querySelector('.workspace');if(!main||!anchor)return;const s=document.createElement('section');s.id='v8Production';s.className='v8-panel';main.insertBefore(s,anchor);}
+window.addEventListener('DOMContentLoaded',()=>{inject8();boot8();});
+})();
