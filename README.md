@@ -1,120 +1,91 @@
 # Fábrica Chañar
 
-Sistema **interno de producción territorial de Ocarina Producciones** para investigar, organizar, preservar y transformar información documentada sobre San Patricio del Chañar en activos y productos digitales.
+**Fábrica Chañar** es el taller digital interno de Ocarina Producciones para producir **piezas de Chañar**: recuerdos visuales, pequeñas piezas documentales, guías e infografías nacidas de San Patricio del Chañar.
+
+## Idea central
+
+> **No vendemos diseños en masa. Hacemos piezas de Chañar.**
+
+La tecnología queda adentro. Afuera debe sentirse una pieza pensada, cuidada, local y guardable.
 
 ## Ley mundial
 
-- **Uso interno Ocarina:** no es plataforma pública ni editor para terceros.
-- **No inventar:** hechos, fechas, coordenadas, direcciones, teléfonos, horarios y estadísticas necesitan respaldo o estado explícito.
-- **Trazabilidad:** fuente, autoría, licencia/condición de uso y procedencia deben conservarse cuando corresponda.
-- **Reutilización:** un registro territorial puede alimentar múltiples productos.
-- **Browser-first:** el núcleo funciona en navegador y evita backend obligatorio.
-- **Despliegue simple:** GitHub Pages es la ruta primaria; cada push a `main` intenta publicar el sitio estático mediante Actions.
-- **Sin destrucción silenciosa:** cada salto conserva las capacidades útiles anteriores.
+- **No inventar:** hechos, fechas, direcciones, horarios y estadísticas necesitan respaldo o estado explícito.
+- **Trazabilidad:** conservar fuente, autoría, licencia/condición de uso y procedencia cuando corresponda.
+- **Derechos:** las imágenes marcadas como `reference` sirven para referencia visual; no se presume permiso comercial.
+- **Producción comercial:** priorizar foto propia de Ocarina, del cliente o un activo con derechos documentados.
+- **Coleccionable con honestidad:** se pueden usar colección, procedencia, código de pieza y sello editorial; no se declara limitada, certificada, única u original sin una condición real que lo respalde.
+- **Complejidad adentro:** la interfaz debe pedir la menor cantidad posible de decisiones.
 
-## v10.0 x10 — Control de entrega
-
-La v10 agrega el último tramo necesario para acercarse a una operación real: **una orden no se considera terminada solamente porque exista una pieza**. Ahora tiene checklist, control de derechos, revisión visual, exportación de expediente y cierre condicionado.
+## Experiencia activa
 
 ```text
-REGISTRO → ORDEN → PRODUCCIÓN → CONTROL → ENTREGA → ARCHIVO
+ELEGIR → LA FÁBRICA CURA → MIRAR → GUARDAR
 ```
 
-### Capacidades nuevas
+Productos activos:
 
-- expediente local de la orden activa;
-- checklist de contenido, fuentes, derechos, formato, calidad y archivo;
-- porcentaje de preparación para entrega;
-- bloqueo del cierre mientras falten controles críticos;
-- exportación de expediente JSON;
-- conservación local del estado junto a la orden v9;
-- carga automática de la capa v10 desde v9 para conservar compatibilidad;
-- estilos v10 inyectados localmente para que la capa funcione incluso sin modificar el HTML principal.
+- **Postal:** recuerdo visual y turístico.
+- **Ficha cultural:** pequeña pieza documental.
+- **Guía breve:** acompañante de recorrido.
+- **Infografía:** dato visual claro.
+
+Cada pieza recibe automáticamente una familia visual, colección, código de pieza, marca de taller y una frase cercana de Chañar.
+
+## Lenguaje de pieza
+
+La Fábrica puede generar expresiones como:
+
+- “Un recuerdito de San Patricio del Chañar.”
+- “Para llevarte un pedacito de Chañar.”
+- “Un pequeño recuerdo de este rincón del valle.”
+- “Para guardar un pedacito de este lugar.”
+- “Andá despacio. Mirá. Disfrutá Chañar.”
+
+No se afirma que una pieza digital haya sido fabricada físicamente a mano. La idea de taller se refiere a la selección, composición, curaduría y cuidado editorial.
+
+## Foto propia
+
+La interfaz ofrece una opción mínima para cargar una fotografía propia directamente en el navegador. La imagen se procesa localmente y se conserva al cambiar de producto o plantilla mientras dura la sesión.
+
+## Arquitectura activa
+
+```text
+index.html
+ ├─ app-core.js          datos, productos, plantillas y exportación
+ ├─ factory-engine.js    contratos y curaduría automática
+ ├─ localidad.js         capa territorial
+ ├─ atlas.js              motivos y decisiones locales
+ ├─ beta2.js              interacción de producción
+ ├─ factory-motion.js     microinteracciones
+ ├─ factory-curation.js   colecciones, procedencia y sello
+ └─ factory-piece.js      lenguaje local + foto propia
+```
+
+Los módulos históricos `v8.js`, `v9.js`, `v10.js` y `v16.js` permanecen en el repositorio como infraestructura experimental/documental, pero **no forman parte de la cabina activa** mientras no se integren deliberadamente. Esto evita que el README describa una aplicación distinta de la que realmente se carga.
+
+## Derechos y datos locales
+
+El repositorio conserva además capas de memoria territorial y manifiestos de fuentes/media en `data/`. La base municipal confirma, entre otros elementos, el Balneario Municipal, la Chacra Municipal Valles del Chañar, el Dique Compensador, el Centro Cultural, el Muro de la Identidad y el Mirador La Virgen; la historia oficial también documenta la identidad ligada al nombre “El Chañar”.
 
 ## Despliegue
 
 Ruta primaria:
 
-`main → GitHub Actions → GitHub Pages → sitio estático`
+`main → GitHub Actions → GitHub Pages`
 
 URL:
 
 `https://eliasmartinezcultural-glitch.github.io/fabrica-chanar/`
 
-El run v10 se dispara automáticamente con cada push. El estado se conserva en `data/deployment-manifest.json` y debe comprobarse antes de declarar una versión desplegada.
+No se declara un despliegue verificado hasta comprobar el workflow y, cuando sea posible, la carga real del sitio.
 
-## Núcleo de datos
+## Prioridad actual
 
-- `data/chanar-core.json`: registros territoriales documentados.
-- `data/sources.json`: fuentes y procedencia.
-- `data/media-manifest.json`: derechos y procedencia multimedia.
-- `data/map-layers.json`: capas cartográficas.
-- `data/deployment-manifest.json`: ruta y estado de despliegue.
+**Producir el primer ciclo real.**
 
-## Arquitectura
+No agregar funciones por acumulación. Cada cambio debe hacer una de estas tres cosas:
 
-```text
-index.html          cabina interna
-style.css           sistema visual base
-automation.css      producción rápida
-v5.css              dashboard, activos, proyectos y atlas
-v6.css              banco multimedia y auditoría
-v7.css              puesta en marcha
-v8.css              línea de producción
-v9.css              tablero de órdenes
-v10.css             estilos de control de entrega
-app.js              motor de fabricación
-v6.js               memoria/procedencia
-v7.js               readiness y despliegue
-v8.js               registros y primera línea de producción
-v9.js               órdenes productivas + activación v10
-v10.js              control de entrega y expediente
-
-.github/workflows/
-  pages.yml         despliegue automático
-
-data/
-  chanar-core.json
-  sources.json
-  media-manifest.json
-  map-layers.json
-  deployment-manifest.json
-```
-
-## Flujo operativo actual
-
-```text
-ABRIR FÁBRICA
-     ↓
-CONTROL DE PUESTA EN MARCHA
-     ↓
-CARGA AUTOMÁTICA DE MEMORIA
-     ↓
-ELEGIR REGISTRO
-     ↓
-CREAR ORDEN
-     ↓
-DEFINIR DESTINATARIO + PRODUCTOS
-     ↓
-INVESTIGAR / CARGAR FUENTES
-     ↓
-CARGAR FOTO PROPIA / ACTIVO CON DERECHOS
-     ↓
-FABRICAR
-     ↓
-REVISAR
-     ↓
-CONTROLAR DERECHOS Y FORMATO
-     ↓
-EXPORTAR
-     ↓
-ARCHIVAR
-     ↓
-CERRAR ORDEN
-```
-
-## Estado real
-
-Fábrica Chañar ya tiene un circuito operativo completo a nivel de navegador: memoria territorial → registro → orden → fabricación → control → expediente. La persistencia sigue siendo local al navegador y todavía falta probar el ciclo con un encargo real y activos propios.
-
-La prioridad siguiente es **hacer el primer ciclo completo con material real**, medir tiempos y convertir las tareas repetidas en automatizaciones. No agregar funciones por acumulación: cada nueva versión debe reducir trabajo, errores o tiempo de producción.
+1. mejorar la pieza;
+2. reducir trabajo de Elías;
+3. reducir errores o riesgos.
