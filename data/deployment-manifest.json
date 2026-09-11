@@ -1,5 +1,5 @@
 {
-  "version":"18.0.0",
+  "version":"18.1.0",
   "modo":"produccion",
   "plataforma":"GitHub Pages",
   "fuente":"main",
@@ -7,7 +7,7 @@
   "url":"https://eliasmartinezcultural-glitch.github.io/fabrica-chanar/",
   "metodologia":"auditar -> reparar -> probar -> desarrollar -> volver a probar -> desplegar -> verificar",
   "estado":"despliegue_pendiente_de_verificacion",
-  "cambios":"Auditoria funcional y de interfaz: se eliminaron rutas duplicadas, se plegaron las opciones tecnicas, el Taller Rapido produce y guarda automaticamente, Modo Venta recupera piezas sin romper el estado y las descargas respetan el control de derechos de imagen.",
+  "cambios":"Auditoria profunda de UX y funcionamiento: rutas duplicadas eliminadas, controles tecnicos plegados, decoracion ornamental reducida, Taller Rapido con produccion y guardado automaticos, series editoriales separadas como accion avanzada y Modo Venta estabilizado.",
   "limpieza":"Los modulos historicos v8-v16 no se cargan en la cabina activa hasta una integracion deliberada.",
   "nota":"No se declara terminado un despliegue hasta comprobar Actions y la carga real del sitio."
 }
