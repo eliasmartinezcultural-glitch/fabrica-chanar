@@ -11,48 +11,51 @@ Sistema **interno de producción territorial de Ocarina Producciones** para inve
 - **Browser-first:** el núcleo funciona en navegador y evita backend obligatorio.
 - **Sin destrucción silenciosa:** cada salto conserva las capacidades útiles anteriores.
 
-## v5.0 x10 — Sistema operativo territorial
+## v6.0 x10 — Memoria + activos + procedencia
 
-Esta versión es un salto estructural: incorpora una cabina de control sobre cuatro capas conectadas:
+La v6 conserva la fábrica v5 y agrega una capa de control documental para que la información territorial y los recursos multimedia no se mezclen sin trazabilidad.
 
 ```text
-TERRITORIO
+INVESTIGAR
     ↓
-MEMORIA
+REGISTRAR FUENTE
     ↓
-ACTIVOS
+CLASIFICAR DERECHOS
     ↓
-PRODUCTOS / PROYECTOS
+ACTIVO MULTIMEDIA
+    ↓
+REGISTRO / ATLAS
+    ↓
+PRODUCTO
+    ↓
+AUDITORÍA
 ```
 
 ### Capacidades nuevas
 
-- tablero KPI de registros, activos, productos y oportunidades;
-- memoria territorial local persistente en `localStorage`;
-- importación de JSON y CSV desde el navegador;
-- exportación de la memoria completa como JSON;
-- constructor de proyectos internos;
-- radar de oportunidades como hipótesis de investigación, no como datos de mercado inventados;
-- Atlas territorial con Leaflet + OpenStreetMap;
-- carga de GeoJSON y visualización de sus geometrías;
-- popup de atributos territoriales;
-- banco de activos conectado al fabricante de fichas;
-- conservación de la biblioteca de productos existente;
-- fabricación de postales, fichas, guías, infografías y mapas;
-- exportación PNG/JPG e impresión/PDF desde navegador;
-- sistema de fuente declarada y advertencia documental.
+- carga automática al abrir de `data/chanar-core.json` y `data/sources.json`;
+- banco multimedia independiente del catálogo de productos;
+- registro de fotografía, mapa, documento, audio y video;
+- autor/propietario, licencia, URL de origen, atribución y permisos de modificación/comerciales;
+- estados `reutilizable`, `referencia` y `pendiente`;
+- auditoría previa de activos marcados como reutilizables;
+- exportación del manifiesto v6 como JSON;
+- documentación específica de procedencia y derechos;
+- conservación de Atlas, GeoJSON, biblioteca y producción rápida de v5.
+
+### Regla crítica
+
+**Disponible públicamente ≠ libre de reutilizar.**
+
+Si no existe licencia clara o autorización suficiente, el material se conserva como `referencia` o `pendiente` y no debe incorporarse automáticamente a un producto comercial.
 
 ## Núcleo de datos
 
-- `data/chanar-core.json`: estructura base del sistema territorial, deliberadamente sin hechos ficticios.
-- `data/sources.json`: registro inicial de una fuente institucional oficial y su condición de uso.
-- `data/registros.json`: índice histórico del Banco Chañar cuando esté presente.
-
-La incorporación de material público **no significa automáticamente que sea reutilizable**. Para fotografías, mapas, textos y documentos se debe registrar propietario y licencia/condición de uso antes de convertirlos en producto.
-
-## Atlas
-
-El mapa utiliza OpenStreetMap como capa cartográfica y acepta GeoJSON cargado por el equipo. Las coordenadas del territorio no se inventan ni se generan por aproximación: deben entrar mediante datos documentados. La atribución de OpenStreetMap se mantiene visible en el mapa.
+- `data/chanar-core.json`: registros territoriales documentados.
+- `data/sources.json`: fuentes y procedencia de los registros.
+- `data/media-manifest.json`: esquema persistente del banco multimedia.
+- `data/map-layers.json`: registro de capas cartográficas y su procedencia.
+- `data/README-v6.md`: reglas de memoria, medios y cartografía.
 
 ## Arquitectura
 
@@ -61,11 +64,15 @@ index.html          cabina interna
 style.css           sistema visual base
 automation.css      producción rápida
 v5.css              dashboard, activos, proyectos y atlas
-app.js              motor operativo
+v6.css              banco multimedia y auditoría
+app.js              motor de producción v5
+v6.js               capa documental v6
 
 data/
   chanar-core.json
   sources.json
+  media-manifest.json
+  map-layers.json
   registros.json    (si existe en el repositorio)
 
 templates/          modelos de piezas
@@ -82,17 +89,21 @@ REGISTRAR FUENTE
         ↓
 ORDENAR ACTIVO
         ↓
+VERIFICAR DERECHOS
+        ↓
 UBICAR EN ATLAS
         ↓
 FABRICAR
         ↓
-REVISAR
+AUDITAR
         ↓
 EXPORTAR
         ↓
 ARCHIVAR
 ```
 
-## Próximo gran salto
+## Estado real de la v6
 
-La siguiente generación x10 debe convertir el Atlas en un **sistema territorial de capas editables** y separar con mayor rigor tres almacenes: **datos estructurados, biblioteca multimedia y catálogo de productos**, incorporando además manifiestos de licencia y procedencia para cada recurso. Eso permitirá alimentar la fábrica con material real de San Patricio del Chañar sin confundir fuente, propiedad y permiso de reutilización.
+La v6 implementa el banco y la trazabilidad en navegador. Todavía no descarga automáticamente fotografías ni documentos externos, ni presume que una fuente pública permita reutilización. Los archivos binarios se incorporarán en futuras etapas solo cuando su procedencia y condiciones de uso estén documentadas.
+
+El siguiente salto fuerte es convertir el Atlas en un sistema de **capas editables y exportables**, vincular cada geometría con su fuente y construir el mecanismo de **un registro → postal + ficha + mapa + guía + archivo**, con auditoría de derechos antes de exportar.
