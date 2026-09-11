@@ -1,41 +1,126 @@
 const PRODUCTS={
- postal:{name:'Postal',desc:'Historia, territorio o turismo',fields:[['title','Título','input','Ej. Un lugar del Chañar'],['subtitle','Bajada','input','Una frase breve'],['body','Texto','textarea','Descripción verificable'],['source','Fuente','input','Institución, archivo o enlace'],['credit','Crédito de imagen','input','Autor / archivo / propia'],['image','Imagen','file','']]},
- ficha:{name:'Ficha local',desc:'Lugar, persona, hecho o patrimonio',fields:[['title','Nombre de la ficha','input','Lugar / persona / institución'],['category','Categoría','select','Lugar|Persona|Institución|Comercio|Patrimonio|Historia|Turismo|Cultura|Rural|Producción|Servicios|Naturaleza'],['body','Descripción','textarea','Información breve y verificable'],['location','Ubicación','input','Solo si está verificada'],['source','Fuente','input','Fuente de la información'],['image','Imagen','file','']]},
- guide:{name:'Guía',desc:'Información práctica ordenada',fields:[['title','Título','input','Ej. Guía territorial'],['intro','Introducción','textarea','Qué encontrará el lector'],['items','Contenido','textarea','Un punto por línea'],['source','Fuentes','textarea','Fuentes utilizadas'],['image','Imagen de portada','file','']]},
- infographic:{name:'Archivo útil',desc:'Infografía, calendario o educativo',fields:[['title','Título','input','Tema'],['headline','Dato principal','input','Solo dato comprobado'],['body','Contenido','textarea','Información y aclaraciones'],['source','Fuente','input','Fuente verificable'],['image','Imagen','file','']]},
- map:{name:'Mapa',desc:'Referencias territoriales',fields:[['title','Título','input','Ej. Atlas Chañar'],['body','Referencias','textarea','Una referencia por línea'],['source','Fuente cartográfica','input','Fuente / fecha'],['note','Nota cartográfica','textarea','Limitaciones y procedencia'],['image','Imagen opcional','file','']]}
+  postal:{name:'Postal',desc:'Una pieza breve y visual',fields:[
+    ['title','Título','input','Ej. La chacra de los abuelos'],
+    ['subtitle','Bajada','input','Una frase breve'],
+    ['body','Texto','textarea','Texto breve y verificable'],
+    ['source','Fuente','input','Archivo, institución, entrevista o enlace'],
+    ['credit','Crédito de imagen','input','Autor / archivo / propia'],
+    ['image','Imagen','file','']
+  ]},
+  ficha:{name:'Ficha local',desc:'Un lugar, persona, institución o hecho',fields:[
+    ['title','Nombre','input','Ej. Biblioteca Popular'],
+    ['category','Tipo','select','Lugar|Persona|Institución|Comercio|Patrimonio|Historia|Turismo|Cultura|Rural|Naturaleza'],
+    ['body','Descripción','textarea','Información breve y verificable'],
+    ['location','Ubicación','input','Solo si está verificada'],
+    ['source','Fuente','input','Archivo, institución, entrevista o enlace'],
+    ['image','Imagen','file','']
+  ]},
+  guide:{name:'Guía',desc:'Información práctica ordenada',fields:[
+    ['title','Título','input','Ej. Guía de un paseo'],
+    ['intro','Introducción','textarea','Qué encontrará el lector'],
+    ['items','Contenido','textarea','Un punto por línea'],
+    ['source','Fuentes','textarea','Fuentes utilizadas'],
+    ['image','Imagen de portada','file','']
+  ]},
+  infographic:{name:'Infografía',desc:'Datos, calendario, cronología o material educativo',fields:[
+    ['title','Título','input','Tema'],
+    ['headline','Dato principal','input','Dato comprobado'],
+    ['body','Contenido','textarea','Información y aclaraciones'],
+    ['source','Fuente','input','Fuente verificable'],
+    ['image','Imagen','file','']
+  ]}
 };
-const TEMPLATES={postal:[['P01','Paisaje'],['P02','Historia'],['P03','Turismo'],['P04','Persona'],['P05','Efeméride']],map:[['M01','General'],['M02','Turismo'],['M03','Histórico'],['M04','Cultural'],['M05','Rural']],ficha:[['F01','Lugar'],['F02','Persona'],['F03','Institución'],['F04','Comercio'],['F05','Patrimonio']],guide:[['G01','Turismo'],['G02','Historia'],['G03','Cultura'],['G04','Paseo'],['G05','Familia']],infographic:[['A01','Calendario'],['A02','Directorio'],['A03','Cronología'],['A04','Infografía'],['A05','Documento educativo']]};
-const KEY='fabrica-chanar-v5-memory';
-const $=s=>document.querySelector(s),clean=v=>typeof v==='string'?v.trim():'',esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
-let state={type:'postal',template:'P01',data:{},image:null,recordId:null};
-let memory={records:[],assets:[],projects:[],opportunities:[],geojson:null};
-let map=null,geoLayer=null;
-function loadMemory(){try{const x=JSON.parse(localStorage.getItem(KEY)||'{}');memory={...memory,...x};}catch{}}
-function saveMemory(){localStorage.setItem(KEY,JSON.stringify(memory));updateKPIs();renderAssets();renderProjects();renderMap();}
-function updateKPIs(){const products=getLibrary();$('#kpiRecords').textContent=memory.records.length;$('#kpiAssets').textContent=memory.assets.length;$('#kpiProducts').textContent=products.length;$('#kpiOpps').textContent=memory.opportunities.length;$('#libraryCount').textContent=products.length;}
-function renderProducts(){const el=$('#productGrid');if(!el)return;el.innerHTML=Object.entries(PRODUCTS).map(([id,p])=>`<button type="button" class="product-btn ${id===state.type?'active':''}" data-product="${id}"><strong>${p.name}</strong><small>${p.desc}</small></button>`).join('');el.querySelectorAll('[data-product]').forEach(b=>b.onclick=()=>{state={type:b.dataset.product,template:TEMPLATES[b.dataset.product]?.[0]?.[0]||'',data:{},image:null,recordId:null};renderAll();});}
-function renderForm(){const form=$('#editorForm'),templates=TEMPLATES[state.type]||[];form.innerHTML=(templates.length?`<div class="field"><label for="field-template">Plantilla</label><select id="field-template">${templates.map(([id,n])=>`<option value="${id}" ${id===state.template?'selected':''}>${id} — ${n}</option>`).join('')}</select></div>`:'')+PRODUCTS[state.type].fields.map(([key,label,kind,ph])=>kind==='file'?`<div class="field"><label>${label}</label><input class="image-input" id="field-${key}" type="file" accept="image/*"><div class="hint">La imagen queda en este navegador.</div></div>`:kind==='select'?`<div class="field"><label for="field-${key}">${label}</label><select id="field-${key}">${ph.split('|').map(x=>`<option>${esc(x)}</option>`).join('')}</select></div>`:`<div class="field"><label for="field-${key}">${label}</label>${kind==='textarea'?`<textarea id="field-${key}" placeholder="${esc(ph)}"></textarea>`:`<input id="field-${key}" placeholder="${esc(ph)}">`}</div>`).join('');form.querySelectorAll('input:not([type=file]),textarea,select').forEach(i=>{const k=i.id.replace('field-','');i.value=state.data[k]??'';i.oninput=()=>{if(k==='template')state.template=i.value;else state.data[k]=i.value;renderPreview();updateSource();};});const file=$('#field-image');if(file)file.onchange=e=>{const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{state.image=r.result;renderPreview();};r.readAsDataURL(f);};}
-function renderPreview(){const d=state.data;let body=state.type==='guide'?`<ul>${(d.items||'').split('\n').filter(clean).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:state.type==='map'?`<div class="mapbox"><div class="schematic-label">MAPA · geometría real solo desde datos cargados</div><div class="north">N</div><div class="road r1"></div><div class="road r2"></div><div class="river"></div></div>`:`<p>${esc(d.body||d.intro||d.headline||'Completá el contenido para comenzar.')}</p>`;const img=state.image?`<img src="${state.image}" alt="Imagen de la pieza">`:'';$('#canvasPreview').innerHTML=`<article class="piece ${state.type} template-${esc(state.template)}"><div class="piece-image">${img}</div><div class="piece-content"><div class="piece-kicker">SAN PATRICIO DEL CHAÑAR · ${esc(state.template||'')}</div><h3>${esc(d.title||'Título de la pieza')}</h3>${d.subtitle?`<div class="piece-subtitle">${esc(d.subtitle)}</div>`:''}${body}${d.location?`<div class="piece-meta">Ubicación: ${esc(d.location)}</div>`:''}${d.note?`<div class="piece-note">${esc(d.note)}</div>`:''}${state.recordId?`<div class="piece-meta">Registro: ${esc(state.recordId)}</div>`:''}<div class="piece-source">${clean(d.source)?`Fuente declarada: ${esc(d.source)}`:'Fuente pendiente'}</div><div class="piece-brand">Fábrica Chañar · herramienta interna Ocarina Producciones</div></div></article>`;}
-function updateSource(){const ok=clean(state.data.source);$('#sourceStatus').textContent=ok?'Fuente declarada. Verificá correspondencia y condiciones de uso.':'Fuente pendiente: no presentar la pieza como documentada.';$('#sourceStatus').className=ok?'source-ok':'source-pending';}
-function getLibrary(){try{const x=JSON.parse(localStorage.getItem('fabrica-chanar-library')||'[]');return Array.isArray(x)?x:[]}catch{return[]}}
-function saveItem(item){try{const arr=getLibrary();arr.unshift(item);localStorage.setItem('fabrica-chanar-library',JSON.stringify(arr.slice(0,100)));return true}catch{return false}}
-function save(){const ok=saveItem({id:`pieza-${Date.now()}`,type:state.type,template:state.template,data:{...state.data},image:state.image,recordId:state.recordId,created:new Date().toISOString()});if(ok){updateKPIs();renderLibrary();$('#libraryPanel')?.classList.remove('hidden');}}
-function renderLibrary(){const el=$('#libraryList');if(!el)return;const arr=getLibrary();el.innerHTML=arr.length?arr.map(x=>`<div class="library-card"><strong>${esc(x.data?.title||PRODUCTS[x.type]?.name)}</strong><p>${esc(PRODUCTS[x.type]?.name||x.type)} · ${esc(x.template||'')} · ${new Date(x.created).toLocaleDateString('es-AR')}</p><button data-load="${esc(x.id)}">Abrir</button></div>`).join(''):'<p>Biblioteca vacía.</p>';el.querySelectorAll('[data-load]').forEach(b=>b.onclick=()=>{const x=arr.find(y=>y.id===b.dataset.load);if(x){state={type:x.type,template:x.template,data:x.data||{},image:x.image||null,recordId:x.recordId||null};renderAll();$('#libraryPanel')?.classList.add('hidden');}});}
-function makeVariant(type){const d=state.data,base={title:d.title||'Sin título',source:d.source||'',image:state.image};if(type==='postal')return {...base,subtitle:d.subtitle||'',body:d.body||d.intro||d.headline||'',credit:d.credit||''};if(type==='ficha')return {...base,category:d.category||'Lugar',body:d.body||d.intro||d.headline||'',location:d.location||''};if(type==='guide')return {...base,intro:d.intro||d.body||'',items:d.items||d.body||''};return {...base,headline:d.headline||d.title||'',body:d.body||d.intro||''};}
-function batch(){const selected=[...document.querySelectorAll('.batch-grid input:checked')].map(x=>x.value);let n=0;selected.forEach((type,i)=>{if(saveItem({id:`lote-${Date.now()}-${i}`,type,template:TEMPLATES[type]?.[0]?.[0]||'',data:makeVariant(type),image:state.image,recordId:state.recordId,created:new Date().toISOString(),batch:true}))n++;});updateKPIs();renderLibrary();$('#batchStatus').textContent=`Colección creada: ${n} piezas.`;}
-async function exportImage(kind){if(typeof html2canvas!=='function')return alert('Motor de exportación no disponible.');const c=await html2canvas($('#canvasPreview'),{scale:2,useCORS:true,backgroundColor:null});const a=document.createElement('a');a.download=`fabrica-chanar-${Date.now()}.${kind}`;a.href=c.toDataURL(kind==='jpg'?'image/jpeg':'image/png',.94);a.click();}
-function share(){try{const p={type:state.type,template:state.template,data:state.data,recordId:state.recordId};location.hash='pieza='+btoa(unescape(encodeURIComponent(JSON.stringify(p))));$('#btnShare').textContent='Enlace actualizado';}catch{alert('No se pudo compartir.');}}
-function recordToState(r){state={type:'ficha',template:'F01',data:{title:r.nombre||'',category:r.categoria||'Lugar',body:r.resumen||'',location:r.direccion||'',source:(r.fuentes||[]).join(' · ')},image:null,recordId:r.id||null};renderAll();window.scrollTo({top:0,behavior:'smooth'});}
-function renderAssets(){const el=$('#assetTable');if(!el)return;if(!memory.records.length){el.innerHTML='<p class="v5-muted">No hay registros todavía. Importá un JSON/CSV propio o documentado. La base estructural no contiene hechos inventados.</p>';return}el.innerHTML=`<table class="v5-table"><thead><tr><th>ID</th><th>Nombre</th><th>Tipo</th><th>Estado</th><th>Acción</th></tr></thead><tbody>${memory.records.map(r=>`<tr><td>${esc(r.id)}</td><td><strong>${esc(r.nombre||'Sin nombre')}</strong></td><td>${esc(r.tipo||'')}</td><td><span class="v5-pill">${esc(r.estado||'pendiente')}</span></td><td><button class="v5-btn bank-use" data-asset="${esc(r.id)}">Fabricar</button></td></tr>`).join('')}</tbody></table>`;el.querySelectorAll('[data-asset]').forEach(b=>b.onclick=()=>{const r=memory.records.find(x=>x.id===b.dataset.asset);if(r)recordToState(r);});}
-function renderProjects(){const el=$('#projectList');if(!el)return;el.innerHTML=memory.projects.length?memory.projects.map(p=>`<div class="v5-project"><h3>${esc(p.name)}</h3><p>${esc(p.goal||'Sin objetivo')}</p><div class="v5-progress"><i style="width:${Number(p.progress)||0}%"></i></div><small>${Number(p.progress)||0}% · ${new Date(p.created).toLocaleDateString('es-AR')}</small></div>`).join(''):'<p class="v5-muted">Todavía no hay proyectos internos.</p>';}
-function createProject(){const name=clean($('#projectName').value);if(!name){$('#projectStatus').textContent='Escribí un nombre.';return}memory.projects.unshift({id:`PRO-${Date.now()}`,name,goal:clean($('#projectGoal').value),progress:0,created:new Date().toISOString()});$('#projectName').value='';$('#projectGoal').value='';$('#projectStatus').textContent='Proyecto creado en memoria local.';saveMemory();}
-function initMap(){if(typeof L==='undefined')return;map=L.map('v5Map').setView([-38.5,-68.0],8);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors',maxZoom:19}).addTo(map);renderMap();}
-function renderMap(){if(!map)return;if(geoLayer){geoLayer.remove();geoLayer=null}if(!memory.geojson)return;try{geoLayer=L.geoJSON(memory.geojson,{onEachFeature:(f,l)=>{const p=f.properties||{};l.bindPopup(`<strong>${esc(p.nombre||p.name||'Registro territorial')}</strong><br>${esc(p.descripcion||p.description||'')}`);}}).addTo(map);const b=geoLayer.getBounds();if(b.isValid())map.fitBounds(b.pad(.12));}catch{}}
-function importJSON(obj){if(obj.type==='FeatureCollection'||obj.type==='Feature'){memory.geojson=obj;memory.records.push(...(obj.features||[]).map((f,i)=>({id:f.properties?.id||`GEO-${Date.now()}-${i}`,nombre:f.properties?.nombre||f.properties?.name||'Geometría territorial',tipo:'lugar',estado:'fuente_externa',resumen:f.properties?.descripcion||f.properties?.description||'',fuentes:f.properties?.fuentes||[]})));return}if(Array.isArray(obj))memory.records.push(...obj);else{if(Array.isArray(obj.records))memory.records.push(...obj.records);if(Array.isArray(obj.registros))memory.records.push(...obj.registros);if(Array.isArray(obj.assets))memory.assets.push(...obj.assets);if(Array.isArray(obj.projects))memory.projects.push(...obj.projects);if(Array.isArray(obj.oportunidades))memory.opportunities.push(...obj.oportunidades);if(obj.geojson)memory.geojson=obj.geojson;}}
-function importCSV(text){const lines=text.split(/\r?\n/).filter(x=>x.trim());if(lines.length<2)return;const heads=lines[0].split(',').map(x=>x.trim());lines.slice(1).forEach((line,i)=>{const vals=line.split(',').map(x=>x.trim());const r={id:`CSV-${Date.now()}-${i}`};heads.forEach((h,j)=>r[h]=vals[j]??'');memory.records.push(r);});}
-function handleImport(file){const reader=new FileReader();reader.onload=()=>{try{if(file.name.toLowerCase().endsWith('.csv'))importCSV(reader.result);else importJSON(JSON.parse(reader.result));saveMemory();$('#importStatus').textContent=`Importación completada. ${memory.records.length} registros en memoria local.`;}catch{$('#importStatus').textContent='No se pudo leer el archivo. Usá JSON o CSV válido.';}};reader.readAsText(file);}
-function exportMemory(){const blob=new Blob([JSON.stringify(memory,null,2)],{type:'application/json'}),a=document.createElement('a');a.download=`fabrica-chanar-memoria-${new Date().toISOString().slice(0,10)}.json`;a.href=URL.createObjectURL(blob);a.click();URL.revokeObjectURL(a.href);}
-function loadShare(){if(!location.hash.startsWith('#pieza='))return;try{const x=JSON.parse(decodeURIComponent(escape(atob(location.hash.slice(7)))));if(PRODUCTS[x.type])state={type:x.type,template:x.template||TEMPLATES[x.type]?.[0]?.[0]||'',data:x.data||{},image:null,recordId:x.recordId||null};}catch{}}
-function renderAll(){renderProducts();renderForm();renderPreview();updateSource();}
-document.addEventListener('DOMContentLoaded',()=>{loadMemory();loadShare();renderAll();renderAssets();renderProjects();renderLibrary();updateKPIs();initMap();$('#btnGenerate').onclick=renderPreview;$('#btnSave').onclick=save;$('#btnShare').onclick=share;$('#btnBatch').onclick=batch;$('#btnPng').onclick=()=>exportImage('png');$('#btnJpg').onclick=()=>exportImage('jpg');$('#btnPrint').onclick=()=>window.print();$('#btnLibrary').onclick=()=>$('#libraryPanel').classList.remove('hidden');$('#btnCloseLibrary')?.addEventListener('click',()=>$('#libraryPanel').classList.add('hidden'));$('#btnImport').onclick=()=>$('#dataFile').click();$('#dataFile').onchange=e=>{const f=e.target.files?.[0];if(f)handleImport(f);e.target.value='';};$('#btnExport').onclick=exportMemory;$('#btnProject').onclick=createProject;$('#btnResetLocal').onclick=()=>{if(confirm('Borrar memoria territorial local y proyectos? Esta acción no borra archivos del repositorio.')){localStorage.removeItem(KEY);memory={records:[],assets:[],projects:[],opportunities:[],geojson:null};saveMemory();$('#importStatus').textContent='Memoria local limpiada.';}};});
+
+const KEY='fabrica-chanar-simple-v1';
+const $=s=>document.querySelector(s);
+const clean=v=>typeof v==='string'?v.trim():'';
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+let state={type:'ficha',data:{},image:null};
+
+function library(){try{const x=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(x)?x:[]}catch{return[]}}
+function setLibrary(items){localStorage.setItem(KEY,JSON.stringify(items.slice(0,100)));updateLibraryCount()}
+function updateLibraryCount(){const n=library().length;$('#libraryCount').textContent=n}
+
+function renderProducts(){
+  $('#productGrid').innerHTML=Object.entries(PRODUCTS).map(([id,p])=>`<button type="button" class="product-btn ${id===state.type?'active':''}" data-product="${id}"><strong>${p.name}</strong><small>${p.desc}</small></button>`).join('');
+  document.querySelectorAll('[data-product]').forEach(b=>b.onclick=()=>{state={type:b.dataset.product,data:{},image:null};renderForm();renderPreview();setStatus('Producto seleccionado.');renderProducts()});
+}
+
+function renderForm(){
+  const p=PRODUCTS[state.type];
+  $('#editorForm').innerHTML=p.fields.map(([key,label,kind,ph])=>{
+    if(kind==='file')return `<div class="field"><label>${label}</label><input id="field-${key}" type="file" accept="image/*"><div class="hint">La imagen se usa solo para esta pieza.</div></div>`;
+    if(kind==='select')return `<div class="field"><label for="field-${key}">${label}</label><select id="field-${key}">${ph.split('|').map(x=>`<option>${esc(x)}</option>`).join('')}</select></div>`;
+    return `<div class="field"><label for="field-${key}">${label}</label>${kind==='textarea'?`<textarea id="field-${key}" placeholder="${esc(ph)}"></textarea>`:`<input id="field-${key}" placeholder="${esc(ph)}">`}</div>`;
+  }).join('');
+  $('#editorForm').querySelectorAll('input:not([type=file]),textarea,select').forEach(el=>{
+    const key=el.id.replace('field-','');el.value=state.data[key]??'';
+    el.oninput=()=>{state.data[key]=el.value;renderPreview()};
+  });
+  const file=$('#field-image');
+  if(file)file.onchange=e=>{const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{state.image=r.result;renderPreview()};r.readAsDataURL(f)};
+}
+
+function bodyHTML(){
+  const d=state.data;
+  if(state.type==='guide')return `<ul>${(d.items||'').split(/\r?\n/).filter(clean).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
+  return `<p>${esc(d.body||d.intro||d.headline||'Completá el contenido para comenzar.')}</p>`;
+}
+
+function renderPreview(){
+  const d=state.data;
+  const image=state.image?`<img src="${state.image}" alt="Imagen de la pieza">`:'';
+  const category=state.type==='ficha'&&d.category?`<div class="piece-meta">${esc(d.category)}${d.location?` · ${esc(d.location)}`:''}</div>`:'';
+  $('#canvasPreview').innerHTML=`<article class="piece ${state.type}">
+    <div class="piece-image">${image}</div>
+    <div class="piece-content">
+      <div class="piece-kicker">OCARINA PRODUCCIONES · ${esc(PRODUCTS[state.type].name).toUpperCase()}</div>
+      <h3>${esc(d.title||'Título de la pieza')}</h3>
+      ${d.subtitle?`<div class="piece-subtitle">${esc(d.subtitle)}</div>`:''}
+      ${d.headline?`<div class="piece-headline">${esc(d.headline)}</div>`:''}
+      ${category}
+      ${bodyHTML()}
+      ${d.source?`<div class="piece-source"><strong>Fuente:</strong> ${esc(d.source)}</div>`:'<div class="piece-source pending"><strong>Fuente:</strong> pendiente</div>'}
+      ${d.credit?`<div class="piece-credit">Imagen: ${esc(d.credit)}</div>`:''}
+      <div class="piece-brand">Fábrica Chañar · pieza de producción</div>
+    </div>
+  </article>`;
+}
+
+function validate(){
+  const d=state.data;
+  if(!clean(d.title)){setStatus('Falta el título.');return false}
+  const text=state.type==='guide'?clean(d.intro)||clean(d.items):clean(d.body)||clean(d.headline);
+  if(!text){setStatus('Falta contenido.');return false}
+  return true;
+}
+function setStatus(msg){$('#status').textContent=msg||''}
+
+function save(){
+  if(!validate())return;
+  const item={id:'pieza-'+Date.now(),type:state.type,data:{...state.data},image:state.image,created:new Date().toISOString()};
+  setLibrary([item,...library()]);setStatus('Pieza guardada en la biblioteca local.');
+}
+function openLibrary(){
+  const arr=library();
+  $('#libraryList').innerHTML=arr.length?arr.map(x=>`<div class="library-card"><div><strong>${esc(x.data?.title||PRODUCTS[x.type]?.name)}</strong><small>${esc(PRODUCTS[x.type]?.name||x.type)} · ${new Date(x.created).toLocaleDateString('es-AR')}</small></div><div class="library-buttons"><button data-open="${x.id}">Abrir</button><button data-delete="${x.id}">Eliminar</button></div></div>`).join(''):'<p class="empty">Todavía no guardaste ninguna pieza.</p>';
+  $('#libraryPanel').classList.remove('hidden');
+  $('#libraryList').querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{const x=library().find(y=>y.id===b.dataset.open);if(!x)return;state={type:x.type,data:x.data||{},image:x.image||null};renderProducts();renderForm();renderPreview();$('#libraryPanel').classList.add('hidden');setStatus('Pieza abierta.')});
+  $('#libraryList').querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>{setLibrary(library().filter(x=>x.id!==b.dataset.delete));openLibrary()});
+}
+async function exportImage(kind){
+  if(!validate())return;
+  if(typeof html2canvas!=='function'){setStatus('No está disponible el motor de exportación.');return}
+  const canvas=await html2canvas($('#canvasPreview'),{scale:2,useCORS:true,backgroundColor:'#f4f0e7'});
+  const a=document.createElement('a');a.download=`fabrica-chanar-${Date.now()}.${kind}`;a.href=canvas.toDataURL(kind==='jpg'?'image/jpeg':'image/png',.94);a.click();setStatus(`Pieza exportada como ${kind.toUpperCase()}.`)
+}
+
+$('#btnGenerate').onclick=()=>{if(validate()){renderPreview();setStatus('Pieza generada. Revisala antes de guardar o entregar.')}};
+$('#btnSave').onclick=save;
+$('#btnPng').onclick=()=>exportImage('png');
+$('#btnJpg').onclick=()=>exportImage('jpg');
+$('#btnPrint').onclick=()=>{if(validate())window.print()};
+$('#btnLibrary').onclick=openLibrary;
+$('#btnCloseLibrary').onclick=()=>$('#libraryPanel').classList.add('hidden');
+
+renderProducts();renderForm();renderPreview();updateLibraryCount();
