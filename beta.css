@@ -1,0 +1,49 @@
+/* FÁBRICA CHAÑAR BETA — minimal interface + pixel-art editorial language */
+:root{--px-ink:#18271f;--px-paper:#f4e7c9;--px-sand:#c9aa72;--px-rust:#a34f2f;--px-night:#111914;--px-line:#6e5737}
+body.beta-mode{background:#d7c49e;background-image:radial-gradient(#18271f16 1px,transparent 1px);background-size:6px 6px}
+.beta-mode .topbar{height:64px;background:var(--px-ink);border-bottom:4px solid var(--px-sand);box-shadow:0 5px 0 #111914}
+.beta-mode .brand-mark{border-radius:4px;width:38px;height:38px;background:var(--px-rust);border:3px solid var(--px-paper);box-shadow:3px 3px 0 #111914;font-family:monospace}
+.beta-mode .internal-badge{display:none}
+.beta-mode .app-shell{max-width:1180px;padding:22px}
+.beta-mode .hero{padding:12px 2px 20px;text-align:center}
+.beta-mode .hero .eyebrow{color:var(--px-rust);font-family:monospace}
+.beta-mode .hero h1{font-family:monospace;font-weight:900;text-transform:uppercase;letter-spacing:-.06em;text-shadow:4px 4px 0 #b99a62;font-size:clamp(34px,6vw,72px)}
+.beta-mode .lead{margin:0 auto;max-width:650px;font-family:monospace;font-size:13px;line-height:1.55;color:#443b2d}
+.beta-mode .hero-rule{justify-content:center;font-family:monospace;font-size:8px}
+.beta-mode .workspace{grid-template-columns:300px 1fr;gap:14px}
+.beta-mode .controls,.beta-mode .preview-panel{border:3px solid var(--px-ink);border-radius:5px;box-shadow:6px 6px 0 #6e573755;background:var(--px-paper)}
+.beta-mode .controls{padding:14px}
+.beta-mode .step{display:none}
+.beta-mode #templateGrid,.beta-mode #editorForm{display:none}
+.beta-mode .product-grid{grid-template-columns:1fr;gap:7px;margin:0}
+.beta-mode .product-btn{min-height:55px;border:3px solid var(--px-ink);border-radius:3px;background:#fff4d9;font-family:monospace;text-transform:uppercase;box-shadow:3px 3px 0 #6e5737;font-size:12px}
+.beta-mode .product-btn.active{background:var(--px-sand);border-color:var(--px-ink);box-shadow:3px 3px 0 var(--px-ink);transform:translate(1px,1px)}
+.beta-mode .product-btn small{font-family:system-ui;text-transform:none;font-size:9px;color:#554a39}
+.beta-mode .actions{display:grid;grid-template-columns:1fr;gap:7px}
+.beta-mode .actions button{border:3px solid var(--px-ink);border-radius:3px;font-family:monospace;text-transform:uppercase;box-shadow:3px 3px 0 #6e5737}
+.beta-mode .primary{background:var(--px-rust)}
+.beta-mode .secondary{background:#e4d4b1}
+.beta-mode .preview-panel{padding:14px}
+.beta-mode .preview-head{margin-bottom:9px}
+.beta-mode .preview-head h2{font-family:monospace;text-transform:uppercase;font-size:18px}
+.beta-mode .export-actions button{border:3px solid var(--px-ink);border-radius:3px;background:#fff4d9;font-family:monospace;font-weight:900;font-size:9px;box-shadow:2px 2px 0 #6e5737}
+.beta-mode .preview-wrap{background:#9c875e;padding:16px;border:3px solid #6e5737;border-radius:3px;min-height:650px}
+.beta-mode .piece{border:5px solid var(--px-ink);box-shadow:8px 8px 0 #111914;image-rendering:pixelated;background:var(--px-paper)}
+.beta-mode .piece:before{content:'';position:absolute;inset:0;pointer-events:none;z-index:20;background:repeating-linear-gradient(0deg,transparent 0 3px,#18271f0d 3px 4px),repeating-linear-gradient(90deg,transparent 0 3px,#18271f08 3px 4px);mix-blend-mode:multiply}
+.beta-mode .piece-image{height:300px;image-rendering:pixelated}
+.beta-mode .piece-image img{image-rendering:pixelated;filter:saturate(.9) contrast(1.18) sepia(.12)}
+.beta-mode .image-overlay{background:linear-gradient(180deg,#11191400 35%,#111914c9 100%)}
+.beta-mode .photo-stamp{font-family:monospace;border:2px solid #fff4d9;padding:4px 6px;background:#111914b8;left:12px;bottom:12px}
+.beta-mode .piece-content{padding:25px}
+.beta-mode .piece-kicker,.beta-mode .piece-meta,.beta-mode .piece-source,.beta-mode .piece-credit,.beta-mode .piece-brand{font-family:monospace}
+.beta-mode .piece h3{font-family:monospace;font-size:clamp(27px,4vw,43px);letter-spacing:-.05em;text-transform:uppercase;text-shadow:3px 3px 0 #c8a96d}
+.beta-mode .piece-subtitle,.beta-mode .piece p,.beta-mode .piece ul{font-family:monospace;font-size:13px;line-height:1.55}
+.beta-mode .piece-headline{font-family:monospace;border-left:5px solid var(--px-rust);padding-left:10px}
+.beta-mode .piece-brand{border-top:3px solid var(--px-ink)}
+.beta-mode .manifesto,.beta-mode .photo-panel,#atlasPanel{display:none!important}
+.beta-mode footer{font-family:monospace}
+.beta-surprise{display:block;width:100%;margin:0 0 9px;border:3px solid var(--px-ink);border-radius:3px;padding:14px 10px;background:#c9aa72;color:#111914;font-family:monospace;font-weight:900;letter-spacing:.04em;cursor:pointer;box-shadow:4px 4px 0 #6e5737}
+.beta-surprise:hover{transform:translate(1px,1px);box-shadow:2px 2px 0 #6e5737}
+.beta-note{font:9px/1.4 monospace;color:#6e604b;margin:8px 2px 0;text-align:center}
+.beta-mode .status{font-family:monospace;min-height:28px;text-align:center}
+@media(max-width:760px){.beta-mode .workspace{grid-template-columns:1fr}.beta-mode .controls{order:2}.beta-mode .preview-panel{order:1}.beta-mode .preview-wrap{min-height:0;padding:8px}.beta-mode .piece-image{height:230px}.beta-mode .product-grid{grid-template-columns:1fr 1fr}.beta-surprise{grid-column:1/-1}.beta-mode .export-actions{flex-wrap:wrap}}
