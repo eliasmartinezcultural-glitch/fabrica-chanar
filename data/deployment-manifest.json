@@ -1,5 +1,5 @@
 {
-  "version":"17.0.0",
+  "version":"18.0.0",
   "modo":"produccion",
   "plataforma":"GitHub Pages",
   "fuente":"main",
@@ -7,7 +7,7 @@
   "url":"https://eliasmartinezcultural-glitch.github.io/fabrica-chanar/",
   "metodologia":"auditar -> reparar -> probar -> desarrollar -> volver a probar -> desplegar -> verificar",
   "estado":"despliegue_pendiente_de_verificacion",
-  "cambios":"Auditoria de coherencia del taller: se alineo la documentacion con la cabina activa, se agrego lenguaje de pieza local y una ruta minima para foto propia. La experiencia sigue priorizando piezas de Chañar y minima intervencion.",
+  "cambios":"Auditoria funcional y de interfaz: se eliminaron rutas duplicadas, se plegaron las opciones tecnicas, el Taller Rapido produce y guarda automaticamente, Modo Venta recupera piezas sin romper el estado y las descargas respetan el control de derechos de imagen.",
   "limpieza":"Los modulos historicos v8-v16 no se cargan en la cabina activa hasta una integracion deliberada.",
   "nota":"No se declara terminado un despliegue hasta comprobar Actions y la carga real del sitio."
 }
