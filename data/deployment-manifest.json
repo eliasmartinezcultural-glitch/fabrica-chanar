@@ -1,12 +1,13 @@
 {
-  "version":"10.0.0",
+  "version":"11.0.0",
   "modo":"produccion",
   "plataforma":"GitHub Pages",
   "fuente":"main",
   "pipeline":".github/workflows/pages.yml",
   "url":"https://eliasmartinezcultural-glitch.github.io/fabrica-chanar/",
   "regla":"Cada push a main dispara un despliegue del sitio estatico.",
-  "ultimo_run":34621058067,
-  "estado":"despliegue_v10_en_progreso",
-  "nota":"La versión v10 agrega control de entrega y expediente local. No se declara terminado el despliegue hasta comprobar Actions. La aplicación sigue siendo una herramienta interna de Ocarina aunque técnicamente esté publicada en GitHub Pages."
+  "ultimo_run":34621103751,
+  "estado":"despliegue_v11_en_progreso",
+  "cambios":"Centro operativo, bitácora, registro de salidas y medición básica del ciclo de producción.",
+  "nota":"No se declara terminado un despliegue hasta comprobar Actions. La aplicación sigue siendo una herramienta interna de Ocarina aunque técnicamente esté publicada en GitHub Pages."
 }
