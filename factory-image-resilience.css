@@ -1,0 +1,4 @@
+/* FÁBRICA CHAÑAR — RESILIENCIA VISUAL */
+.factory-image-fallback{object-fit:cover!important;display:block!important}
+.factory-preview-fallback{background-image:var(--factory-fallback-image);background-size:cover;background-position:center;background-repeat:no-repeat;min-height:520px}
+.factory-preview-fallback:after{content:'La imagen externa no respondió · la Fábrica mantiene la pieza operativa';position:absolute;left:18px;right:18px;bottom:12px;padding:7px 10px;border-radius:999px;background:rgba(255,250,240,.88);font:700 10px/1.2 Inter,system-ui,sans-serif;letter-spacing:.03em;color:#5a4b3c;text-align:center;box-shadow:0 4px 14px rgba(40,30,20,.08)}
