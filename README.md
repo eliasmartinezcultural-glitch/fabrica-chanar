@@ -12,35 +12,39 @@ Sistema **interno de producción territorial de Ocarina Producciones** para inve
 - **Despliegue simple:** GitHub Pages es la ruta primaria; cada push a `main` intenta publicar el sitio estático mediante Actions.
 - **Sin destrucción silenciosa:** cada salto conserva las capacidades útiles anteriores.
 
-## v7.0 x10 — Puesta en marcha
+## v8.0 x10 — Primera línea de producción real
 
-La v7 cambia el foco: **menos laboratorio, más operación**. Conserva v5/v6 y agrega una capa de readiness y despliegue para poder empezar a usar la fábrica cuanto antes.
+La v8 cambia otra vez el centro de gravedad: **la fábrica ya no espera a estar completa para producir**. Toma automáticamente la memoria estructurada del repositorio, muestra una cola de registros documentados y permite convertir cada registro en una orden de producción.
 
 ```text
-DATOS → FUENTES → DERECHOS → ATLAS → PRODUCTO → CONTROL → DESPLIEGUE
+REGISTRO → FUENTE → ACTIVO → PRODUCTO → ARCHIVO
 ```
 
 ### Capacidades nuevas
 
-- checklist operativo de cinco controles;
-- prueba automática de disponibilidad de los archivos críticos;
-- comprobación de que el motor de exportación está presente;
-- estado persistente del último control local;
-- manifiesto de despliegue en `data/deployment-manifest.json`;
-- workflow automático `.github/workflows/pages.yml` para GitHub Pages;
-- interfaz preparada para trabajar como herramienta diaria, no solamente como demostrador.
+- carga automática de `data/chanar-core.json`, `sources.json`, `media-manifest.json` y `map-layers.json`;
+- sincronización inicial de los registros documentados con el banco de activos local;
+- cola de producción real basada en registros existentes;
+- botón **Producir** que lleva el registro al fabricante actual;
+- incorporación local de fotografía propia de Ocarina;
+- generación rápida de colección desde un registro;
+- exportación de una **orden de producción JSON** con fuentes y control de derechos;
+- separación explícita entre "derechos verificados" y "pendiente de verificación";
+- nueva capa visual v8 sin eliminar v5/v6/v7.
 
-## Despliegue
+## Despliegue verificado
 
-Ruta prevista:
+Ruta:
 
 `main → GitHub Actions → GitHub Pages → sitio estático`
 
-URL prevista del proyecto:
+URL:
 
 `https://eliasmartinezcultural-glitch.github.io/fabrica-chanar/`
 
-El repositorio ya tiene Pages habilitado a nivel de repositorio. La primera ejecución del workflow debe confirmarse en **Actions** antes de considerar el sitio públicamente desplegado. La aplicación sigue siendo una herramienta interna de Ocarina aunque técnicamente esté publicada en Pages.
+El workflow `Deploy Fábrica Chañar` fue ejecutado correctamente en GitHub Actions. El pipeline de Pages incluye checkout, configuración de Pages, carga del artefacto y despliegue mediante `actions/deploy-pages@v4`. El manifiesto `data/deployment-manifest.json` conserva el identificador de la ejecución verificada.
+
+La aplicación sigue siendo una herramienta interna de Ocarina aunque técnicamente esté publicada en GitHub Pages.
 
 ## Núcleo de datos
 
@@ -48,7 +52,7 @@ El repositorio ya tiene Pages habilitado a nivel de repositorio. La primera ejec
 - `data/sources.json`: fuentes y procedencia.
 - `data/media-manifest.json`: derechos y procedencia multimedia.
 - `data/map-layers.json`: capas cartográficas.
-- `data/deployment-manifest.json`: ruta de despliegue.
+- `data/deployment-manifest.json`: ruta y estado de despliegue.
 
 ## Arquitectura
 
@@ -59,9 +63,11 @@ automation.css      producción rápida
 v5.css              dashboard, activos, proyectos y atlas
 v6.css              banco multimedia y auditoría
 v7.css              puesta en marcha
+v8.css              línea de producción
 app.js              motor de producción
 v6.js               memoria/procedencia
 v7.js               readiness y control operativo
+v8.js               cola de producción y órdenes
 
 .github/workflows/
   pages.yml         despliegue automático
@@ -79,19 +85,19 @@ data/
 ```text
 ABRIR FÁBRICA
      ↓
-EJECUTAR CONTROL
+CONTROL DE PUESTA EN MARCHA
      ↓
-INVESTIGAR / CARGAR
+CARGA AUTOMÁTICA DE MEMORIA
      ↓
-REGISTRAR FUENTE
+ELEGIR REGISTRO
      ↓
-ORDENAR ACTIVO
+ORDENAR PRODUCCIÓN
      ↓
-VERIFICAR DERECHOS
+CARGAR FOTO PROPIA / ACTIVO CON DERECHOS
      ↓
-FABRICAR
+FABRICAR FICHA + POSTAL + GUÍA
      ↓
-AUDITAR
+AUDITAR FUENTES Y DERECHOS
      ↓
 EXPORTAR
      ↓
@@ -100,6 +106,6 @@ ARCHIVAR
 
 ## Estado real
 
-La v7 **configura** el pipeline de GitHub Pages, pero no afirma que el primer despliegue haya terminado correctamente hasta comprobar una ejecución exitosa de Actions. No se incorporan servicios pagos ni backend obligatorio.
+La infraestructura ya está desplegada y el primer pipeline de Pages fue verificado como exitoso. La fábrica, sin embargo, todavía no debe considerarse una línea comercial completa: faltan activos audiovisuales propios cargados, auditoría de licencias por activo y un circuito persistente de pedidos/clientes.
 
-El próximo salto debe concentrarse en **hacer dinero/producción con la herramienta**, no en seguir agregando pantallas: carga rápida de datos reales, biblioteca propia de Ocarina, generación de colecciones y primeros productos comerciales verificables.
+La prioridad siguiente no es agregar pantallas por agregar. Es conseguir **el primer producto real terminado**, después la primera colección, y luego repetir el proceso hasta convertirlo en una capacidad productiva estable.
