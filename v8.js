@@ -1,6 +1,7 @@
 (()=>{
 const V8KEY='fabrica-chanar-v8-production';
 const v8={core:null,sources:null,media:null,maps:null,selected:null,checks:{}};
+window.v8=v8;
 const q=s=>document.querySelector(s); const esc8=v=>String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#039;'}[c]));
 function save8(){localStorage.setItem(V8KEY,JSON.stringify({selected:v8.selected,checks:v8.checks}));}
 function load8(){try{Object.assign(v8,JSON.parse(localStorage.getItem(V8KEY)||'{}'));}catch{}}
