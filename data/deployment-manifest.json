@@ -1,0 +1,11 @@
+{
+  "version":"7.0.0",
+  "modo":"produccion",
+  "plataforma":"GitHub Pages",
+  "fuente":"main",
+  "pipeline":".github/workflows/pages.yml",
+  "url_prevista":"https://eliasmartinezcultural-glitch.github.io/fabrica-chanar/",
+  "regla":"Cada push a main dispara un despliegue del sitio estatico.",
+  "estado":"pipeline configurado; confirmar ejecucion en Actions",
+  "nota":"La activacion efectiva de Pages depende de la configuracion de Pages del repositorio y del primer workflow exitoso."
+}
