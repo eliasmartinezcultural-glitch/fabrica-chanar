@@ -1,4 +1,4 @@
-/* FÁBRICA CHAÑAR — CURADURÍA DE PIEZAS v3
+/* FÁBRICA CHAÑAR — CURADURÍA DE PIEZAS v4
    Principio: no vendemos diseños genéricos. Producimos PIEZAS DE CHAÑAR.
    La tecnología automatiza; la identidad nace de la selección, el relato y la curaduría.
    Nunca se declara "limitada", "certificada", "única" u "original" sin una condición real que lo respalde.
@@ -68,12 +68,13 @@
     workshop.innerHTML='<b>FÁBRICA CHAÑAR</b><span>'+meta.workshopLine+'</span><small>PIEZA CURADA LOCALMENTE</small>';
 
     box.appendChild(ribbon);box.appendChild(seal);box.appendChild(info);box.appendChild(mark);box.appendChild(workshop);
+    window.FabricaPiece?.refresh?.();
   }
   function boot(){
     document.addEventListener('fabrica:ready',()=>setTimeout(decorate,20));
     document.addEventListener('fabrica:working',()=>setTimeout(decorate,20));
     ['btnGenerate','btnSave','btnPng','btnJpg','btnPrint'].forEach(id=>document.getElementById(id)?.addEventListener('click',()=>setTimeout(decorate,80)));
-    setInterval(decorate,900);setTimeout(decorate,250);
+    setInterval(decorate,1200);setTimeout(decorate,250);
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
