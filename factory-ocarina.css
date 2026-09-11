@@ -1,0 +1,60 @@
+/* FÁBRICA CHAÑAR — OCARINA VISUAL SYSTEM v1
+   Capa universal, deliberadamente pequeña.
+   No reemplaza estilos de producto: fija ADN común.
+*/
+:root{
+  --oc-paper:#F3EBDD;
+  --oc-bone:#E8DDCC;
+  --oc-ink:#242624;
+  --oc-soft-ink:#5E5B52;
+  --oc-river:#315F67;
+  --oc-deep:#244952;
+  --oc-sand:#C9AD82;
+  --oc-earth:#8A6849;
+  --oc-clay:#A95B43;
+  --oc-vine:#6D3F55;
+  --oc-sage:#69765E;
+  --oc-harvest:#C39445;
+  --oc-coral:#A84F3C;
+  --oc-gold:#D4A14A;
+  --oc-display:Georgia,"Times New Roman",serif;
+  --oc-sans:Inter,"Segoe UI",Arial,sans-serif;
+  --oc-mono:ui-monospace,SFMono-Regular,Consolas,monospace;
+}
+
+/* Identidad: pequeños elementos, nunca decoración masiva. */
+.oc-identity,
+.oc-collection-mark,
+.oc-piece-code,
+.oc-maker-seal{
+  font-family:var(--oc-mono);
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.oc-piece-code{font-size:.58rem;color:var(--oc-soft-ink);}
+.oc-collection-mark{font-size:.62rem;font-weight:700;color:var(--oc-river);}
+.oc-maker-seal{font-size:.55rem;line-height:1.2;color:var(--oc-ink);}
+
+/* Materialidad mínima: una sola intervención visible. */
+.oc-paper-feel{position:relative;}
+.oc-paper-feel::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.035;
+  background-image:repeating-linear-gradient(7deg,transparent 0 3px,rgba(36,38,36,.18) 3px 3.5px,transparent 3.5px 8px);
+  mix-blend-mode:multiply;
+}
+
+/* Señal de objeto coleccionable. No grita: firma. */
+.oc-collector-line{font-family:var(--oc-sans);font-size:.62rem;color:var(--oc-soft-ink);}
+.oc-number-stamp{display:inline-flex;align-items:center;gap:.35rem;padding:.18rem .38rem;border:1px solid currentColor;border-radius:999px;font-family:var(--oc-mono);font-size:.58rem;letter-spacing:.06em;}
+
+/* Regla universal de aire. */
+.oc-air{padding:clamp(5%,24px,9%);}
+
+@media print{
+  .oc-paper-feel::after{opacity:.02;}
+}
