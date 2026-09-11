@@ -1,6 +1,6 @@
-/* FÁBRICA CHAÑAR — NÚCLEO CENTRAL v3
-   Una sola mecánica: elegir producto → fabricar → revisar → biblioteca.
-   La diferencia entre productos vive en el motor editorial, no en la interfaz.
+/* FÁBRICA CHAÑAR — NÚCLEO CENTRAL v4
+   Una sola mecánica visible: elegir producto → fabricar → revisar.
+   Todo lo demás queda detrás de la interfaz.
 */
 (function(){
   const PRODUCTS={
@@ -9,16 +9,49 @@
     guide:{icon:'⌁',name:'Guía breve',desc:'Pieza útil para recorrer y descubrir.',hint:'Apertura · recorrido · hitos · cierre'},
     infographic:{icon:'◈',name:'Infografía',desc:'Idea o dato local convertido en imagen.',hint:'Titular · dato · síntesis · fuente'}
   };
-  const FORMATS={print:{name:'Impresión',size:'A5 · 148 × 210 mm',ratio:'A5'},vertical:{name:'Digital vertical',size:'1080 × 1350',ratio:'4:5'},square:{name:'Cuadrada',size:'1200 × 1200',ratio:'1:1'},horizontal:{name:'Horizontal',size:'1600 × 1000',ratio:'8:5'}};
-  let active='postal',format='auto';const $=s=>document.querySelector(s);
+  const FORMATS={print:{name:'Impresión',size:'A5 · 148 × 210 mm'},vertical:{name:'Digital vertical',size:'1080 × 1350'},square:{name:'Cuadrada',size:'1200 × 1200'},horizontal:{name:'Horizontal',size:'1600 × 1000'}};
+  let active='postal',format='auto';
+  const $=s=>document.querySelector(s);
   function contract(id){return window.FabricaEngine?.contracts?.[id]||{identity:'pieza editorial',defaultFormat:'print',formats:Object.keys(FORMATS)}}
   function productHTML(){return Object.entries(PRODUCTS).map(([id,p])=>{const c=contract(id);return`<button class="central-product ${id===active?'is-active':''}" data-product="${id}" type="button"><span class="central-product-icon">${p.icon}</span><span class="central-product-copy"><strong>${p.name}</strong><small>${p.desc}</small><em>${p.hint}</em><i>${c.defaultFormat==='print'?'A5':c.defaultFormat==='vertical'?'4:5':'formato editorial'}</i></span><span class="central-check">✓</span></button>`}).join('')}
-  function render(){const controls=$('.controls');if(!controls)return;controls.querySelector('.central-shell')?.remove();const shell=document.createElement('section');shell.className='central-shell';shell.innerHTML=`<div class="central-intro"><span class="central-kicker">NÚCLEO DE PRODUCCIÓN</span><h2>¿Qué querés fabricar?</h2><p>Una misma forma de trabajar para las cuatro piezas. Elegís el producto; la Fábrica decide plantilla, contenido, dirección visual, color, jerarquía, textura, dato, reverso y salida.</p></div><div class="central-products">${productHTML()}</div><div class="central-selected" id="centralSelected"></div><div class="central-action-row"><button id="centralProduce" class="central-produce" type="button">✦ Fabricar ${PRODUCTS[active].name}</button><span id="centralStatus" class="central-mini">Una decisión. Todo lo demás automático.</span></div><details class="central-options"><summary>⚙ Más opciones</summary><div class="central-option-grid"><label>Formato<select id="centralFormat"><option value="auto">Automático · recomendado</option>${Object.entries(FORMATS).map(([id,f])=>`<option value="${id}">${f.name} · ${f.size}</option>`).join('')}</select></label><div><span class="central-label">Dirección visual</span><div class="central-auto">Automática según producto + tema + imagen</div></div><div><span class="central-label">Curaduría</span><div class="central-auto">Local · documental · fuentes · derechos · jerarquía</div></div><div><span class="central-label">Salida</span><div class="central-auto">PNG · JPG · PDF / impresión</div></div></div></details><details class="central-series"><summary>🍇 Fabricar una serie</summary><div class="central-series-body"><p>La misma máquina puede producir pequeñas series coherentes.</p><div id="centralCollections"></div></div></details>`;controls.prepend(shell);['#productGrid','#templateGrid','#editorForm','.actions','#collectionStudio'].forEach(sel=>{const el=controls.querySelector(sel);if(el)el.classList.add('central-legacy-hidden')});bind(shell);updateSelected(shell)}
-  function updateSelected(shell){const el=shell.querySelector('#centralSelected');if(!el)return;const c=contract(active);el.innerHTML=`<span>${PRODUCTS[active].name}</span><b>${c.identity||''}</b><small>${c.layout||'Dirección editorial automática'}</small>`}
+  function render(){
+    const controls=$('.controls');if(!controls)return;
+    controls.querySelector('.central-shell')?.remove();
+    const shell=document.createElement('section');
+    shell.className='central-shell';
+    shell.innerHTML=`<div class="central-intro"><span class="central-kicker">NÚCLEO DE PRODUCCIÓN</span><h2>¿Qué querés fabricar?</h2><p>Elegí una pieza. La Fábrica resuelve automáticamente contenido, imagen, composición, color, textura, dato, reverso, procedencia y salida.</p></div><div class="central-products">${productHTML()}</div><div class="central-selected" id="centralSelected"></div><div class="central-action-row"><button id="centralProduce" class="central-produce" type="button">✦ Fabricar ${PRODUCTS[active].name}</button><span id="centralStatus" class="central-mini">Una decisión. Todo lo demás automático.</span></div><details class="central-options"><summary>⚙ Más opciones</summary><div class="central-option-grid"><label>Formato<select id="centralFormat"><option value="auto">Automático · recomendado</option>${Object.entries(FORMATS).map(([id,f])=>`<option value="${id}">${f.name} · ${f.size}</option>`).join('')}</select></label><div><span class="central-label">Dirección visual</span><div class="central-auto">Automática según producto + tema + imagen</div></div><div><span class="central-label">Curaduría</span><div class="central-auto">Local · documental · fuentes · derechos · jerarquía</div></div><div><span class="central-label">Salida</span><div class="central-auto">PNG · JPG · PDF / impresión</div></div></div></details><details class="central-series"><summary>🍇 Fabricar una serie</summary><div class="central-series-body"><p>Pequeñas series coherentes, con guardado automático.</p><div id="centralCollections"></div></div></details>`;
+    controls.prepend(shell);
+    ['#productGrid','#templateGrid','#editorForm','.actions','#collectionStudio','.step','#status'].forEach(sel=>controls.querySelectorAll(sel).forEach(el=>el.classList.add('central-legacy-hidden')));
+    bind(shell);updateSelected(shell);
+  }
+  function updateSelected(shell){const el=shell?.querySelector('#centralSelected');if(!el)return;const c=contract(active);el.innerHTML=`<span>${PRODUCTS[active].name}</span><b>${c.identity||''}</b><small>${c.layout||'Dirección editorial automática'}</small>`}
   function setActive(id){if(!PRODUCTS[id])return;active=id;document.querySelectorAll('.central-product').forEach(b=>b.classList.toggle('is-active',b.dataset.product===id));const b=$('#centralProduce');if(b)b.textContent='✦ Fabricar '+PRODUCTS[id].name;updateSelected(document.querySelector('.central-shell'))}
-  async function produce(){const b=$('#centralProduce'),s=$('#centralStatus');if(b)b.disabled=true;if(s)s.textContent='La Fábrica está trabajando…';try{const requested=format==='auto'?undefined:format,result=await window.FabricaEngine?.produce?.({type:active,format:requested});if(result?.ok){state.centralProduct=active;state.centralFormat=result.contract?.defaultFormat||requested||'print';if(typeof document!=='undefined')document.getElementById('btnSave')?.click();if(s)s.textContent='Lista y guardada ✨ Revisá, descargá o fabricá otra.'}else if(s)s.textContent='No hay una pieza válida para este producto todavía.'}catch(err){console.error(err);if(s)s.textContent='Hubo un problema. La Fábrica no guardó una pieza incompleta.'}if(b)b.disabled=false}
-  function bind(shell){shell.querySelectorAll('.central-product').forEach(b=>b.addEventListener('click',()=>{setActive(b.dataset.product);produce()}));shell.querySelector('#centralProduce')?.addEventListener('click',produce);shell.querySelector('#centralFormat')?.addEventListener('change',e=>{format=e.target.value;if(typeof state!=='undefined'){state.centralFormat=format;if(format!=='auto'){state.factoryMeta={...(state.factoryMeta||{}),format};renderPreview?.()}}})}
-  function renderCollections(shell){const el=shell.querySelector('#centralCollections');if(!el)return;const cols=[['recuerdito','Un recuerdito de Chañar'],['territorio','Pedacitos de territorio'],['vino','Vino y paisaje'],['raices','Fiestas y raíces'],['cultura','Pequeñas historias']];el.innerHTML=cols.map(([id,name])=>`<button type="button" class="central-collection" data-collection="${id}"><strong>${name}</strong><small>Hasta 5 piezas · misma curaduría · guardado automático</small></button>`).join('');el.querySelectorAll('button').forEach(b=>b.addEventListener('click',async()=>{const s=$('#centralStatus');if(s)s.textContent='Fabricando serie…';try{await window.FabricaCollection?.produceSeries?.(b.dataset.collection,3);if(s)s.textContent='Serie lista y guardada ✨'}catch(e){console.error(e);if(s)s.textContent='La serie no pudo completarse.'}}))}
-  function boot(){if(document.body.dataset.centralFactory)return;document.body.dataset.centralFactory='1';setTimeout(()=>{render();renderCollections(document.querySelector('.central-shell'));setTimeout(()=>renderPreview?.(),100)},450)}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();window.FabricaCentral={version:3,products:PRODUCTS,formats:FORMATS,produce,setActive};
+  async function produce(){
+    const b=$('#centralProduce'),s=$('#centralStatus');
+    if(b)b.disabled=true;if(s)s.textContent='La Fábrica está trabajando…';
+    try{
+      const requested=format==='auto'?undefined:format;
+      const result=await window.FabricaEngine?.produce?.({type:active,format:requested});
+      if(result?.ok){
+        if(typeof state!=='undefined'){state.centralProduct=active;state.centralFormat=result.contract?.defaultFormat||requested||'print'}
+        document.getElementById('btnSave')?.click();
+        if(s)s.textContent='Lista y guardada ✨ Revisá, descargá o fabricá otra.';
+      }else if(s)s.textContent='No hay una pieza válida para este producto todavía.';
+    }catch(err){console.error(err);if(s)s.textContent='Hubo un problema. No se guardó una pieza incompleta.'}
+    if(b)b.disabled=false;
+  }
+  function bind(shell){
+    shell.querySelectorAll('.central-product').forEach(b=>b.addEventListener('click',()=>setActive(b.dataset.product)));
+    shell.querySelector('#centralProduce')?.addEventListener('click',produce);
+    shell.querySelector('#centralFormat')?.addEventListener('change',e=>{format=e.target.value;if(typeof state!=='undefined'){state.centralFormat=format;if(format!=='auto'){state.factoryMeta={...(state.factoryMeta||{}),format};window.renderPreview?.()}}});
+  }
+  function renderCollections(shell){
+    const el=shell?.querySelector('#centralCollections');if(!el)return;
+    const cols=[['recuerdito','Un recuerdito de Chañar'],['territorio','Pedacitos de territorio'],['vino','Vino y paisaje'],['raices','Fiestas y raíces'],['cultura','Pequeñas historias']];
+    el.innerHTML=cols.map(([id,name])=>`<button type="button" class="central-collection" data-collection="${id}"><strong>${name}</strong><small>Hasta 5 piezas · misma curaduría · guardado automático</small></button>`).join('');
+    el.querySelectorAll('button').forEach(b=>b.addEventListener('click',async()=>{const s=$('#centralStatus');if(s)s.textContent='Fabricando serie…';try{await window.FabricaCollection?.produceSeries?.(b.dataset.collection,3);if(s)s.textContent='Serie lista y guardada ✨'}catch(e){console.error(e);if(s)s.textContent='La serie no pudo completarse.'}}));
+  }
+  function boot(){if(document.body.dataset.centralFactory)return;document.body.dataset.centralFactory='1';setTimeout(()=>{render();const shell=document.querySelector('.central-shell');renderCollections(shell);setTimeout(()=>window.renderPreview?.(),100)},450)}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+  window.FabricaCentral={version:4,products:PRODUCTS,formats:FORMATS,produce,setActive};
 })();
