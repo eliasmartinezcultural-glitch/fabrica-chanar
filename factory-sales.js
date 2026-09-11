@@ -1,6 +1,6 @@
-/* FÁBRICA CHAÑAR — MODO VENTA v3
-   Solo entran a la mesa comercial piezas con visual comercial seguro:
-   foto propia/autorizada/licenciada o arte editorial original de Fábrica Chañar.
+/* FÁBRICA CHAÑAR — MODO VENTA v4
+   Solo entran a la mesa comercial piezas con derecho comercial explícito.
+   La mera existencia de una imagen nunca habilita una pieza para vender.
 */
 (function(){
   const $=s=>document.querySelector(s);
@@ -8,10 +8,13 @@
   const PRODUCT_NAMES={postal:'Postal',ficha:'Ficha cultural',guide:'Guía breve',infographic:'Infografía'};
   const items=()=>typeof library==='function'?library():[];
   function saleReady(x){
-    if(x?.factoryMeta?.commercialRights===true)return true;
-    if(x?.image)return true;
+    const meta=x?.factoryMeta||{};
+    if(meta.commercialRights!==true)return false;
+    if(meta.commercialVisual==='original-graphic')return true;
+    const rights=meta.provenance?.rights||meta.rights;
+    if(['own','usable','licensed','authorized'].includes(rights))return true;
     const p=typeof PHOTO_BANK!=='undefined'?PHOTO_BANK.find(y=>y.id===x?.photoId):null;
-    return p?.kind==='usable';
+    return ['usable','licensed','authorized'].includes(p?.kind)||['own','licensed','authorized'].includes(p?.rights);
   }
   function collectionOf(x){return x?.factoryMeta?.collection||{name:'Pieza suelta',id:'sueltas',part:null,total:null,role:null}}
   function group(){const map=new Map();items().forEach(x=>{const c=collectionOf(x);if(!map.has(c.id))map.set(c.id,{...c,pieces:[]});map.get(c.id).pieces.push(x)});return [...map.values()]}
@@ -24,10 +27,10 @@
     host.innerHTML=groups.map(g=>`<section class="sale-collection"><header><div><small>COLECCIÓN</small><h3>${esc(g.name)}</h3><p>${g.pieces.length} piezas · ${esc(g.id==='sueltas'?'selección abierta':'serie editorial')}</p></div><button type="button" class="sale-copy" data-copy-collection="${esc(g.id)}">Copiar presentación</button></header><div class="sale-grid">${g.pieces.map((x,i)=>`<article class="sale-card"><div class="sale-card-top"><span>${String(i+1).padStart(2,'0')}</span>${statusLabel(x)}</div><h4>${esc(x.data?.title||PRODUCT_NAMES[x.type]||'Pieza de Chañar')}</h4><p>${esc(PRODUCT_NAMES[x.type]||x.type)}${x.factoryMeta?.collection?.role?` · ${esc(x.factoryMeta.collection.role)}`:''}</p><small>${esc(x.factoryMeta?.friendlyLine||'Pieza pensada y curada localmente.')}${x.factoryMeta?.commercialVisual==='original-graphic'?' · arte original':''}</small><div class="sale-card-actions"><button type="button" data-open-sale="${esc(x.id)}">Ver pieza</button><button type="button" data-copy-piece="${esc(x.id)}">Copiar texto</button></div></article>`).join('')}</div></section>`).join('');
     host.querySelectorAll('[data-open-sale]').forEach(b=>b.onclick=()=>openPiece(b.dataset.openSale));host.querySelectorAll('[data-copy-piece]').forEach(b=>b.onclick=()=>copyPiece(b.dataset.copyPiece));host.querySelectorAll('[data-copy-collection]').forEach(b=>b.onclick=()=>copyCollection(b.dataset.copyCollection));
   }
-  function openPiece(id){const x=items().find(y=>y.id===id);if(!x||typeof state==='undefined')return;Object.assign(state,{type:x.type,templateId:x.templateId||TEMPLATES.find(t=>t.product===x.type)?.id,data:{...(x.data||{})},image:x.image||null,photoId:x.photoId||null,factoryMeta:{...(x.factoryMeta||{})}});renderProducts?.();renderTemplates?.();renderForm?.();renderPreview?.();window.FabricaMasterVisuals?.apply?.();close();status('Pieza recuperada. Podés verla, descargarla o seguir editándola.');document.querySelector('.preview-panel')?.scrollIntoView({behavior:'smooth',block:'start'})}
+  function openPiece(id){const x=items().find(y=>y.id===id);if(!x||typeof state==='undefined')return;Object.assign(state,{type:x.type,templateId:x.templateId||TEMPLATES.find(t=>t.product===x.type)?.id,data:{...(x.data||{})},image:x.image||null,photoId:x.photoId||null,factoryMeta:{...(x.factoryMeta||{})}});renderProducts?.();renderTemplates?.();renderForm?.();renderPreview?.();window.FabricaMasterVisuals?.apply?.();close();status(saleReady(x)?'Pieza comercial recuperada. Podés verla o descargarla.':'Pieza recuperada. Revisá derechos antes de venderla.');document.querySelector('.preview-panel')?.scrollIntoView({behavior:'smooth',block:'start'})}
   async function copy(text,ok){try{await navigator.clipboard.writeText(text);status(ok||'Copiado ✨')}catch{status('No pude copiar automáticamente. Podés usar el texto visible de la pieza.')}}
   function copyPiece(id){const x=items().find(y=>y.id===id);if(!x)return;const c=collectionOf(x);copy(`${x.data?.title||'Pieza de Chañar'}\n${PRODUCT_NAMES[x.type]||x.type}\n${c.name||''}\n${x.factoryMeta?.friendlyLine||'Pieza de Chañar, pensada y curada localmente.'}`,'Presentación copiada ✨')}
   function copyCollection(id){const g=group().find(y=>y.id===id);if(!g)return;copy(`${g.name}\n\n${g.pieces.map((x,i)=>`${i+1}. ${x.data?.title||'Pieza de Chañar'} · ${PRODUCT_NAMES[x.type]||x.type}`).join('\n')}\n\nPiezas de Chañar · Ocarina Producciones`,'Presentación de colección copiada ✨')}
   function init(){$('#btnSales')?.addEventListener('click',open);$('#btnCloseSales')?.addEventListener('click',close);document.addEventListener('fabrica:series-ready',render);document.addEventListener('fabrica:masters-ready',render);document.addEventListener('fabrica:ready',()=>{if(!$('#salesPanel')?.classList.contains('hidden'))render()});updateLibraryCount?.()}
-  window.FabricaSales={version:3,open,close,render,saleReady};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+  window.FabricaSales={version:4,open,close,render,saleReady};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
