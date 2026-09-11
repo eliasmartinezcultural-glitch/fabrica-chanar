@@ -1,3 +1,4 @@
-const PHOTO_BANK=[
-{id:'ingreso',name:'Ingreso a San Patricio del Chañar',photo:'https://upload.wikimedia.org/wikipedia/commons/7/7c/San_Patricio_del-Chañar.png',source:'Wikimedia Commons · CC BY 3.0',url:'https://commons.wikimedia.org/wiki/File:San_Patricio_del_Chañar.png',kind:'usable'}
-];
+/* LEGACY ENTRYPOINT
+   The active production runtime is app-core.js.
+   Kept intentionally as a compatibility marker so future work does not accidentally load the old file.
+*/
