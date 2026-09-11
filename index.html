@@ -1,59 +1,21 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#17231d">
-<meta name="description" content="Fábrica Chañar — herramienta simple de producción de Ocarina Producciones.">
-<title>Fábrica Chañar · Producción</title>
-<link rel="stylesheet" href="style.css">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#18251e"><meta name="description" content="Fábrica Chañar — generador visual de Ocarina Producciones.">
+<title>Fábrica Chañar · Generador visual</title><link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="topbar">
-  <div class="brand"><span class="brand-mark">CH</span><div><strong>FÁBRICA CHAÑAR</strong><small>producción simple · Ocarina</small></div></div>
-  <div class="top-actions"><span class="internal-badge">MODO PRODUCCIÓN</span><button id="btnLibrary" class="ghost">Biblioteca <span id="libraryCount">0</span></button></div>
-</header>
+<header class="topbar"><div class="brand"><span class="brand-mark">CH</span><div><strong>FÁBRICA CHAÑAR</strong><small>generador visual · Ocarina</small></div></div><div class="top-actions"><span class="internal-badge">MODO PRODUCCIÓN</span><button id="btnLibrary" class="ghost">Biblioteca <span id="libraryCount">0</span></button></div></header>
 <main class="app-shell">
-  <section class="hero">
-    <div><p class="eyebrow">UNA SOLA RUTA</p><h1>Elegir → completar → producir → guardar.</h1><p class="lead">Cuatro productos. Un mismo procedimiento. Sin motores paralelos ni módulos que no necesitás para producir.</p></div>
-  </section>
-
-  <section class="workspace">
-    <aside class="panel controls">
-      <div class="step"><span>01</span><div><h2>Producto</h2><p>Elegí qué vas a fabricar.</p></div></div>
-      <div id="productGrid" class="product-grid"></div>
-
-      <div class="step"><span>02</span><div><h2>Contenido</h2><p>Completá solamente lo necesario.</p></div></div>
-      <form id="editorForm" autocomplete="off"></form>
-
-      <div class="actions">
-        <button id="btnGenerate" class="primary" type="button">Generar pieza</button>
-        <button id="btnSave" class="secondary" type="button">Guardar</button>
-      </div>
-      <div id="status" class="status" aria-live="polite"></div>
-    </aside>
-
-    <section class="panel preview-panel">
-      <div class="preview-head">
-        <div class="step compact"><span>03</span><div><h2>Producto</h2><p>Esta es la pieza que vas a entregar.</p></div></div>
-        <div class="export-actions">
-          <button id="btnPng" type="button">PNG</button>
-          <button id="btnJpg" type="button">JPG</button>
-          <button id="btnPrint" type="button">PDF / imprimir</button>
-        </div>
-      </div>
-      <div class="preview-wrap"><div id="canvasPreview" class="canvas-preview"></div></div>
-      <div class="production-note"><strong>Regla de la fábrica:</strong> la pieza no se considera lista hasta que el contenido esté revisado por vos y la fuente esté declarada cuando corresponda.</div>
-    </section>
-  </section>
-
-  <section id="libraryPanel" class="panel library-panel hidden">
-    <div class="library-head"><div><p class="eyebrow">ARCHIVO LOCAL</p><h2>Biblioteca de producción</h2></div><button id="btnCloseLibrary" class="ghost">Cerrar</button></div>
-    <div id="libraryList" class="library-list"></div>
-  </section>
-</main>
-<footer><span>Fábrica Chañar · Ocarina Producciones</span><span>Primero producir. Después ampliar.</span></footer>
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script src="app.js"></script>
-</body>
-</html>
+<section class="hero"><div><p class="eyebrow">PRODUCIR SIN PENSAR DEMASIADO</p><h1>Elegí una plantilla. Generá. Descargá.</h1><p class="lead">La Fábrica deja de ser una oficina digital y pasa a funcionar como un pequeño taller de piezas culturales y turísticas: lindas, útiles, regalables y fáciles de producir.</p></div><div class="hero-stamp">CHAÑAR<br><span>historias · territorio · belleza</span></div></section>
+<section class="panel template-panel"><div class="section-title"><div><p class="eyebrow">01 · PLANTILLAS</p><h2>Elegí qué querés fabricar</h2></div><span class="micro-note">12 recetas listas</span></div><div id="templateGrid" class="template-grid"></div></section>
+<section class="workspace">
+<aside class="panel controls"><div class="step"><span>02</span><div><h2>Contenido</h2><p>La plantilla ya trae una base. Cambiá solo lo que quieras.</p></div></div><div id="productGrid" class="product-grid"></div><form id="editorForm" autocomplete="off"></form><div class="actions"><button id="btnGenerate" class="primary" type="button">Generar</button><button id="btnSave" class="secondary" type="button">Guardar</button></div><div id="status" class="status" aria-live="polite"></div></aside>
+<section class="panel preview-panel"><div class="preview-head"><div class="step compact"><span>03</span><div><h2>Resultado</h2><p>Si te gusta, descargalo.</p></div></div><div class="export-actions"><button id="btnPng" type="button">Descargar PNG</button><button id="btnJpg" type="button">JPG</button><button id="btnPrint" type="button">PDF</button></div></div><div class="preview-wrap"><div id="canvasPreview" class="canvas-preview"></div></div><div class="production-note"><strong>Regla:</strong> primero belleza y utilidad; después corrección de texto y fuente.</div></section>
+</section>
+<section class="panel photo-panel"><div class="section-title"><div><p class="eyebrow">BANCO VISUAL</p><h2>San Patricio del Chañar · imágenes y fuentes públicas</h2><p class="section-lead">Cuatro imágenes tienen licencia Creative Commons reutilizable. Las demás son fuentes públicas para consultar; la Fábrica no las presenta como libres de derechos.</p></div><span class="micro-note">10 referencias</span></div><div id="photoBank" class="photo-bank"></div></section>
+<section id="libraryPanel" class="panel library-panel hidden"><div class="library-head"><div><p class="eyebrow">ARCHIVO LOCAL</p><h2>Biblioteca de producción</h2></div><button id="btnCloseLibrary" class="ghost">Cerrar</button></div><div id="libraryList" class="library-list"></div></section>
+</main><footer><span>Fábrica Chañar · Ocarina Producciones</span><span>Primero producir. Después ampliar.</span></footer>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script><script src="app.js"></script>
+</body></html>
