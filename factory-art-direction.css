@@ -1,0 +1,14 @@
+/* DIRECCIÓN ARTÍSTICA — decoración editorial, no interfaz */
+.canvas-preview.factory-art-directed{--art-paper:#f5eee0;--art-accent:#305a68;--art-gold:#c69b5a;position:relative}
+.factory-art-layer{position:absolute;inset:0;z-index:28;pointer-events:none;overflow:hidden;border:1px solid rgba(48,90,104,.18);box-shadow:inset 0 0 0 9px rgba(255,250,238,.10),inset 0 0 70px rgba(48,40,25,.10)}
+.factory-art-layer:before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(50,40,28,.10) .7px,transparent .7px);background-size:5px 5px;opacity:.10;mix-blend-mode:multiply}
+.factory-art-layer:after{content:'';position:absolute;inset:11px;border:1px solid rgba(255,250,238,.45);border-radius:3px}
+.art-doodle{position:absolute;color:var(--art-gold);font:700 18px/1 Georgia,serif;opacity:.72;text-shadow:0 1px 0 rgba(255,255,255,.55)}
+.art-doodle-a{left:20px;top:20px;transform:rotate(-9deg);font-size:12px}.art-doodle-b{right:22px;top:22px;font-size:13px;transform:rotate(8deg)}.art-doodle-c{right:26px;bottom:82px;font-size:12px;transform:rotate(-11deg)}
+.art-paper-note{position:absolute;left:50%;bottom:17px;transform:translateX(-50%) rotate(-1deg);padding:4px 8px;border-top:1px dashed rgba(48,90,104,.28);border-bottom:1px dashed rgba(48,90,104,.18);font:800 6px/1 Inter,system-ui,sans-serif;letter-spacing:.16em;color:var(--art-accent);background:rgba(255,250,238,.55)}
+.art-vino .factory-art-layer{border-color:rgba(111,63,85,.22)}.art-vino .art-doodle{color:#b88752}.art-vendimia .art-doodle{color:#c79246}.art-fiesta .art-doodle{color:#b94d38}.art-arte .art-doodle{color:#7d4b68}.art-cava .art-doodle{color:#76553b}
+.factory-art-directed.product-postal .factory-art-layer{border-radius:2px}.factory-art-directed.product-ficha .factory-art-layer{border-radius:5px}.factory-art-directed.product-guide .factory-art-layer{border-radius:8px}.factory-art-directed.product-infographic .factory-art-layer{border-radius:0}
+.factory-art-directed.product-postal .art-paper-note{letter-spacing:.20em}.factory-art-directed.product-infographic .art-doodle{opacity:.55}
+.preview-panel.factory-working .factory-art-layer{opacity:.55}.preview-panel.factory-ready .factory-art-layer{animation:art-arrive .45s ease both}@keyframes art-arrive{from{opacity:.35;transform:scale(.99)}to{opacity:1;transform:scale(1)}}
+@media(max-width:700px){.art-doodle-a{left:12px;top:12px}.art-doodle-b{right:14px;top:14px}.art-doodle-c{right:16px;bottom:60px}.art-paper-note{bottom:11px;font-size:5px}}
+@media(prefers-reduced-motion:reduce){.preview-panel.factory-ready .factory-art-layer{animation:none}}
