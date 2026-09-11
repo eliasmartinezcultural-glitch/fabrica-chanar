@@ -12,29 +12,30 @@ Sistema **interno de producción territorial de Ocarina Producciones** para inve
 - **Despliegue simple:** GitHub Pages es la ruta primaria; cada push a `main` intenta publicar el sitio estático mediante Actions.
 - **Sin destrucción silenciosa:** cada salto conserva las capacidades útiles anteriores.
 
-## v8.0 x10 — Primera línea de producción real
+## v9.0 x10 — Operación productiva
 
-La v8 cambia otra vez el centro de gravedad: **la fábrica ya no espera a estar completa para producir**. Toma automáticamente la memoria estructurada del repositorio, muestra una cola de registros documentados y permite convertir cada registro en una orden de producción.
+La v9 cambia el centro de gravedad: **la fábrica empieza a administrar trabajo, no solamente contenido**. Sobre la línea v8 agrega órdenes productivas locales con destinatario, proyecto, registro, productos, estado y manifiesto exportable.
 
 ```text
-REGISTRO → FUENTE → ACTIVO → PRODUCTO → ARCHIVO
+REGISTRO → ORDEN → PRODUCCIÓN → CONTROL → PRODUCTO → ARCHIVO
 ```
 
 ### Capacidades nuevas
 
-- carga automática de `data/chanar-core.json`, `sources.json`, `media-manifest.json` y `map-layers.json`;
-- sincronización inicial de los registros documentados con el banco de activos local;
-- cola de producción real basada en registros existentes;
-- botón **Producir** que lleva el registro al fabricante actual;
-- incorporación local de fotografía propia de Ocarina;
-- generación rápida de colección desde un registro;
-- exportación de una **orden de producción JSON** con fuentes y control de derechos;
-- separación explícita entre "derechos verificados" y "pendiente de verificación";
-- nueva capa visual v8 sin eliminar v5/v6/v7.
+- tablero local de órdenes;
+- creación de una orden desde cero o a partir del registro seleccionado en v8;
+- destinatario/cliente y proyecto asociados a cada orden;
+- selección de productos por orden: ficha, postal, guía, infografía y mapa;
+- estados: Idea → Investigación → Lista para producir → En producción → Terminada;
+- porcentaje de avance calculado por estado;
+- manifiesto JSON de cada orden;
+- estado de derechos conservado como pendiente hasta su verificación;
+- almacenamiento local sin backend obligatorio;
+- continuidad entre v8 y v9 sin eliminar el fabricante anterior.
 
-## Despliegue verificado
+## Despliegue
 
-Ruta:
+Ruta primaria:
 
 `main → GitHub Actions → GitHub Pages → sitio estático`
 
@@ -42,9 +43,7 @@ URL:
 
 `https://eliasmartinezcultural-glitch.github.io/fabrica-chanar/`
 
-El workflow `Deploy Fábrica Chañar` fue ejecutado correctamente en GitHub Actions. El pipeline de Pages incluye checkout, configuración de Pages, carga del artefacto y despliegue mediante `actions/deploy-pages@v4`. El manifiesto `data/deployment-manifest.json` conserva el identificador de la ejecución verificada.
-
-La aplicación sigue siendo una herramienta interna de Ocarina aunque técnicamente esté publicada en GitHub Pages.
+El pipeline de Pages ya fue verificado anteriormente como exitoso. Cada modificación posterior vuelve a generar una ejecución de Actions; el estado de cada nueva versión debe comprobarse antes de declararla desplegada.
 
 ## Núcleo de datos
 
@@ -64,10 +63,12 @@ v5.css              dashboard, activos, proyectos y atlas
 v6.css              banco multimedia y auditoría
 v7.css              puesta en marcha
 v8.css              línea de producción
-app.js              motor de producción
+v9.css              tablero de órdenes
+app.js              motor de fabricación
 v6.js               memoria/procedencia
-v7.js               readiness y control operativo
-v8.js               cola de producción y órdenes
+v7.js               readiness y despliegue
+v8.js               registros y primera línea de producción
+v9.js               órdenes productivas
 
 .github/workflows/
   pages.yml         despliegue automático
@@ -80,7 +81,7 @@ data/
   deployment-manifest.json
 ```
 
-## Flujo operativo desde ahora
+## Flujo operativo actual
 
 ```text
 ABRIR FÁBRICA
@@ -89,23 +90,27 @@ CONTROL DE PUESTA EN MARCHA
      ↓
 CARGA AUTOMÁTICA DE MEMORIA
      ↓
-ELEGIR REGISTRO
+ELEGIR REGISTRO O CREAR ORDEN
      ↓
-ORDENAR PRODUCCIÓN
+DEFINIR DESTINATARIO + PRODUCTOS
+     ↓
+INVESTIGAR / CARGAR FUENTES
      ↓
 CARGAR FOTO PROPIA / ACTIVO CON DERECHOS
      ↓
-FABRICAR FICHA + POSTAL + GUÍA
+FABRICAR
      ↓
-AUDITAR FUENTES Y DERECHOS
+AVANZAR ESTADO DE PRODUCCIÓN
      ↓
-EXPORTAR
+AUDITAR
+     ↓
+EXPORTAR MANIFIESTO / PRODUCTO
      ↓
 ARCHIVAR
 ```
 
 ## Estado real
 
-La infraestructura ya está desplegada y el primer pipeline de Pages fue verificado como exitoso. La fábrica, sin embargo, todavía no debe considerarse una línea comercial completa: faltan activos audiovisuales propios cargados, auditoría de licencias por activo y un circuito persistente de pedidos/clientes.
+La fábrica ya tiene una ruta concreta para pasar de datos documentados a órdenes de trabajo y productos. Todavía no debe considerarse una línea comercial completa: faltan activos audiovisuales propios cargados, una auditoría más profunda de licencias por activo y persistencia fuera del navegador para trabajo multi-dispositivo.
 
-La prioridad siguiente no es agregar pantallas por agregar. Es conseguir **el primer producto real terminado**, después la primera colección, y luego repetir el proceso hasta convertirlo en una capacidad productiva estable.
+La siguiente prioridad es **producir el primer encargo real**, medir el tiempo de fabricación y usar ese aprendizaje para construir la v10 alrededor de lo que realmente se repite, no alrededor de funciones decorativas.
