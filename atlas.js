@@ -1,0 +1,40 @@
+/* ATLAS VISUAL CHAÑAR — curated territorial layer */
+const ATLAS_CHANAR=[
+{id:'rio-neuquen',name:'Río Neuquén',family:'PAISAJE',concept:'agua · oasis · territorio',photo:'ingreso',art:'agua'},
+{id:'dique',name:'Dique Compensador El Chañar',family:'PAISAJE',concept:'agua · aves · área protegida',photo:'ingreso',art:'dique'},
+{id:'balneario',name:'Balneario Municipal',family:'PAISAJE',concept:'río · verano · encuentro',photo:'ingreso',art:'verano'},
+{id:'chacras',name:'Chacras y oasis de riego',family:'PRODUCCIÓN',concept:'fruta · huerta · trabajo',photo:'malma2',art:'verde'},
+{id:'vinedos',name:'Viñedos del Chañar',family:'PRODUCCIÓN',concept:'vid · estepa · riego',photo:'malma2',art:'vino'},
+{id:'vendimia',name:'Vendimia Neuquina',family:'CULTURA',concept:'cosecha · vino · encuentro',photo:'vendimia1',art:'vendimia'},
+{id:'malma',name:'Bodega Malma',family:'VINO',concept:'viñedos · gastronomía · experiencias',photo:'malma1',art:'vino'},
+{id:'schroeder',name:'Bodega Familia Schroeder',family:'VINO',concept:'arquitectura · cava · paleontología',photo:'schroeder',art:'cava'},
+{id:'patritti',name:'Bodega Patritti',family:'VINO',concept:'arquitectura · producción · identidad',photo:'patritti',art:'cava'},
+{id:'chical',name:'Bodega El Chical',family:'CULTURA',concept:'vino · comunidad · arte',photo:'chical',art:'arte'},
+{id:'pelon',name:'Fiesta Provincial del Pelón',family:'CULTURA',concept:'trabajo rural · frutos · fiesta',photo:'pelon',art:'fiesta'},
+{id:'trabajador-rural',name:'Trabajador rural',family:'IDENTIDAD',concept:'campo · cosecha · oficio',photo:'pelon',art:'tierra'},
+{id:'artesanos',name:'Artesanos y emprendedores',family:'IDENTIDAD',concept:'oficios · feria · comunidad',photo:'pelon',art:'papel'},
+{id:'gastronomia',name:'Gastronomía regional',family:'CULTURA',concept:'sabores · productores · encuentro',photo:'chical',art:'mesa'},
+{id:'feria-sabores',name:'Sabores y Amigos',family:'TURISMO',concept:'turismo · producción · comunidad',photo:'pelon',art:'feria'},
+{id:'ruta-vino',name:'Ruta del vino',family:'TURISMO',concept:'bodegas · paisaje · experiencias',photo:'malma2',art:'mapa'},
+{id:'estepa',name:'Estepa + viñedo',family:'PAISAJE',concept:'contraste · viento · oasis',photo:'malma2',art:'contraste'},
+{id:'bardas',name:'Bardas del valle',family:'PAISAJE',concept:'relieve · horizonte · oasis',photo:'ingreso',art:'tierra'},
+{id:'entrada',name:'Entrada a San Patricio del Chañar',family:'IDENTIDAD',concept:'puerta · pertenencia · llegada',photo:'ingreso',art:'postal'},
+{id:'arquitectura-vino',name:'Arquitectura del vino',family:'VINO',concept:'forma · hormigón · paisaje',photo:'schroeder',art:'arquitectura'},
+{id:'cava',name:'Cavas y barricas',family:'VINO',concept:'tiempo · madera · vino',photo:'schroeder',art:'cava'},
+{id:'paleontologia',name:'Paleontología en Schroeder',family:'CULTURA',concept:'fósiles · vino · territorio',photo:'schroeder',art:'fossil'},
+{id:'pinot',name:'Pinot Noir chañarense',family:'VINO',concept:'clima frío · vid · identidad',photo:'malma2',art:'vino'},
+{id:'malbec',name:'Malbec de Chañar',family:'VINO',concept:'uva · suelo · bodega',photo:'chical',art:'vino'},
+{id:'casa-turismo',name:'Casa de Turismo',family:'TURISMO',concept:'bienvenida · orientación · destino',photo:'ingreso',art:'turismo'},
+{id:'picadas',name:'Picadas rurales',family:'TERRITORIO',concept:'caminos · chacras · bodegas',photo:'malma2',art:'ruta'},
+{id:'riego',name:'Agua que transforma el valle',family:'TERRITORIO',concept:'río · canales · producción',photo:'ingreso',art:'agua'},
+{id:'identidad-local',name:'Identidad chañarense',family:'IDENTIDAD',concept:'personas · territorio · memoria',photo:'pelon',art:'editorial'},
+{id:'turismo-familiar',name:'Chañar para recorrer en familia',family:'TURISMO',concept:'paseo · paisaje · sabores',photo:'ingreso',art:'familia'},
+{id:'postal-oasis',name:'El oasis en la estepa',family:'PAISAJE',concept:'verde · árido · agua',photo:'malma2',art:'contraste'},
+{id:'postal-fiesta',name:'Una fiesta con raíces',family:'CULTURA',concept:'música · tradición · comunidad',photo:'pelon',art:'fiesta'},
+{id:'postal-vino',name:'Donde vive el vino',family:'VINO',concept:'vid · paisaje · bodega',photo:'malma1',art:'vino'}
+];
+function atlasTemplateFor(item){const map={agua:'p-vinedos',dique:'g-identidad',verano:'g-identidad',verde:'g-identidad',vino:'p-vinedos',vendimia:'p-vendimia',cava:'p-cava',arte:'p-chical',fiesta:'p-pelon',tierra:'p-pelon',papel:'g-fiesta',mesa:'g-fiesta',feria:'g-fiesta',mapa:'g-vino',contraste:'p-vinedos',postal:'p-ingreso',arquitectura:'p-cava',fossil:'f-sch',turismo:'g-vino',ruta:'g-vino',editorial:'f-mal',familia:'g-identidad'};return map[item.art]||'p-ingreso'}
+function atlasChoose(item){const t=TEMPLATES.find(x=>x.id===atlasTemplateFor(item))||TEMPLATES.find(x=>x.photo===item.photo)||TEMPLATES[0];if(!t)return;state={type:t.product,data:{},image:null,photoId:item.photo};if(typeof renderProducts==='function')renderProducts();if(typeof renderTemplates==='function')renderTemplates();if(typeof renderEditor==='function')renderEditor();if(typeof renderPreview==='function')renderPreview();const card=document.querySelector('[data-atlas-id="'+item.id+'"]');if(card){document.querySelectorAll('.atlas-card').forEach(x=>x.classList.remove('selected'));card.classList.add('selected')}if(typeof status==='function')status('Atlas: '+item.name+' · plantilla '+t.name)}
+function atlasAutopilot(){const pool=ATLAS_CHANAR.filter(x=>PHOTO_BANK.some(p=>p.id===x.photo));const item=pool[Math.floor(Math.random()*pool.length)];atlasChoose(item);setTimeout(()=>document.querySelector('#canvasPreview')?.scrollIntoView({behavior:'smooth',block:'center'}),120)}
+function renderAtlas(){if(document.querySelector('#atlasPanel'))return;const main=document.querySelector('.app-shell');const panel=document.createElement('section');panel.id='atlasPanel';panel.className='panel atlas-panel';panel.innerHTML='<div class="atlas-head"><div><p class="eyebrow">ATLAS VISUAL CHAÑAR · INVESTIGACIÓN TERRITORIAL</p><h2>Elegí una historia. La Fábrica hace el resto.</h2><p>Motivos locales clasificados por paisaje, identidad, producción, cultura, vino y turismo. La fotografía se toma del banco local; no se incorporan imágenes genéricas.</p></div><button type="button" id="atlasAutopilot" class="atlas-autopilot">⚡ PRODUCIR AUTOMÁTICAMENTE</button></div><div class="atlas-filters"><button class="atlas-filter active" data-family="TODAS">Todo</button>'+[...new Set(ATLAS_CHANAR.map(x=>x.family))].map(f=>'<button class="atlas-filter" data-family="'+f+'">'+f+'</button>').join('')+'</div><div id="atlasGrid" class="atlas-grid"></div><div class="atlas-proof"><strong>CRITERIO DE CURADURÍA</strong><span>motivo local verificable</span><span>imagen local asociada</span><span>texto editorial trabajado</span><span>composición artística predefinida</span></div>';main.insertBefore(panel,main.querySelector('.photo-panel'));const grid=panel.querySelector('#atlasGrid');function paint(f='TODAS'){grid.innerHTML=ATLAS_CHANAR.filter(x=>f==='TODAS'||x.family===f).map(x=>{const p=PHOTO_BANK.find(y=>y.id===x.photo);return '<button type="button" class="atlas-card art-'+x.art+'" data-atlas-id="'+x.id+'"><span class="atlas-photo"><img src="'+p.photo+'" alt="'+esc(x.name)+'" loading="lazy"></span><span class="atlas-meta"><b>'+esc(x.name)+'</b><small>'+esc(x.family)+' · '+esc(x.concept)+'</small></span><span class="atlas-use">USAR Y CREAR</span></button>'}).join('');grid.querySelectorAll('[data-atlas-id]').forEach(b=>b.onclick=()=>atlasChoose(ATLAS_CHANAR.find(x=>x.id===b.dataset.atlasId)))}paint();panel.querySelectorAll('.atlas-filter').forEach(b=>b.onclick=()=>{panel.querySelectorAll('.atlas-filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');paint(b.dataset.family)});panel.querySelector('#atlasAutopilot').onclick=atlasAutopilot}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',renderAtlas);else renderAtlas();
