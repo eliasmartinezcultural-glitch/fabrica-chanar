@@ -1,0 +1,11 @@
+{
+  "version": "6.0.0",
+  "proposito": "Registro de procedencia, derechos y reutilización de fotografías, mapas, documentos, audio y video.",
+  "reglas": {
+    "publico_no_equivale_libre": true,
+    "sin_licencia_clara": "referencia",
+    "uso_comercial": "solo si la licencia o autorización lo permite",
+    "material_propio_ocarina": "reutilizable según control interno"
+  },
+  "activos": []
+}
