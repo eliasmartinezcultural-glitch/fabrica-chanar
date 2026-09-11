@@ -9,53 +9,46 @@ Sistema **interno de producción territorial de Ocarina Producciones** para inve
 - **Trazabilidad:** fuente, autoría, licencia/condición de uso y procedencia deben conservarse cuando corresponda.
 - **Reutilización:** un registro territorial puede alimentar múltiples productos.
 - **Browser-first:** el núcleo funciona en navegador y evita backend obligatorio.
+- **Despliegue simple:** GitHub Pages es la ruta primaria; cada push a `main` intenta publicar el sitio estático mediante Actions.
 - **Sin destrucción silenciosa:** cada salto conserva las capacidades útiles anteriores.
 
-## v6.0 x10 — Memoria + activos + procedencia
+## v7.0 x10 — Puesta en marcha
 
-La v6 conserva la fábrica v5 y agrega una capa de control documental para que la información territorial y los recursos multimedia no se mezclen sin trazabilidad.
+La v7 cambia el foco: **menos laboratorio, más operación**. Conserva v5/v6 y agrega una capa de readiness y despliegue para poder empezar a usar la fábrica cuanto antes.
 
 ```text
-INVESTIGAR
-    ↓
-REGISTRAR FUENTE
-    ↓
-CLASIFICAR DERECHOS
-    ↓
-ACTIVO MULTIMEDIA
-    ↓
-REGISTRO / ATLAS
-    ↓
-PRODUCTO
-    ↓
-AUDITORÍA
+DATOS → FUENTES → DERECHOS → ATLAS → PRODUCTO → CONTROL → DESPLIEGUE
 ```
 
 ### Capacidades nuevas
 
-- carga automática al abrir de `data/chanar-core.json` y `data/sources.json`;
-- banco multimedia independiente del catálogo de productos;
-- registro de fotografía, mapa, documento, audio y video;
-- autor/propietario, licencia, URL de origen, atribución y permisos de modificación/comerciales;
-- estados `reutilizable`, `referencia` y `pendiente`;
-- auditoría previa de activos marcados como reutilizables;
-- exportación del manifiesto v6 como JSON;
-- documentación específica de procedencia y derechos;
-- conservación de Atlas, GeoJSON, biblioteca y producción rápida de v5.
+- checklist operativo de cinco controles;
+- prueba automática de disponibilidad de los archivos críticos;
+- comprobación de que el motor de exportación está presente;
+- estado persistente del último control local;
+- manifiesto de despliegue en `data/deployment-manifest.json`;
+- workflow automático `.github/workflows/pages.yml` para GitHub Pages;
+- interfaz preparada para trabajar como herramienta diaria, no solamente como demostrador.
 
-### Regla crítica
+## Despliegue
 
-**Disponible públicamente ≠ libre de reutilizar.**
+Ruta prevista:
 
-Si no existe licencia clara o autorización suficiente, el material se conserva como `referencia` o `pendiente` y no debe incorporarse automáticamente a un producto comercial.
+`main → GitHub Actions → GitHub Pages → sitio estático`
+
+URL prevista del proyecto:
+
+`https://eliasmartinezcultural-glitch.github.io/fabrica-chanar/`
+
+El repositorio ya tiene Pages habilitado a nivel de repositorio. La primera ejecución del workflow debe confirmarse en **Actions** antes de considerar el sitio públicamente desplegado. La aplicación sigue siendo una herramienta interna de Ocarina aunque técnicamente esté publicada en Pages.
 
 ## Núcleo de datos
 
 - `data/chanar-core.json`: registros territoriales documentados.
-- `data/sources.json`: fuentes y procedencia de los registros.
-- `data/media-manifest.json`: esquema persistente del banco multimedia.
-- `data/map-layers.json`: registro de capas cartográficas y su procedencia.
-- `data/README-v6.md`: reglas de memoria, medios y cartografía.
+- `data/sources.json`: fuentes y procedencia.
+- `data/media-manifest.json`: derechos y procedencia multimedia.
+- `data/map-layers.json`: capas cartográficas.
+- `data/deployment-manifest.json`: ruta de despliegue.
 
 ## Arquitectura
 
@@ -65,45 +58,48 @@ style.css           sistema visual base
 automation.css      producción rápida
 v5.css              dashboard, activos, proyectos y atlas
 v6.css              banco multimedia y auditoría
-app.js              motor de producción v5
-v6.js               capa documental v6
+v7.css              puesta en marcha
+app.js              motor de producción
+v6.js               memoria/procedencia
+v7.js               readiness y control operativo
+
+.github/workflows/
+  pages.yml         despliegue automático
 
 data/
   chanar-core.json
   sources.json
   media-manifest.json
   map-layers.json
-  registros.json    (si existe en el repositorio)
-
-templates/          modelos de piezas
-assets/              recursos propios/autorizados
-docs/                documentación
+  deployment-manifest.json
 ```
 
-## Flujo productivo
+## Flujo operativo desde ahora
 
 ```text
-IMPORTAR / INVESTIGAR
-        ↓
+ABRIR FÁBRICA
+     ↓
+EJECUTAR CONTROL
+     ↓
+INVESTIGAR / CARGAR
+     ↓
 REGISTRAR FUENTE
-        ↓
+     ↓
 ORDENAR ACTIVO
-        ↓
+     ↓
 VERIFICAR DERECHOS
-        ↓
-UBICAR EN ATLAS
-        ↓
+     ↓
 FABRICAR
-        ↓
+     ↓
 AUDITAR
-        ↓
+     ↓
 EXPORTAR
-        ↓
+     ↓
 ARCHIVAR
 ```
 
-## Estado real de la v6
+## Estado real
 
-La v6 implementa el banco y la trazabilidad en navegador. Todavía no descarga automáticamente fotografías ni documentos externos, ni presume que una fuente pública permita reutilización. Los archivos binarios se incorporarán en futuras etapas solo cuando su procedencia y condiciones de uso estén documentadas.
+La v7 **configura** el pipeline de GitHub Pages, pero no afirma que el primer despliegue haya terminado correctamente hasta comprobar una ejecución exitosa de Actions. No se incorporan servicios pagos ni backend obligatorio.
 
-El siguiente salto fuerte es convertir el Atlas en un sistema de **capas editables y exportables**, vincular cada geometría con su fuente y construir el mecanismo de **un registro → postal + ficha + mapa + guía + archivo**, con auditoría de derechos antes de exportar.
+El próximo salto debe concentrarse en **hacer dinero/producción con la herramienta**, no en seguir agregando pantallas: carga rápida de datos reales, biblioteca propia de Ocarina, generación de colecciones y primeros productos comerciales verificables.
