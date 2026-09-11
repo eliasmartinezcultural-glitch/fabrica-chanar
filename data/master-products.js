@@ -1,6 +1,6 @@
-/* FÁBRICA CHAÑAR — PRODUCTOS MAESTROS v1
+/* FÁBRICA CHAÑAR — PRODUCTOS MAESTROS v2
    Investigación editorial local: San Patricio del Chañar, Neuquén.
-   Regla: el dato puede entrar a una pieza solo si tiene fuente identificable.
+   Regla: cada dato tiene fuente identificable y cada imagen tiene estado de derechos.
 */
 const MASTER_PRODUCTS=[
   {
@@ -9,10 +9,10 @@ const MASTER_PRODUCTS=[
     promise:'Una pieza de bienvenida y pertenencia.',
     title:'San Patricio del Chañar', subtitle:'Una puerta al valle, al vino y a las historias del territorio.',
     body:'Una pequeña pieza para guardar la llegada, la identidad y el paisaje de San Patricio del Chañar.',
-    fact:'San Patricio del Chañar integra el circuito vitivinícola de Neuquén y se encuentra vinculado a las rutas provinciales 7 y 151.',
-    factLabel:'TERRITORIO',
-    source:'Neuquén Informa · Ruta del Vino', sourceUrl:'https://www.neuqueninforma.gob.ar/noticias/2016/03/10/76876-la-ruta-del-vino-se-consolida-como-un-producto-turistico',
-    photoSource:'Wikimedia Commons · archivo local', photoUrl:'https://commons.wikimedia.org/wiki/File:San_Patricio_del_Chañar.png', rights:'usable',
+    fact:'La fundación de San Patricio del Chañar se realizó el 21 de mayo de 1973.',
+    factLabel:'FECHA LOCAL',
+    source:'Consejo Federal de Inversiones · Valle Inferior del Río Neuquén', sourceUrl:'https://cfi.org.ar/uploads/2024/05/Neuquen_114_0.pdf',
+    photoSource:'Wikimedia Commons · Cartago TV', photoUrl:'https://commons.wikimedia.org/wiki/File:San_Patricio_del_Chañar.png', rights:'usable',
     collectionName:'Un recuerdito de Chañar', seal:'HECHO EN CHAÑAR', role:'bienvenida'
   },
   {
@@ -21,9 +21,9 @@ const MASTER_PRODUCTS=[
     promise:'El paisaje productivo como recuerdo.',
     title:'Donde el vino encuentra la estepa', subtitle:'Viñedos, paisaje patagónico y agua de riego.',
     body:'Una mirada al contraste entre el oasis productivo y la estepa que rodea San Patricio del Chañar.',
-    fact:'En 2024, autoridades locales señalaron una superficie de más de 1700 hectáreas de viñedos en la zona.',
+    fact:'En 2024, una comunicación oficial vinculó al desarrollo local con una superficie de más de 1.700 hectáreas de viñedos.',
     factLabel:'DATO REAL',
-    source:'Neuquén Informa · circuito de bodegas y turismo', sourceUrl:'https://www.neuqueninforma.gob.ar/noticias/2024/10/21/246534-buscan-desarrollar-un-circuito-de-bodegas-gastronomia-y-hoteles',
+    source:'Neuquén Informa · circuito de bodegas, gastronomía y hoteles', sourceUrl:'https://www.neuqueninforma.gob.ar/noticias/2024/10/21/246534-buscan-desarrollar-un-circuito-de-bodegas-gastronomia-y-hoteles',
     photoSource:'Neuquén Informa · Vendimia 2026', photoUrl:'https://www.neuqueninforma.gob.ar/noticias/2026/03/12/255578-vinos-musica-sinfonica-djs-y-arte-en-bodega-malma', rights:'reference',
     collectionName:'Vino y paisaje', seal:'MIRADA LOCAL', role:'paisaje'
   },
@@ -33,10 +33,10 @@ const MASTER_PRODUCTS=[
     promise:'La vendimia como escena de territorio.',
     title:'Tiempo de cosecha', subtitle:'El paisaje se llena de uvas, trabajo y encuentro.',
     body:'Una pieza sobre el momento en que producción, paisaje y cultura se encuentran en torno a la vendimia.',
-    fact:'La Vendimia Neuquina 2026 reunió bodegas y emprendimientos vitivinícolas, entre ellos Familia Schroeder, Malma, Patritti, Aicardi y El Chical Patagónico de San Patricio del Chañar.',
+    fact:'La Vendimia Neuquina 2026 reunió propuestas de bodegas y emprendimientos vitivinícolas de San Patricio del Chañar, entre ellos Familia Schroeder, Malma, Patritti, Aicardi y El Chical Patagónico.',
     factLabel:'DATO REAL',
     source:'Neuquén Informa · El vino neuquino se posiciona con identidad propia', sourceUrl:'https://www.neuqueninforma.gob.ar/noticias/2026/05/08/257340-el-vino-neuquino-se-posiciona-con-identidad-propia',
-    photoSource:'LM Neuquén · Vendimia', photoUrl:'https://www.lmneuquen.com/neuquen/san-patricio-del-chanar-celebro-el-exito-la-vendimia-neuquina-2025-n1180085', rights:'reference',
+    photoSource:'LM Neuquén · Vendimia Neuquina', photoUrl:'https://www.lmneuquen.com/neuquen/san-patricio-del-chanar-celebro-el-exito-la-vendimia-neuquina-2025-n1180085', rights:'reference',
     collectionName:'Vino y paisaje', seal:'TIEMPO DE COSECHA', role:'vendimia'
   },
   {
@@ -45,9 +45,9 @@ const MASTER_PRODUCTS=[
     promise:'Una pieza sobre producción, campo y comunidad.',
     title:'Fiestas y raíces', subtitle:'Producción, vida rural y encuentro.',
     body:'Una postal que reúne la dimensión productiva, rural y cultural de San Patricio del Chañar.',
-    fact:'La Fiesta Provincial del Pelón es una celebración local vinculada a la producción, la cultura y las raíces rurales de San Patricio del Chañar.',
+    fact:'La edición 2026 de la Fiesta Provincial del Pelón fue anunciada como homenaje al trabajador rural y como celebración de las raíces productivas y culturales de la localidad.',
     factLabel:'IDENTIDAD',
-    source:'Neuquén Informa · Fiesta del Pelón 2026', sourceUrl:'https://www.neuqueninforma.gob.ar/noticias/2026/02/10/255111-san-patricio-del-chanar-se-prepara-para-la-fiesta-del-pelon',
+    source:'Neuquén Informa · Fiesta Provincial del Pelón 2026', sourceUrl:'https://www.neuqueninforma.gob.ar/noticias/2026/02/10/255111-san-patricio-del-chanar-se-prepara-para-la-fiesta-del-pelon',
     photoSource:'Neuquén Informa · Fiesta Provincial del Pelón 2026', photoUrl:'https://www.neuqueninforma.gob.ar/noticias/2026/02/10/255111-san-patricio-del-chanar-se-prepara-para-la-fiesta-del-pelon', rights:'reference',
     collectionName:'Fiestas y raíces', seal:'RAÍCES LOCALES', role:'fiesta'
   },
@@ -56,9 +56,9 @@ const MASTER_PRODUCTS=[
     name:'Pequeñas historias · El Chical', product:'ficha', photo:'chical',
     promise:'Una pequeña ficha documental que no parezca un formulario.',
     title:'Bodega El Chical', category:'Cultura y turismo',
-    body:'Bodega urbana de San Patricio del Chañar que combina elaboración de vinos con una propuesta cultural y turística. El proyecto busca que el vino sea una excusa para generar encuentros, música y actividades para la comunidad.',
+    body:'Bodega urbana de San Patricio del Chañar que combina vino con una propuesta cultural y turística, incorporándose a la oferta vitivinícola local en 2026.',
     location:'San Patricio del Chañar',
-    fact:'El Chical fue inaugurado en 2026 como bodega urbana y espacio cultural de interés turístico. El nombre fue tomado de una referencia histórica sobre el origen de la palabra Chañar.',
+    fact:'El Chical se incorporó en 2026 a la oferta vitivinícola de San Patricio del Chañar como bodega urbana y espacio cultural.',
     factLabel:'PEQUEÑA HISTORIA',
     source:'Neuquén Informa · El Chical 2026', sourceUrl:'https://www.neuqueninforma.gob.ar/noticias/2026/04/03/255930-el-chical-se-suma-a-la-oferta-vitivinicola-de-san-patricio-del-chanar',
     photoSource:'Neuquén Informa · El Chical 2026', photoUrl:'https://www.neuqueninforma.gob.ar/noticias/2026/04/03/255930-el-chical-se-suma-a-la-oferta-vitivinicola-de-san-patricio-del-chanar', rights:'reference',
@@ -66,18 +66,18 @@ const MASTER_PRODUCTS=[
   },
   {
     id:'mp-pedacitos-territorio', number:6, collection:'territorio', template:'g-identidad',
-    name:'Pedacitos de territorio', product:'guide', photo:'schroeder',
+    name:'Pedacitos de territorio', product:'guide', photo:'dique-chanar-01',
     promise:'Una guía breve para leer Chañar como territorio.',
     title:'Pedacitos de territorio',
     intro:'Una pequeña guía para mirar San Patricio del Chañar más allá de una sola postal.',
     items:'Río y riego\nChacras y producción\nViñedos y bodegas\nEstepa y bardas\nFiestas, trabajo y comunidad',
     body:'El paisaje local se entiende mejor cuando se miran juntos el agua, la producción, el vino, la estepa y la vida comunitaria.',
-    fact:'La propuesta turística provincial presenta a San Patricio del Chañar como uno de los principales núcleos de la Ruta del Vino de la Patagonia.',
+    fact:'El Valle Inferior del Río Neuquén combina río, oasis de riego, chacras, viñedos y bardas; el CFI identifica a las bodegas de la zona como sitios destacados de los Caminos del Vino.',
     factLabel:'TERRITORIO',
-    source:'Neuquén Informa · recorridos de la provincia / Ruta del Vino', sourceUrl:'https://www.neuqueninforma.gob.ar/noticias/2018/01/07/113073-cinco-recorridos-para-descubrir-la-provincia-del-neuquen',
-    photoSource:'Neuquén Informa · Familia Schroeder', photoUrl:'https://www.neuqueninforma.gob.ar/noticias/2026/05/23/258207-bodega-familia-schroeder-celebra-con-una-propuesta-de-enoturismo-sabores-patrios-y-musica-en-vivo', rights:'reference',
+    source:'Consejo Federal de Inversiones · Valle Inferior del Río Neuquén', sourceUrl:'https://cfi.org.ar/uploads/2024/05/Neuquen_114_0.pdf',
+    photoSource:'Wikimedia Commons · Panoramio', photoUrl:'https://commons.wikimedia.org/wiki/File:Dique_Compensador_Chañar,_Neuquen_-_panoramio.jpg', rights:'usable',
+    photoAuthor:'psanetti', photoLicense:'CC BY-SA 3.0',
     collectionName:'Pedacitos de territorio', seal:'PARA RECORRER', role:'guía'
   }
 ];
-
-window.FabricaMasterProducts={version:1,products:MASTER_PRODUCTS,find:id=>MASTER_PRODUCTS.find(x=>x.id===id),byNumber:n=>MASTER_PRODUCTS.find(x=>x.number===n)};
+window.FabricaMasterProducts={version:2,products:MASTER_PRODUCTS,find:id=>MASTER_PRODUCTS.find(x=>x.id===id),byNumber:n=>MASTER_PRODUCTS.find(x=>x.number===n)};
