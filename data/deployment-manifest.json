@@ -1,13 +1,13 @@
 {
-  "version":"14.0.0",
+  "version":"15.0.0",
   "modo":"produccion",
   "plataforma":"GitHub Pages",
   "fuente":"main",
   "pipeline":".github/workflows/pages.yml",
   "url":"https://eliasmartinezcultural-glitch.github.io/fabrica-chanar/",
   "regla":"Cada push a main dispara un despliegue del sitio estatico.",
-  "ultimo_run":"despliegue_v14_pendiente",
-  "estado":"despliegue_v14_en_progreso",
-  "cambios":"Motor comercial: destinatario, productos, cantidades, valores ingresados por Ocarina, total, estados, propuesta HTML y expediente JSON. Sin precios inventados ni envio automatico.",
+  "ultimo_run":"pendiente_de_verificacion",
+  "estado":"despliegue_v15_en_progreso",
+  "cambios":"Centro de operaciones simplificado: ruta pedido-investigar-producir-controlar-entregar, checklist persistente y guía rápida para trabajar sin conocer todos los módulos internos.",
   "nota":"No se declara terminado un despliegue hasta comprobar Actions. La aplicación sigue siendo una herramienta interna de Ocarina aunque técnicamente esté publicada en GitHub Pages."
 }
