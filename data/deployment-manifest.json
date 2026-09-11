@@ -1,11 +1,13 @@
 {
-  "version":"7.0.0",
+  "version":"8.0.0",
   "modo":"produccion",
   "plataforma":"GitHub Pages",
   "fuente":"main",
   "pipeline":".github/workflows/pages.yml",
-  "url_prevista":"https://eliasmartinezcultural-glitch.github.io/fabrica-chanar/",
+  "url":"https://eliasmartinezcultural-glitch.github.io/fabrica-chanar/",
   "regla":"Cada push a main dispara un despliegue del sitio estatico.",
-  "estado":"pipeline configurado; confirmar ejecucion en Actions",
-  "nota":"La activacion efectiva de Pages depende de la configuracion de Pages del repositorio y del primer workflow exitoso."
+  "ultimo_control":"workflow deploy ejecutado correctamente",
+  "run_id":34617920007,
+  "estado":"desplegado",
+  "nota":"La aplicación sigue siendo una herramienta interna de Ocarina aunque técnicamente esté publicada en GitHub Pages."
 }
