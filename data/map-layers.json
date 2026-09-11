@@ -1,0 +1,24 @@
+{
+  "version": "6.0.0",
+  "territorio": "San Patricio del Chañar",
+  "capas": [
+    {
+      "id": "base",
+      "nombre": "Base territorial",
+      "tipo": "referencia",
+      "estado": "pendiente",
+      "fuente": null,
+      "geojson": null,
+      "nota": "No se incorpora geometría oficial sin fuente y condiciones de uso documentadas."
+    },
+    {
+      "id": "ocarina",
+      "nombre": "Puntos Ocarina",
+      "tipo": "propio",
+      "estado": "editable",
+      "fuente": "Ocarina Producciones",
+      "geojson": null,
+      "nota": "Capa reservada para relevamientos propios y puntos documentados."
+    }
+  ]
+}
