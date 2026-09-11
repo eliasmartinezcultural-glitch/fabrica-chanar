@@ -1,5 +1,5 @@
 {
-  "version":"15.0.0",
+  "version":"16.0.0",
   "modo":"produccion",
   "plataforma":"GitHub Pages",
   "fuente":"main",
@@ -7,7 +7,9 @@
   "url":"https://eliasmartinezcultural-glitch.github.io/fabrica-chanar/",
   "regla":"Cada push a main dispara un despliegue del sitio estatico.",
   "ultimo_run":"pendiente_de_verificacion",
-  "estado":"despliegue_v15_en_progreso",
-  "cambios":"Centro de operaciones simplificado: ruta pedido-investigar-producir-controlar-entregar, checklist persistente y guía rápida para trabajar sin conocer todos los módulos internos.",
+  "estado":"despliegue_v16_en_progreso",
+  "metodologia":"auditar -> reparar -> probar -> desarrollar -> volver a probar -> desplegar -> verificar",
+  "cambios":"Centro de trabajo operativo: creación de trabajos, registro territorial, destinatario, objetivo, productos, estados, producción integrada, expediente exportable y persistencia local.",
+  "auditoria_inicial":"Se detectó que la guía v15 era principalmente orientativa y que faltaba un expediente de trabajo que conectara pedido, producción y archivo. Se agregó una capa operativa sin eliminar los motores existentes.",
   "nota":"No se declara terminado un despliegue hasta comprobar Actions. La aplicación sigue siendo una herramienta interna de Ocarina aunque técnicamente esté publicada en GitHub Pages."
 }
