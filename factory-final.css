@@ -1,14 +1,38 @@
-/* FÁBRICA CHAÑAR — CAPA FINAL DE PRODUCCIÓN v1 */
+/* FÁBRICA CHAÑAR — CAPA FINAL DE PRODUCCIÓN v2
+   Auditoría quirúrgica: elimina colisiones entre cabecera, reverso, ficha y controles.
+   No reemplaza arquitectura; ordena capas existentes.
+*/
 .beta-mode .controls>.step,.beta-mode #productGrid,.beta-mode #templateGrid,.beta-mode #editorForm,.beta-mode .actions,.beta-mode #collectionStudio,.beta-mode #masterProductsPanel,.beta-mode #collectionGrid,.beta-mode #status{display:none!important}
 .beta-mode .hero:before,.beta-mode .hero:after,.beta-mode .controls:before,.beta-mode .preview-panel:before,.beta-mode .preview-wrap:before,.beta-mode .preview-wrap:after{display:none!important}
 .beta-mode .preview-wrap{background:#f5f7f6;border:1px solid #dbe5e6;box-shadow:none}
 .beta-mode .preview-panel{border:1px solid #dce7e8;box-shadow:0 12px 32px rgba(36,74,84,.08)}
 .beta-mode .canvas-preview{width:min(100%,820px);margin:0 auto}
 .beta-mode .piece{box-shadow:0 18px 45px rgba(36,58,66,.15)}
-.beta-mode .export-actions{position:relative;z-index:5}.beta-mode .export-actions button{min-height:38px}
-.beta-mode .central-shell{position:relative;z-index:4}.beta-mode .central-products{margin-bottom:4px}.beta-mode .central-produce{min-width:190px}.beta-mode .central-mini{min-height:18px}
+.beta-mode .export-actions{position:relative;z-index:8;display:flex;flex-wrap:wrap;gap:7px}
+.beta-mode .export-actions button{min-height:38px}
+.beta-mode .central-shell{position:relative;z-index:4}
+.beta-mode .central-products{margin-bottom:4px}
+.beta-mode .central-produce{min-width:190px}
+.beta-mode .central-mini{min-height:18px}
 .beta-mode .preview-panel.factory-working .preview-head h2:after{content:' · FABRICANDO';font-size:.45em;letter-spacing:.08em;opacity:.65}
 .beta-mode .preview-panel.factory-ready .preview-head h2:after{content:' · LISTA';font-size:.45em;letter-spacing:.08em;opacity:.65}
 .beta-mode .manifesto,.beta-mode .photo-panel,.beta-mode #atlasPanel{display:none!important}
-@media print{.beta-mode .topbar,.beta-mode .hero,.beta-mode .controls,.beta-mode .preview-head,.beta-mode footer{display:none!important}.beta-mode .workspace{display:block!important}.beta-mode .preview-panel{border:0!important;box-shadow:none!important;padding:0!important}.beta-mode .preview-wrap{padding:0!important;border:0!important;background:transparent!important}.beta-mode .piece{box-shadow:none!important;border-radius:0!important}}
-@media(max-width:760px){.beta-mode .central-shell{margin-left:-1px;margin-right:-1px}.beta-mode .preview-panel{padding:12px!important}}
+
+/* AUDITORÍA DE LA CABECERA: el botón de reverso ya no se mezcla con exportación. */
+.beta-mode .preview-head{position:relative;margin-bottom:48px;z-index:10}
+.beta-mode #btnMasterFlip{position:absolute;left:0;bottom:-40px;margin:0;z-index:12;white-space:nowrap}
+
+/* AUDITORÍA DE LA PIEZA: reserva física para dato, pie y sello. */
+.beta-mode .master-product-preview{isolation:isolate;overflow:hidden}
+.beta-mode .master-product-preview .master-front,.beta-mode .master-product-preview .master-reverse{z-index:1}
+.beta-mode .master-product-preview .master-product-skin{z-index:40}
+.beta-mode .master-product-preview .master-fact-plaque{bottom:14%;z-index:5}
+.beta-mode .master-product-preview .master-skin-bottom{right:28%;bottom:4.2%;z-index:6;min-height:12px}
+.beta-mode .master-product-preview .master-skin-seal{z-index:7;bottom:2.5%}
+.beta-mode .master-product-preview .master-law-note{display:none}
+.beta-mode .master-product-preview .master-skin-frame{z-index:3}
+.beta-mode .master-product-preview .master-reverse{z-index:50;overflow:hidden}
+.beta-mode .master-product-preview .master-reverse-source{z-index:2}
+
+@media print{.beta-mode .topbar,.beta-mode .hero,.beta-mode .controls,.beta-mode .preview-head,.beta-mode footer{display:none!important}.beta-mode .workspace{display:block!important}.beta-mode .preview-panel{border:0!important;box-shadow:none!important;padding:0!important}.beta-mode .preview-wrap{padding:0!important;border:0!important;background:transparent!important}.beta-mode .piece{box-shadow:none!important;border-radius:0!important}.beta-mode #btnMasterFlip{display:none!important}}
+@media(max-width:760px){.beta-mode .central-shell{margin-left:-1px;margin-right:-1px}.beta-mode .preview-panel{padding:12px!important}.beta-mode .preview-head{margin-bottom:52px}.beta-mode #btnMasterFlip{bottom:-44px}.beta-mode .export-actions{justify-content:flex-end}.beta-mode .master-product-preview .master-skin-bottom{right:30%}.beta-mode .master-product-preview .master-fact-plaque{bottom:15%}}
