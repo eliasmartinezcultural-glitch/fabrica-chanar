@@ -1,81 +1,86 @@
-/* FÁBRICA CHAÑAR — FABRICACIÓN MAESTRA v3
-   Edición comercial 01: seis piezas fabricables y vendibles.
-   La foto pública de referencia nunca se convierte en permiso comercial: cuando no hay licencia,
-   la pieza cambia automáticamente a una ilustración editorial original de la Fábrica.
+/* FÁBRICA CHAÑAR — FABRICACIÓN MAESTRA v4
+   Ley de producción: Elías interviene una sola vez; la Fábrica fabrica, verifica, guarda y ordena.
+   Nunca convierte una foto pública de referencia en permiso comercial.
 */
 (function(){
   const $=s=>document.querySelector(s);
   const wait=ms=>new Promise(r=>setTimeout(r,ms));
-  function products(){return window.FabricaMasterProducts?.products||[]}
-  function photo(id){return (typeof PHOTO_BANK!=='undefined'?PHOTO_BANK:[]).find(p=>p.id===id)||null}
-  function commercialReady(m){return m?.commercialVisual==='original-graphic'||m?.rights==='own'||m?.rights==='usable'||m?.rights==='licensed'||m?.rights==='authorized'}
+  const products=()=>window.FabricaMasterProducts?.products||[];
+  const photo=id=>(typeof PHOTO_BANK!=='undefined'?PHOTO_BANK:[]).find(p=>p.id===id)||null;
+  const commercialReady=m=>!!m&&(m.commercialVisual==='original-graphic'||['own','usable','licensed','authorized'].includes(m.rights));
+  const masterId=()=>typeof state!=='undefined'?state.factoryMeta?.masterProduct?.id:null;
   function applyMaster(m){
     const t=(typeof TEMPLATES!=='undefined'?TEMPLATES:[]).find(x=>x.id===m.template);
-    if(!t||typeof state==='undefined') return false;
-    state.type=t.product; state.templateId=t.id; state.photoId=m.photo; state.image=null;
-    state.data={...state.data,title:m.title||t.title,subtitle:m.subtitle||t.subtitle,body:m.body||t.body,category:m.category||t.category,location:m.location||t.location,intro:m.intro||t.intro,items:m.items||t.items,headline:m.headline||t.headline||'',fact:m.fact||'',factLabel:m.factLabel||'',source:m.source||'',sourceUrl:m.sourceUrl||''};
-    state.factoryMeta={...(state.factoryMeta||{}),masterProduct:{id:m.id,number:m.number,name:m.name,collection:m.collectionName,role:m.role,promise:m.promise},
-      provenance:{territory:'San Patricio del Chañar, Neuquén',fact:m.fact,factLabel:m.factLabel,source:m.source,sourceUrl:m.sourceUrl,photo:m.photo,photoSource:m.photoSource,photoUrl:m.photoUrl,photoAuthor:m.photoAuthor||'',photoLicense:m.photoLicense||'',rights:m.rights},
-      seal:m.seal,commercialVisual:m.commercialVisual,commercialRights:commercialReady(m),rightsNote:m.commercialVisual==='original-graphic'?'Visual editorial original de Fábrica Chañar; la foto de referencia no forma parte del producto comercial.':'Imagen con estado de reutilización registrado.'};
+    if(!t||typeof state==='undefined')return false;
+    state.type=t.product;state.templateId=t.id;state.photoId=m.photo;state.image=null;
+    state.data={title:m.title||t.title||'',subtitle:m.subtitle||t.subtitle||'',body:m.body||t.body||'',category:m.category||t.category||'',location:m.location||t.location||'',intro:m.intro||t.intro||'',items:m.items||t.items||'',headline:m.headline||t.headline||''};
+    state.factoryMeta={masterProduct:{id:m.id,number:m.number,name:m.name,collection:m.collectionName,role:m.role,promise:m.promise},provenance:{territory:'San Patricio del Chañar, Neuquén',fact:m.fact,factLabel:m.factLabel,source:m.source,sourceUrl:m.sourceUrl,photo:m.photo,photoSource:m.photoSource,photoUrl:m.photoUrl,photoAuthor:m.photoAuthor||'',photoLicense:m.photoLicense||'',rights:m.rights},seal:m.seal,commercialVisual:m.commercialVisual,commercialRights:commercialReady(m),rightsNote:m.commercialVisual==='original-graphic'?'Arte editorial original de Fábrica Chañar. La imagen externa se conserva únicamente como referencia.':'La imagen utilizada tiene un estado de reutilización registrado.'};
     if(typeof renderProducts==='function')renderProducts();
     if(typeof renderTemplates==='function')renderTemplates();
     if(typeof renderForm==='function')renderForm();
     if(typeof renderPreview==='function')renderPreview();
-    window.FabricaArtDirection?.apply?.();
-    window.FabricaMasterVisuals?.apply?.();
+    window.FabricaArtDirection?.apply?.();window.FabricaMasterVisuals?.apply?.();
     return true;
   }
-  async function saveMaster(m){
-    if(!commercialReady(m)) return null;
-    if(typeof validate==='function'&&!validate()) return null;
+  function snapshot(m){
     const p=photo(m.photo);
-    const item={
-      id:`MASTER-${m.number}-${Date.now()}`,
-      type:state.type,templateId:state.templateId,data:{...state.data},image:state.image||null,photoId:m.photo,
-      created:new Date().toISOString(),
-      factoryMeta:{...(state.factoryMeta||{}),masterProduct:{...state.factoryMeta.masterProduct,masterId:m.id,unit:true},
-        provenance:{...state.factoryMeta.provenance,photoName:p?.name||m.photo,photoRights:p?.kind||m.rights},commercialRights:true},
-      master:true
-    };
+    return {id:`MASTER-${m.number}`,type:state.type,templateId:state.templateId,data:{...state.data},image:state.image||null,photoId:m.photo,created:new Date().toISOString(),master:true,factoryMeta:{...(state.factoryMeta||{}),masterProduct:{...(state.factoryMeta?.masterProduct||{}),masterId:m.id,unit:true},provenance:{...(state.factoryMeta?.provenance||{}),photoName:p?.name||m.photo,photoRights:p?.kind||m.rights},commercialRights:true}};
+  }
+  function validateMaster(m){
+    if(!commercialReady(m))return 'Derechos insuficientes';
+    if(!m.title||!m.fact||!m.source)return 'Falta contenido editorial obligatorio';
+    if(!m.template)return 'Falta plantilla';
+    return null;
+  }
+  async function saveMaster(m){
+    const problem=validateMaster(m);if(problem)return null;
+    const item=snapshot(m);
     const old=typeof library==='function'?library():[];
     const filtered=old.filter(x=>x?.factoryMeta?.masterProduct?.id!==m.id);
     if(typeof setLibrary==='function')setLibrary([item,...filtered].slice(0,18));
     return item;
   }
-  async function manufactureAll(){
-    const list=products(); if(!list.length)return;
-    const button=$('#btnManufactureMasters'); button?.classList.add('is-working');
-    const statusEl=$('#masterStatus');
-    const made=[];
-    try{
-      for(let i=0;i<list.length;i++){
-        const m=list[i];
-        if(!applyMaster(m))continue;
-        await wait(180);
-        const item=await saveMaster(m);
-        if(item)made.push(item);
-        if(statusEl)statusEl.textContent=`Fabricando ${i+1}/${list.length} · ${m.name}`;
-        await wait(120);
-      }
-      document.dispatchEvent(new CustomEvent('fabrica:masters-ready',{detail:{products:list,made}}));
-      if(statusEl)statusEl.textContent=`✓ ${made.length}/${list.length} productos comerciales fabricados y guardados en Biblioteca.`;
-      if(typeof status==='function')status(`✦ Edición 01 terminada: ${made.length} piezas comerciales listas para ofrecer.`);
-      updateMasterCards();
-      $('#libraryPanel')?.scrollIntoView({behavior:'smooth',block:'start'});
-    }finally{button?.classList.remove('is-working')}
+  async function manufactureAll(opts={}){
+    const list=products();if(!list.length)return {made:[],errors:['No hay productos maestros']};
+    if(manufactureAll.running)return manufactureAll.running;
+    manufactureAll.running=(async()=>{
+      const button=$('#btnManufactureMasters');button?.classList.add('is-working');button?.setAttribute('disabled','disabled');
+      const statusEl=$('#masterStatus');const made=[];const errors=[];
+      try{
+        for(let i=0;i<list.length;i++){
+          const m=list[i];const problem=validateMaster(m);
+          if(problem){errors.push(`${m.name}: ${problem}`);continue}
+          if(statusEl)statusEl.textContent=`Fabricando ${i+1}/${list.length} · ${m.name}`;
+          if(!applyMaster(m)){errors.push(`${m.name}: no se pudo montar`);continue}
+          await wait(120);
+          const item=await saveMaster(m);if(item)made.push(item);else errors.push(`${m.name}: no se pudo guardar`);
+          await wait(80);
+        }
+        document.dispatchEvent(new CustomEvent('fabrica:masters-ready',{detail:{products:list,made,errors}}));
+        if(statusEl)statusEl.textContent=errors.length?`⚠ ${made.length}/${list.length} fabricadas · ${errors.length} requieren revisión.`:`✓ EDICIÓN 01 · ${made.length}/${list.length} piezas fabricadas, verificadas y guardadas.`;
+        if(typeof status==='function')status(errors.length?`Edición 01: ${made.length} listas · ${errors.length} con revisión.`:`✦ Edición 01 terminada. Las ${made.length} piezas están listas para ofrecer.`);
+        updateMasterCards();
+        if(!opts.silent)$('#libraryPanel')?.scrollIntoView({behavior:'smooth',block:'start'});
+        return {made,errors};
+      }finally{button?.classList.remove('is-working');button?.removeAttribute('disabled');manufactureAll.running=null}
+    })();
+    return manufactureAll.running;
   }
   function render(){
     if($('#masterProductsPanel'))return;
-    const anchor=$('#collectionStudio')||$('.controls'); if(!anchor)return;
+    const anchor=$('#collectionStudio')||$('.controls');if(!anchor)return;
     const sec=document.createElement('section');sec.id='masterProductsPanel';sec.className='master-products-panel';
-    sec.innerHTML=`<div class="master-head"><div><p class="eyebrow">EDICIÓN COMERCIAL 01 · PRODUCTOS MAESTROS</p><h2>Seis piezas para producir y vender</h2><p>Seis objetos editoriales cerrados: dirección visual, dato real, fuente, procedencia, reverso, sello y control de derechos. Las fotos públicas de referencia se usan para investigar; nunca se venden sin licencia.</p></div><button id="btnManufactureMasters" class="master-production" type="button">⚡ FABRICAR 1 DE CADA UNO</button></div><div id="masterGrid" class="master-grid">${products().map(m=>`<article class="master-card" data-master-id="${m.id}"><div class="master-number">${String(m.number).padStart(2,'0')}</div><div class="master-copy"><b>${m.name}</b><span>${m.product} · ${m.collectionName}</span><small>${m.factLabel}: ${m.fact}</small></div><div class="master-proof">${m.commercialVisual==='original-graphic'?'✦ arte editorial original · foto externa solo de referencia':'✓ imagen con reutilización registrada'} · dato con fuente</div></article>`).join('')}</div><div id="masterStatus" class="master-status">Edición comercial cerrada · lista para fabricar.</div>`;
+    sec.innerHTML=`<div class="master-head"><div><p class="eyebrow">EDICIÓN COMERCIAL 01 · PRODUCTOS MAESTROS</p><h2>Seis piezas para producir y vender</h2><p>La Fábrica hace la selección, compone el objeto, comprueba el contenido, controla derechos y guarda la edición. Elías solo decide qué ofrecer.</p></div><button id="btnManufactureMasters" class="master-production" type="button">⚡ FABRICAR EDICIÓN 01</button></div><div id="masterGrid" class="master-grid">${products().map(m=>`<article class="master-card" data-master-id="${m.id}"><div class="master-number">${String(m.number).padStart(2,'0')}</div><div class="master-copy"><b>${m.name}</b><span>${m.product} · ${m.collectionName}</span><small>${m.factLabel}: ${m.fact}</small></div><div class="master-proof">${m.commercialVisual==='original-graphic'?'✦ arte original · referencia externa no vendida':'✓ imagen con reutilización registrada'} · fuente documental registrada</div></article>`).join('')}</div><div id="masterStatus" class="master-status">Control automático listo · 0 decisiones de diseño requeridas.</div>`;
     anchor.parentNode.insertBefore(sec,anchor.nextSibling);
-    sec.querySelector('#btnManufactureMasters').onclick=manufactureAll;
+    sec.querySelector('#btnManufactureMasters').onclick=()=>manufactureAll();
   }
-  function updateMasterCards(){
-    const lib=typeof library==='function'?library():[];
-    document.querySelectorAll('.master-card').forEach(c=>{const id=c.dataset.masterId;if(lib.some(x=>x.factoryMeta?.masterProduct?.id===id&&x.factoryMeta?.commercialRights))c.classList.add('is-made')});
+  function updateMasterCards(){const lib=typeof library==='function'?library():[];document.querySelectorAll('.master-card').forEach(c=>{const id=c.dataset.masterId;c.classList.toggle('is-made',lib.some(x=>x?.factoryMeta?.masterProduct?.id===id&&x?.factoryMeta?.commercialRights===true))})}
+  function boot(){
+    render();updateMasterCards();
+    // Ley de casi nula intervención: si la edición 01 todavía no existe, se fabrica sola una vez.
+    const hasEdition=products().length>0&&(typeof library==='function'?library():[]).some(x=>x?.master===true&&x?.factoryMeta?.commercialRights===true);
+    if(!hasEdition)setTimeout(()=>manufactureAll({silent:true}),900);
   }
-  window.FabricaMasterFactory={version:3,manufactureAll,applyMaster,products};
-  document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{render();updateMasterCards()},320));
+  window.FabricaMasterFactory={version:4,manufactureAll,applyMaster,products,commercialReady,validateMaster};
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,320));
 })();
