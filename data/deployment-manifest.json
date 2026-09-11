@@ -1,13 +1,12 @@
 {
-  "version":"8.0.0",
+  "version":"9.0.0",
   "modo":"produccion",
   "plataforma":"GitHub Pages",
   "fuente":"main",
   "pipeline":".github/workflows/pages.yml",
   "url":"https://eliasmartinezcultural-glitch.github.io/fabrica-chanar/",
   "regla":"Cada push a main dispara un despliegue del sitio estatico.",
-  "ultimo_control":"workflow deploy ejecutado correctamente",
-  "run_id":34617920007,
-  "estado":"desplegado",
-  "nota":"La aplicación sigue siendo una herramienta interna de Ocarina aunque técnicamente esté publicada en GitHub Pages."
+  "ultimo_control":"v9 encolado para despliegue automatico",
+  "estado":"despliegue_v9_pendiente_de_verificacion",
+  "nota":"No se declara exitoso el despliegue v9 hasta comprobar la ejecucion de Actions. La aplicación sigue siendo una herramienta interna de Ocarina aunque técnicamente esté publicada en GitHub Pages."
 }
