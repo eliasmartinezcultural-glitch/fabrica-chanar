@@ -1,11 +1,12 @@
-/* FÁBRICA CHAÑAR — PRODUCTOS MAESTROS v2
-   Investigación editorial local: San Patricio del Chañar, Neuquén.
-   Regla: cada dato tiene fuente identificable y cada imagen tiene estado de derechos.
+/* FÁBRICA CHAÑAR — PRODUCTOS MAESTROS v3
+   Edición comercial 01: seis productos con visual comercial autorizado.
+   Regla: una foto pública de referencia nunca se considera permiso de venta.
+   Cuando la foto no está licenciada/autorizada, la pieza usa una ilustración editorial original generada por la propia Fábrica.
 */
 const MASTER_PRODUCTS=[
   {
     id:'mp-puerta-chanar', number:1, collection:'recuerdito', template:'p-ingreso',
-    name:'La puerta del Chañar', product:'postal', photo:'ingreso',
+    name:'La puerta del Chañar', product:'postal', photo:'ingreso', commercialVisual:'licensed-photo',
     promise:'Una pieza de bienvenida y pertenencia.',
     title:'San Patricio del Chañar', subtitle:'Una puerta al valle, al vino y a las historias del territorio.',
     body:'Una pequeña pieza para guardar la llegada, la identidad y el paisaje de San Patricio del Chañar.',
@@ -17,7 +18,7 @@ const MASTER_PRODUCTS=[
   },
   {
     id:'mp-vinedos-estepa', number:2, collection:'vino', template:'p-vinedos',
-    name:'Viñedos y estepa', product:'postal', photo:'malma2',
+    name:'Viñedos y estepa', product:'postal', photo:'malma2', commercialVisual:'original-graphic',
     promise:'El paisaje productivo como recuerdo.',
     title:'Donde el vino encuentra la estepa', subtitle:'Viñedos, paisaje patagónico y agua de riego.',
     body:'Una mirada al contraste entre el oasis productivo y la estepa que rodea San Patricio del Chañar.',
@@ -29,19 +30,19 @@ const MASTER_PRODUCTS=[
   },
   {
     id:'mp-tiempo-cosecha', number:3, collection:'vino', template:'p-vendimia',
-    name:'Tiempo de cosecha', product:'postal', photo:'vendimia1',
+    name:'Tiempo de cosecha', product:'postal', photo:'vendimia1', commercialVisual:'original-graphic',
     promise:'La vendimia como escena de territorio.',
     title:'Tiempo de cosecha', subtitle:'El paisaje se llena de uvas, trabajo y encuentro.',
     body:'Una pieza sobre el momento en que producción, paisaje y cultura se encuentran en torno a la vendimia.',
     fact:'La Vendimia Neuquina 2026 reunió propuestas de bodegas y emprendimientos vitivinícolas de San Patricio del Chañar, entre ellos Familia Schroeder, Malma, Patritti, Aicardi y El Chical Patagónico.',
     factLabel:'DATO REAL',
     source:'Neuquén Informa · El vino neuquino se posiciona con identidad propia', sourceUrl:'https://www.neuqueninforma.gob.ar/noticias/2026/05/08/257340-el-vino-neuquino-se-posiciona-con-identidad-propia',
-    photoSource:'LM Neuquén · Vendimia Neuquina', photoUrl:'https://www.lmneuquen.com/neuquen/san-patricio-del-chanar-celebro-el-exito-la-vendimia-neuquina-2025-n1180085', rights:'reference',
+    photoSource:'LM Neuquén · Vendimia Neuquina', photoUrl:'https://www.lmneuquen.com/neuquen/en-17-fotos-la-vendimia-neuquina-se-lucio-bodega-malma-n1231663', rights:'reference',
     collectionName:'Vino y paisaje', seal:'TIEMPO DE COSECHA', role:'vendimia'
   },
   {
     id:'mp-fiestas-raices', number:4, collection:'raices', template:'p-pelon',
-    name:'Fiestas y raíces', product:'postal', photo:'pelon',
+    name:'Fiestas y raíces', product:'postal', photo:'pelon', commercialVisual:'original-graphic',
     promise:'Una pieza sobre producción, campo y comunidad.',
     title:'Fiestas y raíces', subtitle:'Producción, vida rural y encuentro.',
     body:'Una postal que reúne la dimensión productiva, rural y cultural de San Patricio del Chañar.',
@@ -53,7 +54,7 @@ const MASTER_PRODUCTS=[
   },
   {
     id:'mp-pequenas-historias', number:5, collection:'cultura', template:'f-chical',
-    name:'Pequeñas historias · El Chical', product:'ficha', photo:'chical',
+    name:'Pequeñas historias · El Chical', product:'ficha', photo:'chical', commercialVisual:'original-graphic',
     promise:'Una pequeña ficha documental que no parezca un formulario.',
     title:'Bodega El Chical', category:'Cultura y turismo',
     body:'Bodega urbana de San Patricio del Chañar que combina vino con una propuesta cultural y turística, incorporándose a la oferta vitivinícola local en 2026.',
@@ -61,12 +62,12 @@ const MASTER_PRODUCTS=[
     fact:'El Chical se incorporó en 2026 a la oferta vitivinícola de San Patricio del Chañar como bodega urbana y espacio cultural.',
     factLabel:'PEQUEÑA HISTORIA',
     source:'Neuquén Informa · El Chical 2026', sourceUrl:'https://www.neuqueninforma.gob.ar/noticias/2026/04/03/255930-el-chical-se-suma-a-la-oferta-vitivinicola-de-san-patricio-del-chanar',
-    photoSource:'Neuquén Informa · El Chical 2026', photoUrl:'https://www.neuqueninforma.gob.ar/noticias/2026/04/03/255930-el-chical-se-suma-a-la-oferta-vitivinicola-de-san-patricio-del-chanar', rights:'reference',
+    photoSource:'Neuquen Informa · El Chical 2026', photoUrl:'https://www.neuqueninforma.gob.ar/noticias/2026/04/03/255930-el-chical-se-suma-a-la-oferta-vitivinicola-de-san-patricio-del-chanar', rights:'reference',
     collectionName:'Pequeñas historias', seal:'FICHA CHAÑARENSE', role:'documental'
   },
   {
     id:'mp-pedacitos-territorio', number:6, collection:'territorio', template:'g-identidad',
-    name:'Pedacitos de territorio', product:'guide', photo:'dique-chanar-01',
+    name:'Pedacitos de territorio', product:'guide', photo:'dique-chanar-01', commercialVisual:'licensed-photo',
     promise:'Una guía breve para leer Chañar como territorio.',
     title:'Pedacitos de territorio',
     intro:'Una pequeña guía para mirar San Patricio del Chañar más allá de una sola postal.',
@@ -80,4 +81,4 @@ const MASTER_PRODUCTS=[
     collectionName:'Pedacitos de territorio', seal:'PARA RECORRER', role:'guía'
   }
 ];
-window.FabricaMasterProducts={version:2,products:MASTER_PRODUCTS,find:id=>MASTER_PRODUCTS.find(x=>x.id===id),byNumber:n=>MASTER_PRODUCTS.find(x=>x.number===n)};
+window.FabricaMasterProducts={version:3,products:MASTER_PRODUCTS,find:id=>MASTER_PRODUCTS.find(x=>x.id===id),byNumber:n=>MASTER_PRODUCTS.find(x=>x.number===n)};
