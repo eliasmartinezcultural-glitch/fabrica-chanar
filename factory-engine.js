@@ -1,85 +1,41 @@
-/* FÁBRICA CHAÑAR — MOTOR AUTÓNOMO v4
-   La complejidad vive adentro. Cada producto tiene un contrato, una dirección visual y una selección corta de hasta 20 fotos.
-   Regla: mejor una selección pequeña y buena que un catálogo infinito.
+/* FÁBRICA CHAÑAR — MOTOR AUTÓNOMO v5
+   Una sola mecánica para cuatro productos.
+   El producto cambia el resultado editorial, nunca la dificultad de uso.
 */
 (function(){
   const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   const clean=v=>typeof v==='string'?v.trim():'';
   const photoBy=id=>typeof PHOTO_BANK!=='undefined'?PHOTO_BANK.find(p=>p.id===id):null;
   const resources=()=>window.FabricaAssets?.resources?.()||((typeof PHOTO_BANK!=='undefined')?PHOTO_BANK:[]);
-  const usablePhoto=t=>photoBy(t?.photo)?.kind==='usable';
   const candidatesFor=type=>(typeof TEMPLATES==='undefined'?[]:TEMPLATES.filter(t=>t.product===type));
-
   const PRODUCT_CONTRACTS={
-    postal:{identity:'recuerdo visual',promise:'una pieza breve, emotiva y coleccionable',needs:['title','subtitle','body'],rejects:['texto largo','datos dudosos'],outputs:['png','jpg','print'],seal:'HECHO EN CHAÑAR',sealNote:'Una pieza nacida de este territorio'},
-    ficha:{identity:'pequeña pieza documental',promise:'informar sin parecer un formulario',needs:['title','category','body','location'],rejects:['afirmaciones no verificadas','direcciones inventadas'],outputs:['png','jpg','print'],seal:'FICHA CHAÑARENSE',sealNote:'Territorio · memoria · identidad'},
-    guide:{identity:'acompañante de recorrido',promise:'convertir información en una experiencia sencilla',needs:['title','intro','items'],rejects:['horarios inventados','recomendaciones presentadas como confirmadas'],outputs:['png','jpg','print'],seal:'PARA RECORRER',sealNote:'Una guía breve del territorio'},
-    infographic:{identity:'dato visual',promise:'hacer comprensible una idea en pocos segundos',needs:['title','headline','body'],rejects:['estadísticas sin fuente','precisión falsa'],outputs:['png','jpg','print'],seal:'MIRADA LOCAL',sealNote:'Información convertida en imagen'}
+    postal:{identity:'recuerdo visual',promise:'breve, emotivo, coleccionable',needs:['title','subtitle','body'],maxWords:55,visualWeight:'alto',layout:'imagen protagonista · aire · título · dato · sello',reverse:'mini historia + dato + procedencia + crédito',defaultFormat:'print',formats:['print','vertical','square'],seal:'HECHO EN CHAÑAR',sealNote:'Una pieza nacida de este territorio',rejects:['texto largo','datos dudosos']},
+    ficha:{identity:'pieza documental',promise:'informar sin parecer formulario',needs:['title','category','body','location'],maxWords:85,visualWeight:'medio',layout:'imagen documental · ficha editorial · categoría · lugar · dato',reverse:'contexto + fuente + procedencia + crédito',defaultFormat:'print',formats:['print','vertical','square'],seal:'FICHA CHAÑARENSE',sealNote:'Territorio · memoria · identidad',rejects:['afirmaciones no verificadas','direcciones inventadas']},
+    guide:{identity:'acompañante de recorrido',promise:'convertir información en una experiencia sencilla',needs:['title','intro','items'],maxWords:110,visualWeight:'medio',layout:'apertura · recorrido numerado · pequeños hitos · cierre',reverse:'fuentes + advertencias de actualidad + procedencia',defaultFormat:'print',formats:['print','vertical','horizontal'],seal:'PARA RECORRER',sealNote:'Una guía breve del territorio',rejects:['horarios inventados','recomendaciones presentadas como confirmadas']},
+    infographic:{identity:'dato visual',promise:'hacer comprensible una idea en pocos segundos',needs:['title','headline','body'],maxWords:65,visualWeight:'alto',layout:'titular fuerte · dato central · bloques · fuente',reverse:'metodología simple + fuente + fecha de consulta',defaultFormat:'vertical',formats:['vertical','square','print'],seal:'MIRADA LOCAL',sealNote:'Información convertida en imagen',rejects:['estadísticas sin fuente','precisión falsa']}
   };
-
   const STYLE_VALUES={
-    patagonia:{mood:'territorio',accent:'cielo',badge:'✦ CHAÑAR',categories:['territorio','agua','arquitectura','rural','turismo']},
-    vino:{mood:'vino y paisaje',accent:'uva',badge:'🍇 CHAÑAR · VINO',categories:['vino','territorio','turismo','arquitectura']},
-    cava:{mood:'oficio y detalle',accent:'tierra',badge:'◉ OFICIO LOCAL',categories:['vino','arquitectura','cultura','territorio']},
-    vendimia:{mood:'celebración',accent:'cosecha',badge:'✺ TIEMPO DE COSECHA',categories:['vendimia','vino','frutales','territorio']},
-    fiesta:{mood:'fiesta y raíces',accent:'fruta',badge:'♥ RAÍCES CHAÑARENSES',categories:['fiesta','frutales','rural','cultura']},
-    arte:{mood:'cultura contemporánea',accent:'coral',badge:'✦ CULTURA LOCAL',categories:['cultura','arquitectura','turismo','vino']}
+    patagonia:{mood:'territorio',accent:'cielo',badge:'✦ CHAÑAR',categories:['territorio','agua','arquitectura','rural','turismo'],palette:['#f5eee0','#305a68','#c69b5a']},
+    vino:{mood:'vino y paisaje',accent:'uva',badge:'🍇 CHAÑAR · VINO',categories:['vino','territorio','turismo','arquitectura'],palette:['#f4eadc','#6f3f55','#b88752']},
+    cava:{mood:'oficio y detalle',accent:'tierra',badge:'◉ OFICIO LOCAL',categories:['vino','arquitectura','cultura','territorio'],palette:['#f2e8d8','#76553b','#b9a078']},
+    vendimia:{mood:'celebración',accent:'cosecha',badge:'✺ TIEMPO DE COSECHA',categories:['vendimia','vino','frutales','territorio'],palette:['#f7ead7','#8e3d28','#c79246']},
+    fiesta:{mood:'fiesta y raíces',accent:'fruta',badge:'♥ RAÍCES CHAÑARENSES',categories:['fiesta','frutales','rural','cultura'],palette:['#fff0dc','#b94d38','#e3a52a']},
+    arte:{mood:'cultura contemporánea',accent:'coral',badge:'✦ CULTURA LOCAL',categories:['cultura','arquitectura','turismo','vino'],palette:['#f4e8e4','#7d4b68','#d49a6a']}
   };
-
-  /* Dirección visual interna: 20 posibilidades como máximo por producto.
-     No son 20 diseños automáticos: son 20 lugares curatoriales desde los que la Fábrica puede elegir una imagen.
-     Si el banco real todavía es menor, no inventamos material: simplemente devolvemos lo disponible. */
   const PHOTO_ROLES={
     postal:['paisaje protagonista','puerta del pueblo','viñedo abierto','detalle de uva','bodega por dentro','cosecha','camino rural','agua y riego','frutales','bardas','arquitectura local','fiesta popular','oficio','manos trabajando','mesa local','textura de tierra','cielo patagónico','contraste verde-estepa','detalle cultural','escena de encuentro'],
     ficha:['vista general','fachada','detalle arquitectónico','interior','paisaje cercano','viñedo','actividad productiva','objeto significativo','camino de acceso','entorno rural','agua','frutales','personas en actividad','oficio','señalética','detalle cultural','textura local','vista documental','escena de experiencia','plano de contexto'],
     guide:['imagen de apertura','punto de llegada','paisaje','viñedos','bodega','camino','río','chacras','frutales','estepa','arquitectura','gastronomía','fiesta','artesanía','actividad cultural','detalle de oficio','escena humana','atardecer','textura territorial','imagen de cierre'],
     infographic:['territorio','agua','chacras','viñedos','bodegas','vendimia','frutales','fiestas','ruralidad','estepa','arquitectura','cultura','oficios','turismo','comunidad','detalle productivo','contraste paisaje','textura','símbolo local','imagen síntesis']
   };
-
-  function scoreTemplate(t,{ownPhoto=false}={}){
-    let score=0;const contract=PRODUCT_CONTRACTS[t?.product];
-    if(ownPhoto)score+=18;if(usablePhoto(t))score+=100;if(clean(t?.title))score+=15;if(contract)score+=8;
-    if(clean(t?.subtitle)||clean(t?.intro)||clean(t?.headline))score+=8;if(clean(t?.body))score+=8;
-    if(t?.product==='guide'&&clean(t?.items))score+=8;if(t?.product==='ficha'&&clean(t?.category)&&clean(t?.location))score+=8;
-    if(STYLE_VALUES[t?.style])score+=4;return score;
-  }
+  function scoreTemplate(t,{ownPhoto=false}={}){let s=0,c=PRODUCT_CONTRACTS[t?.product];if(ownPhoto)s+=18;if(clean(t?.title))s+=15;if(c)s+=8;if(clean(t?.subtitle)||clean(t?.intro)||clean(t?.headline))s+=8;if(clean(t?.body))s+=8;if(t?.product==='guide'&&clean(t?.items))s+=12;if(t?.product==='ficha'&&clean(t?.category)&&clean(t?.location))s+=12;if(STYLE_VALUES[t?.style])s+=4;const p=photoBy(t?.photo);if(['own','usable'].includes(p?.kind))s+=30;return s}
   function choose(type,ownPhoto=false){return candidatesFor(type).slice().sort((a,b)=>scoreTemplate(b,{ownPhoto})-scoreTemplate(a,{ownPhoto}))[0]||null}
-  function fill(t){if(!t)return null;return {title:t.title||'',subtitle:t.subtitle||'',body:t.body||'',category:t.category||'',location:t.location||'',source:t.source||'',headline:t.headline||'',intro:t.intro||'',items:t.items||''}}
+  function fill(t){return t?{title:t.title||'',subtitle:t.subtitle||'',body:t.body||'',category:t.category||'',location:t.location||'',source:t.source||'',headline:t.headline||'',intro:t.intro||'',items:t.items||''}:null}
   function contract(type){return PRODUCT_CONTRACTS[type]||PRODUCT_CONTRACTS.postal}
-  function validate(type,t){const c=contract(type),d=fill(t),missing=c.needs.filter(k=>!clean(d[k])),photo=photoBy(t?.photo);return {ok:missing.length===0,missing,photoKind:photo?.kind||null,hasSafePhoto:photo?.kind==='usable',contract:c,style:STYLE_VALUES[t?.style]||STYLE_VALUES.patagonia}}
-
-  function visualShortlist(type,styleKey){
-    const style=STYLE_VALUES[styleKey]||STYLE_VALUES.patagonia;
-    const list=resources().map((p,index)=>{
-      const cats=Array.isArray(p.categories)?p.categories:[];
-      const hits=cats.filter(c=>style.categories.includes(c)).length;
-      const safe=(p.kind==='own'||p.kind==='usable')?30:0;
-      return {...p,_visualScore:hits*20+safe+(p.id?1:0),_role:PHOTO_ROLES[type]?.[index%20]||'imagen local'};
-    }).sort((a,b)=>b._visualScore-a._visualScore).slice(0,20);
-    return {limit:20,count:list.length,roles:PHOTO_ROLES[type]||PHOTO_ROLES.postal,items:list};
-  }
-
-  function plan(preferredType){
-    const own=!!(typeof state!=='undefined'&&state.image),types=['postal','ficha','guide','infographic'];
-    const type=types.includes(preferredType)?preferredType:types[Math.floor(Math.random()*types.length)];
-    let template=choose(type,own),check=validate(type,template);
-    if(!check.ok){const alternative=candidatesFor(type).find(t=>validate(type,t).ok);if(alternative){template=alternative;check=validate(type,template)}}
-    const styleKey=template?.style||'patagonia',visual=visualShortlist(type,styleKey);
-    const commercialReady=!!(own||check.hasSafePhoto);
-    return {type,template,ownPhoto:own,commercialReady,needsPhoto:!own&&!check.hasSafePhoto,quality:check.ok?'curated':'needs-attention',contract:check.contract,style:check.style,missing:check.missing,badge:check.style.badge,visualShortlist:visual};
-  }
-
-  async function produce(options={}){
-    if(typeof state==='undefined')return {ok:false,reason:'state unavailable'};
-    const previousImage=state.image||null,p=plan(options.type);if(!p.template)return {ok:false,reason:'no template'};
-    state.type=p.type;applyTemplate(p.template,{keepImage:!!previousImage});state.image=previousImage;if(!previousImage)state.photoId=p.template.photo||null;
-    state.factoryMeta={version:4,curated:true,product:p.type,identity:p.contract.identity,promise:p.contract.promise,seal:p.contract.seal,sealNote:p.contract.sealNote,badge:p.badge,style:p.style,commercialReady:p.commercialReady,photoSelectionLimit:20,photoSelectionCount:p.visualShortlist.count,visualRoles:p.visualShortlist.roles};
-    renderProducts();renderTemplates();renderForm();renderPreview();
-    document.dispatchEvent(new CustomEvent('fabrica:working',{detail:{message:p.ownPhoto?'La Fábrica está trabajando con tu foto…':'La Fábrica está curando una pieza para vos…'}}));
-    await sleep(360);renderPreview();
-    document.dispatchEvent(new CustomEvent('fabrica:ready',{detail:{message:p.commercialReady?'Lista ✨ Pieza curada y preparada para descargar.':'Lista para revisar ✨ Para uso comercial, cargá una foto propia o una imagen con licencia reutilizable.'}}));
-    return {ok:true,...p};
-  }
-  function inspect(){const p=plan(typeof state!=='undefined'?state.type:null);return {version:4,type:state?.type,template:p.template?.id||null,photoKind:photoBy(state?.photoId)?.kind||null,commercialReady:p.commercialReady,needsPhoto:p.needsPhoto,quality:p.quality,seal:p.contract.seal,photoSelectionLimit:20,photoSelectionCount:p.visualShortlist.count}}
-  window.FabricaEngine={version:4,plan,produce,inspect,choose,fill,validate,contracts:PRODUCT_CONTRACTS,visualShortlist,photoRoles:PHOTO_ROLES};
+  function validate(type,t){const c=contract(type),d=fill(t),missing=c.needs.filter(k=>!clean(d[k])),photo=photoBy(t?.photo);return{ok:missing.length===0,missing,photoKind:photo?.kind||null,hasSafePhoto:['own','usable','licensed','authorized'].includes(photo?.kind)||['own','licensed','authorized'].includes(photo?.rights),contract:c,style:STYLE_VALUES[t?.style]||STYLE_VALUES.patagonia}}
+  function visualShortlist(type,styleKey){const style=STYLE_VALUES[styleKey]||STYLE_VALUES.patagonia;const list=resources().map((p,i)=>{const cats=Array.isArray(p.categories)?p.categories:[],hits=cats.filter(c=>style.categories.includes(c)).length,safe=['own','usable'].includes(p.kind)?30:0;return{...p,_visualScore:hits*20+safe+(p.id?1:0),_role:PHOTO_ROLES[type]?.[i%20]||'imagen local'}}).sort((a,b)=>b._visualScore-a._visualScore).slice(0,20);return{limit:20,count:list.length,roles:PHOTO_ROLES[type]||PHOTO_ROLES.postal,items:list}}
+  function plan(preferredType){const types=Object.keys(PRODUCT_CONTRACTS),own=!!(typeof state!=='undefined'&&state.image),type=types.includes(preferredType)?preferredType:types[0];let template=choose(type,own),check=validate(type,template);if(!check.ok){const alt=candidatesFor(type).find(t=>validate(type,t).ok);if(alt){template=alt;check=validate(type,template)}}const styleKey=template?.style||'patagonia',visual=visualShortlist(type,styleKey),c=check.contract;return{type,template,ownPhoto:own,commercialReady:!!(own||check.hasSafePhoto),needsPhoto:!own&&!check.hasSafePhoto,quality:check.ok?'curated':'needs-attention',contract:c,style:check.style,missing:check.missing,badge:check.style.badge,visualShortlist:visual}}
+  async function produce(options={}){if(typeof state==='undefined')return{ok:false,reason:'state unavailable'};const previousImage=state.image||null,p=plan(options.type);if(!p.template)return{ok:false,reason:'no template'};state.type=p.type;applyTemplate(p.template,{keepImage:!!previousImage});state.image=previousImage;if(!previousImage)state.photoId=p.template.photo||null;const format=options.format||p.contract.defaultFormat;state.factoryMeta={version:5,curated:true,centralFlow:true,product:p.type,identity:p.contract.identity,promise:p.contract.promise,seal:p.contract.seal,sealNote:p.contract.sealNote,badge:p.badge,style:p.style,visualDirection:p.contract.layout,reversePlan:p.contract.reverse,maxWords:p.contract.maxWords,formats:p.contract.formats,format,formatSpec:format,commercialReady:p.commercialReady,photoSelectionLimit:20,photoSelectionCount:p.visualShortlist.count,visualRoles:p.visualShortlist.roles};renderProducts?.();renderTemplates?.();renderForm?.();renderPreview?.();document.dispatchEvent(new CustomEvent('fabrica:working',{detail:{message:`La Fábrica está fabricando ${p.contract.identity}…`}}));await sleep(360);renderPreview?.();document.dispatchEvent(new CustomEvent('fabrica:ready',{detail:{message:p.commercialReady?'Lista ✨ Revisá, guardá o descargá.':'Lista ✨ Revisá. Para venderla necesitás derechos comerciales explícitos.'}}));return{ok:true,...p}}
+  function inspect(){const p=plan(typeof state!=='undefined'?state.type:null);return{version:5,type:state?.type,template:p.template?.id||null,photoKind:photoBy(state?.photoId)?.kind||null,commercialReady:p.commercialReady,needsPhoto:p.needsPhoto,quality:p.quality,contract:p.contract,style:p.style,photoSelectionLimit:20,photoSelectionCount:p.visualShortlist.count}}
+  window.FabricaEngine={version:5,plan,produce,choose,fill,validate,contracts:PRODUCT_CONTRACTS,visualShortlist,photoRoles:PHOTO_ROLES,styles:STYLE_VALUES};
 })();
