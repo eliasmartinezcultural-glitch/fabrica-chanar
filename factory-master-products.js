@@ -1,8 +1,8 @@
-/* FÁBRICA CHAÑAR — FABRICACIÓN MAESTRA v5
+/* FÁBRICA CHAÑAR — FABRICACIÓN MAESTRA v6
    Ley de producción: Elías interviene una sola vez; la Fábrica fabrica, verifica, guarda y ordena.
 */
 (function(){
-  const EDITION_REV=5,$=s=>document.querySelector(s),wait=ms=>new Promise(r=>setTimeout(r,ms));
+  const EDITION_REV=6,$=s=>document.querySelector(s),wait=ms=>new Promise(r=>setTimeout(r,ms));
   const products=()=>window.FabricaMasterProducts?.products||[];
   const photo=id=>(typeof PHOTO_BANK!=='undefined'?PHOTO_BANK:[]).find(p=>p.id===id)||null;
   const commercialReady=m=>!!m&&(m.commercialVisual==='original-graphic'||['own','usable','licensed','authorized'].includes(m.rights));
@@ -25,6 +25,6 @@
   }
   function render(){if($('#masterProductsPanel'))return;const anchor=$('#collectionStudio')||$('.controls');if(!anchor)return;const sec=document.createElement('section');sec.id='masterProductsPanel';sec.className='master-products-panel';sec.innerHTML=`<div class="master-head"><div><p class="eyebrow">EDICIÓN COMERCIAL 01 · PRODUCTOS MAESTROS</p><h2>Seis piezas para producir y vender</h2><p>La Fábrica selecciona, compone, verifica contenido y derechos y guarda la edición. Elías solo decide qué ofrecer.</p></div><button id="btnManufactureMasters" class="master-production" type="button">⚡ FABRICAR EDICIÓN 01</button></div><div id="masterGrid" class="master-grid">${products().map(m=>`<article class="master-card" data-master-id="${m.id}"><div class="master-number">${String(m.number).padStart(2,'0')}</div><div class="master-copy"><b>${m.name}</b><span>${m.product} · ${m.collectionName}</span><small>${m.factLabel}: ${m.fact}</small></div><div class="master-proof">${m.commercialVisual==='original-graphic'?'✦ arte original · referencia externa no vendida':'✓ imagen con reutilización registrada'} · fuente documental registrada</div></article>`).join('')}</div><div id="masterStatus" class="master-status">Control automático listo · sin decisiones de diseño.</div>`;anchor.parentNode.insertBefore(sec,anchor.nextSibling);sec.querySelector('#btnManufactureMasters').onclick=()=>manufactureAll()}
   function updateMasterCards(){const lib=typeof library==='function'?library():[];document.querySelectorAll('.master-card').forEach(c=>{const id=c.dataset.masterId;c.classList.toggle('is-made',lib.some(x=>x?.factoryMeta?.masterProduct?.id===id&&x?.factoryMeta?.commercialRights===true&&x?.factoryMeta?.editionRevision===EDITION_REV))})}
-  function boot(){render();updateMasterCards();const hasCurrent=products().length>0&&(typeof library==='function'?library():[]).filter(x=>x?.master===true&&x?.factoryMeta?.commercialRights===true).length===products().length&&library().every(x=>!x.master||x.factoryMeta?.editionRevision===EDITION_REV);if(!hasCurrent)setTimeout(()=>manufactureAll({silent:true}),900)}
-  window.FabricaMasterFactory={version:5,editionRevision:EDITION_REV,manufactureAll,applyMaster,products,commercialReady,validateMaster};document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,320));
+  function boot(){render();updateMasterCards();const lib=typeof library==='function'?library():[];const hasCurrent=products().length>0&&lib.filter(x=>x?.master===true&&x?.factoryMeta?.commercialRights===true).length===products().length&&lib.every(x=>!x.master||x.factoryMeta?.editionRevision===EDITION_REV);if(!hasCurrent)setTimeout(()=>manufactureAll({silent:true}),900)}
+  window.FabricaMasterFactory={version:6,editionRevision:EDITION_REV,manufactureAll,applyMaster,products,commercialReady,validateMaster};document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,320));
 })();
