@@ -1,5 +1,5 @@
 {
-  "version":"12.0.0",
+  "version":"13.0.0",
   "modo":"produccion",
   "plataforma":"GitHub Pages",
   "fuente":"main",
@@ -7,7 +7,7 @@
   "url":"https://eliasmartinezcultural-glitch.github.io/fabrica-chanar/",
   "regla":"Cada push a main dispara un despliegue del sitio estatico.",
   "ultimo_run":"pendiente_de_verificacion",
-  "estado":"despliegue_v12_en_progreso",
-  "cambios":"Primer ciclo real: registro documentado, control de fuentes/derechos, carga opcional de foto propia, generación de ficha/postal/guía, expediente JSON y medición de tiempo.",
+  "estado":"despliegue_v13_en_progreso",
+  "cambios":"Motor visual: un registro documentado genera formatos story, cuadrado y horizontal en SVG/HTML, paquete local y ficha tecnica.",
   "nota":"No se declara terminado un despliegue hasta comprobar Actions. La aplicación sigue siendo una herramienta interna de Ocarina aunque técnicamente esté publicada en GitHub Pages."
 }
