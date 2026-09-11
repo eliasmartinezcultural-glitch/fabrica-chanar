@@ -1,7 +1,5 @@
-/* FÁBRICA CHAÑAR — SELECTOR AUTOMÁTICO DE MATERIA PRIMA v2
-   Integración quirúrgica: el producto elegido por Elías es soberano.
-   La materia prima se selecciona y se inyecta en la fabricación, pero nunca
-   cambia el tipo de producto ni abre una segunda máquina de producción.
+/* FÁBRICA CHAÑAR — SELECTOR AUTOMÁTICO DE MATERIA PRIMA v3
+   Producto soberano + materia prima efectiva + autodiagnóstico.
 */
 (function(){
   const originals={produce:null};
@@ -16,20 +14,33 @@
     const selected=candidates[0]||{material:null,master:null,score:0,fit:0,sourceType:'none'};
     return {...selected,candidates:candidates.length,product};
   }
+  function assetFor(material){
+    const id=material?.photo?.asset;
+    return id?window.FabricaAssets?.find?.(id)||null:null;
+  }
   function attach(selection,product){
     if(typeof state==='undefined'||!selection?.material)return;
-    const material=selection.material,master=selection.master;
+    const material=selection.material,master=selection.master,asset=assetFor(material);
     const id=window.FabricaOcarinaSystem?.buildIdentity?.({collection:material.collection||master?.collection||'territorio',number:master?.number||1})||{};
     const fact=material.facts?.[0]||null;
     state.factoryMeta={...(state.factoryMeta||{}),
-      rawMaterial:{version:2,masterId:material.master||'',theme:material.theme||'',score:selection.score,fit:selection.fit,sourceType:selection.sourceType,photo:material.photo||null,facts:material.facts||[],microstory:material.microstory||'',sources:material.sources||[],credit:material.credit||''},
+      rawMaterial:{version:3,masterId:material.master||'',theme:material.theme||'',score:selection.score,fit:selection.fit,sourceType:selection.sourceType,photo:material.photo||null,facts:material.facts||[],microstory:material.microstory||'',sources:material.sources||[],credit:material.credit||''},
       ...id,
       productMaterialFit:{product,fit:selection.fit,selectionReason:selection.sourceType},
       photoSelection:{asset:material.photo?.asset||null,role:material.photo?.role||'',focus:material.photo?.focus||'',crop:material.photo?.crop||'',rights:material.photo?.rights||'unknown',commercialSafe:material.photo?.commercialSafe===true},
       selectedFact:fact,
-      materialSelection:'automatic'
+      materialSelection:'automatic',
+      materialPhotoApplied:false
     };
-    if(material.photo?.asset){state.photoId=material.photo.asset;state.factoryMeta.photoId=material.photo.asset;}
+    /* La materia prima no queda solo en metadata: pasa a ser la imagen efectiva. */
+    if(asset?.photo){
+      state.photoId=asset.id;
+      state.image=asset.photo;
+      state.factoryMeta.photoId=asset.id;
+      state.factoryMeta.materialPhotoApplied=true;
+      state.factoryMeta.materialPhotoSource=asset.source||'';
+      state.factoryMeta.materialPhotoCredit=material.credit||asset.author||'';
+    }
   }
   function install(){
     if(!window.FabricaEngine||originals.produce)return;
@@ -39,7 +50,6 @@
       const selected=select(type);
       const result=await originals.produce.call(this,options);
       if(selected.material){
-        /* Nunca aplicamos la maestra como producto: solo usamos sus materias. */
         attach(selected,type);
         if(typeof renderPreview==='function')renderPreview();
       }
@@ -47,8 +57,17 @@
     };
     window.FabricaEngine.selectMaterial=select;
     window.FabricaEngine.materials=materials;
-    window.FabricaEngine.materialSelectorVersion=2;
+    window.FabricaEngine.materialSelectorVersion=3;
+  }
+  function selfTest(){
+    const products=['postal','ficha','guide','infographic'];
+    const results=products.map(product=>{
+      const s=select(product);
+      return {product,master:s.master?.id||null,fit:s.fit,score:s.score,photo:s.material?.photo?.asset||null,commercialSafe:s.material?.photo?.commercialSafe===true,pass:!!s.material&&s.fit>0&&!!s.material.photo?.asset};
+    });
+    const ok=results.every(x=>x.pass);
+    return {version:3,ok,results,rule:'producto soberano → materia compatible → foto/dato/fuente → composición'};
   }
   document.addEventListener('DOMContentLoaded',()=>setTimeout(install,700));
-  window.FabricaMaterialSelector={version:2,select,masterFor,attach,install};
+  window.FabricaMaterialSelector={version:3,select,masterFor,attach,install,selfTest};
 })();
