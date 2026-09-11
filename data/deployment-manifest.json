@@ -1,5 +1,5 @@
 {
-  "version":"16.2.0",
+  "version":"17.0.0",
   "modo":"produccion",
   "plataforma":"GitHub Pages",
   "fuente":"main",
@@ -7,7 +7,7 @@
   "url":"https://eliasmartinezcultural-glitch.github.io/fabrica-chanar/",
   "metodologia":"auditar -> reparar -> probar -> desarrollar -> volver a probar -> desplegar -> verificar",
   "estado":"despliegue_pendiente_de_verificacion",
-  "cambios":"Se corrigio el control del Centro de Trabajo: produccion ya no se declara con una casilla, se registra a partir de acciones reales del fabricante; revision y entrega requieren acciones explicitas; el expediente conserva evidencia temporal.",
-  "limpieza":"Se mantiene el motor consolidado en v16.js sin auxiliares temporales.",
-  "nota":"No se declara terminado un despliegue hasta comprobar Actions. La aplicación sigue siendo una herramienta interna de Ocarina aunque técnicamente esté publicada en GitHub Pages."
+  "cambios":"Auditoria de coherencia del taller: se alineo la documentacion con la cabina activa, se agrego lenguaje de pieza local y una ruta minima para foto propia. La experiencia sigue priorizando piezas de Chañar y minima intervencion.",
+  "limpieza":"Los modulos historicos v8-v16 no se cargan en la cabina activa hasta una integracion deliberada.",
+  "nota":"No se declara terminado un despliegue hasta comprobar Actions y la carga real del sitio."
 }
