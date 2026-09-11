@@ -1,0 +1,30 @@
+{
+  "name": "Atlas Visual Chañar",
+  "version": "1.0",
+  "territory": "San Patricio del Chañar, Neuquén, Argentina",
+  "curation_rule": "Solo motivos verificables de San Patricio del Chañar. No usar Patagonia genérica para representar la localidad.",
+  "categories": [
+    {"id":"agua","name":"Agua y río","motifs":["Río Neuquén","Balneario Municipal","Dique Compensador"]},
+    {"id":"produccion","name":"Producción y chacras","motifs":["Chacras productivas","Fruticultura","Pelón","Cosecha","Trabajo rural"]},
+    {"id":"vino","name":"Vino y bodegas","motifs":["Bodega del Fin del Mundo","Bodega Malma","Bodega Familia Schroeder","Bodega Patritti","Bodega Secreto Patagónico","Bodega El Chical","Viñedos"]},
+    {"id":"cultura","name":"Cultura y fiestas","motifs":["Fiesta Provincial del Pelón","Vendimia Neuquina","Ferias","Música","Danzas","Artesanos y emprendedores"]},
+    {"id":"territorio","name":"Paisaje e identidad","motifs":["Estepa","Bardas","Caminos rurales","Miradores","Arquitectura local","Espacios públicos"]},
+    {"id":"turismo","name":"Turismo y experiencias","motifs":["Enoturismo","Gastronomía regional","Actividades en el río","Casa de Turismo","Recorridos de bodegas"]},
+    {"id":"deporte","name":"Comunidad y deporte","motifs":["Club San Patricio del Chañar","Polideportivo municipal","Estadio Municipal"]}
+  ],
+  "editorial_principles": [
+    "La fotografía debe ser local y reconocible.",
+    "El texto debe explicar una idea concreta, no rellenar espacio.",
+    "Cada composición debe tener una jerarquía visual clara.",
+    "La imagen y el concepto deben determinar la dirección artística.",
+    "No inventar datos, ubicaciones, horarios ni atribuciones.",
+    "Distinguir siempre entre imagen reutilizable y referencia pública.",
+    "Preferir pocas palabras bien trabajadas antes que bloques largos.",
+    "Cada producto debe poder funcionar como pieza terminada sin edición manual."
+  ],
+  "source_policy": {
+    "primary": ["Municipalidad de San Patricio del Chañar","Turismo Neuquén","Neuquén Informa"],
+    "secondary": ["medios regionales","redes sociales públicas de organismos y establecimientos locales"],
+    "image_rights": "No asumir permiso comercial por el solo hecho de que una imagen sea pública."
+  }
+}
