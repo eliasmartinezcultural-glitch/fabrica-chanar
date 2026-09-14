@@ -1,12 +1,14 @@
-/* FÁBRICA CHAÑAR — SELECTOR CERRADO v8
-   4 productos soberanos · 10 fotos por producto · 40 matrices.
-   v8: cada slot se consume una sola vez en la Biblioteca antes de volver a admitir producción.
+/* FÁBRICA CHAÑAR — SELECTOR CERRADO v9
+   4 productos soberanos · 10 slots por producto · 40 matrices.
+   v9: el consumo de slots queda en un ledger persistente separado de la Biblioteca.
+   La Biblioteca es archivo visible; el ledger protege la edición cerrada aunque se borren piezas.
    Una foto propia del usuario nunca es reemplazada por el material editorial seleccionado.
 */
 (function(){
   const originals={produce:null};
   const PRODUCTS=['postal','ficha','guide','infographic'];
   const validProducts=new Set(PRODUCTS);
+  const LEDGER_KEY='fabrica-chanar-closed-ledger-v1';
   function materials(){return window.FabricaRawMaterials?.items||[]}
   function catalog(){return window.FabricaClosedCatalog||null}
   function editorials(){return window.FabricaEditorialRealizations||null}
@@ -14,16 +16,40 @@
   function materialForMaster(masterId){return materials().find(m=>m.master===masterId)||null}
   function fitFor(material,product){return Number(material?.productFit?.[product]||0)}
   function savedItems(){try{return typeof library==='function'?library():[]}catch{return[]}}
-  function usedSlots(product){
-    const set=new Set();
+  function readLedger(){try{const x=JSON.parse(localStorage.getItem(LEDGER_KEY)||'{}');return x&&typeof x==='object'?x:{}}catch{return{}}}
+  function writeLedger(ledger){try{localStorage.setItem(LEDGER_KEY,JSON.stringify(ledger));return true}catch{return false}}
+  function syncLedgerFromLibrary(ledger){
     savedItems().forEach(item=>{
-      if(item?.type!==product)return;
+      const product=item?.type;
+      if(!validProducts.has(product))return;
       const slot=Number(item?.factoryMeta?.closedCatalog?.[product]?.slot||item?.factoryMeta?.editorialRealization?.slot||0);
-      if(slot>=1)set.add(slot);
+      if(slot<1)return;
+      ledger[product]=Array.isArray(ledger[product])?ledger[product]:[];
+      if(!ledger[product].includes(slot))ledger[product].push(slot);
     });
-    const currentSlot=Number(typeof state!=='undefined'?state.factoryMeta?.closedCatalog?.[product]?.slot||0:0);
-    if(currentSlot>=1&&typeof state!=='undefined'&&state.factoryMeta?.closedCatalog?.[product]?.committed===true)set.add(currentSlot);
-    return set;
+    PRODUCTS.forEach(product=>{ledger[product]=Array.from(new Set(ledger[product]||[])).filter(n=>Number.isInteger(Number(n))&&Number(n)>=1).map(Number).sort((a,b)=>a-b)});
+    writeLedger(ledger);
+    return ledger;
+  }
+  function usedSlots(product){
+    const ledger=syncLedgerFromLibrary(readLedger());
+    return new Set(ledger[product]||[]);
+  }
+  function commit(product,slot){
+    if(!validProducts.has(product))return false;
+    const n=Number(slot||0);
+    const closed=catalog()?.forProduct?.(product)||[];
+    if(n<1||!closed.some(row=>Number(row.slot)===n))return false;
+    const ledger=syncLedgerFromLibrary(readLedger());
+    ledger[product]=Array.isArray(ledger[product])?ledger[product]:[];
+    if(!ledger[product].includes(n))ledger[product].push(n);
+    ledger[product].sort((a,b)=>a-b);
+    const ok=writeLedger(ledger);
+    if(ok&&typeof state!=='undefined'&&state.factoryMeta?.closedCatalog?.[product]?.slot===n){
+      state.factoryMeta.closedCatalog[product].committed=true;
+      state.factoryMeta.productionCursor={...(state.factoryMeta.productionCursor||{}),committed:true,remainingAfterCommit:Math.max(0,closed.length-ledger[product].length)};
+    }
+    return ok;
   }
   function select(product){
     const safeProduct=validProducts.has(product)?product:'postal';
@@ -52,7 +78,7 @@
     const previous=state.factoryMeta?.closedCatalog||{};
     const rights=rightsFor(asset,editorial,material);
     state.factoryMeta={...(state.factoryMeta||{}),
-      rawMaterial:{version:8,masterId:material.master||'',theme:material.theme||'',score:selection.score,fit:selection.fit,sourceType:selection.sourceType,photo:material.photo||null,facts:material.facts||[],microstory:material.microstory||'',sources:material.sources||[],credit:material.credit||''},
+      rawMaterial:{version:9,masterId:material.master||'',theme:material.theme||'',score:selection.score,fit:selection.fit,sourceType:selection.sourceType,photo:material.photo||null,facts:material.facts||[],microstory:material.microstory||'',sources:material.sources||[],credit:material.credit||''},
       masterProduct:{version:1,id:master?.id||material.master||'',number:master?.number||null,collection:master?.collection||material.collection||'',template:master?.template||'',name:master?.name||''},
       ...id,
       productMaterialFit:{product,fit:selection.fit,selectionReason:selection.sourceType},
@@ -62,7 +88,7 @@
       selectedFact:fact,
       materialSelection:'closed-catalog',
       materialPhotoApplied:false,
-      productionCursor:{version:1,product,slot:selection.slot,total:selection.closedOptions,usedBefore:selection.usedSlots,remainingAfter:Math.max(0,selection.closedOptions-(selection.usedSlots.length+1)),policy:'each closed matrix is consumed once per saved piece'}
+      productionCursor:{version:1,product,slot:selection.slot,total:selection.closedOptions,usedBefore:selection.usedSlots,remainingAfter:Math.max(0,selection.closedOptions-(selection.usedSlots.length+1)),policy:'each closed matrix is consumed once; persistent ledger is finalized on save'}
     };
     state.factoryMeta.photoProvenance={version:1,asset:asset?.id||selection.photoAsset||null,source:asset?.source||editorial?.photoSource||'',url:asset?.url||editorial?.photoUrl||'',author:asset?.author||material?.photo?.author||material?.credit||'',license:asset?.license||material?.photo?.license||'',rights:rights.kind,commercialSafe:previousOwnImage||rights.commercialSafe};
     if(asset?.photo){
@@ -73,18 +99,9 @@
       state.factoryMeta.photoSelection.src=asset.photo;
       state.factoryMeta.photoSelection.source=asset.source||editorial?.photoSource||'';
       state.factoryMeta.photoSelection.credit=asset.author||material.credit||'';
-      if(previousOwnImage){
-        state.factoryMeta.materialPhotoApplied=false;
-        state.factoryMeta.photoMode='own';
-      }else{
-        state.image=rights.commercialSafe?asset.photo:null;
-        state.factoryMeta.materialPhotoApplied=!!rights.commercialSafe;
-        state.factoryMeta.photoMode=rights.commercialSafe?'safe-asset':'reference-only';
-      }
-    }else if(previousOwnImage){
-      state.factoryMeta.photoMode='own';
-      state.factoryMeta.materialPhotoApplied=false;
-    }
+      if(previousOwnImage){state.factoryMeta.materialPhotoApplied=false;state.factoryMeta.photoMode='own'}
+      else{state.image=rights.commercialSafe?asset.photo:null;state.factoryMeta.materialPhotoApplied=!!rights.commercialSafe;state.factoryMeta.photoMode=rights.commercialSafe?'safe-asset':'reference-only'}
+    }else if(previousOwnImage){state.factoryMeta.photoMode='own';state.factoryMeta.materialPhotoApplied=false}
     if(closedOptionsReady(product))state.factoryMeta.closedCatalogComplete=true;
     renderPreview?.();
     window.FabricaMasterVisuals?.apply?.();
@@ -98,17 +115,17 @@
       const selected=select(type);
       if(selected.exhausted)return {ok:false,reason:'closed-catalog-exhausted',type,closedCatalogOptions:selected.closedOptions,usedSlots:selected.usedSlots};
       const result=await originals.produce.call(this,options);
-      if(selected.material){attach(selected,type);if(typeof renderPreview==='function')renderPreview();}
+      if(selected.material){attach(selected,type);if(typeof renderPreview==='function')renderPreview()}
       return {...result,rawMaterial:selected.material,selectedMaster:selected.master,masterProduct:selected.master,editorialRealization:selected.editorial,materialScore:selected.score,materialFit:selected.fit,materialSourceType:selected.sourceType,closedCatalogSlot:selected.slot,closedCatalogOptions:selected.closedOptions,closedCatalogPhoto:selected.photoAsset,photoCommercialSafe:state.factoryMeta?.photoSelection?.commercialSafe===true,closedCatalogUsedSlots:selected.usedSlots,closedCatalogExhausted:false};
     };
     window.FabricaEngine.selectMaterial=select;
     window.FabricaEngine.materials=materials;
-    window.FabricaEngine.materialSelectorVersion=8;
+    window.FabricaEngine.materialSelectorVersion=9;
   }
   function selfTest(){
-    const results=PRODUCTS.map(product=>{const c=catalog()?.forProduct?.(product)||[];const s=select(product);const e=editorials()?.realizations?.[product]||[];return {product,template:catalog()?.products?.[product]?.template||product,options:c.length,editorialOptions:e.length,master:s.master?.id||null,photo:s.photoAsset,exhausted:s.exhausted,usedSlots:s.usedSlots,pass:c.length===10&&e.length===10&&((!s.exhausted&&!!s.material&&!!s.photoAsset&&!!s.editorial)||s.exhausted)};});
-    return {version:8,ok:results.every(x=>x.pass),results,summary:catalog()?.summary?.()||null,editorialSummary:editorials()?.summary?.()||null,rule:'4 plantillas × 10 fotos = 40 matrices cerradas y realizadas; cada matriz se consume una vez antes del bloqueo'};
+    const results=PRODUCTS.map(product=>{const c=catalog()?.forProduct?.(product)||[];const s=select(product);const e=editorials()?.realizations?.[product]||[];return {product,template:catalog()?.products?.[product]?.template||product,options:c.length,editorialOptions:e.length,master:s.master?.id||null,photo:s.photoAsset,exhausted:s.exhausted,usedSlots:s.usedSlots,remaining:c.length-s.usedSlots.length,pass:c.length===10&&e.length===10&&((!s.exhausted&&!!s.material&&!!s.photoAsset&&!!s.editorial)||s.exhausted)};});
+    return {version:9,ok:results.every(x=>x.pass),results,summary:catalog()?.summary?.()||null,editorialSummary:editorials()?.summary?.()||null,ledgerKey:LEDGER_KEY,rule:'4 productos × 10 matrices cerradas; el consumo queda protegido en un ledger persistente separado de la Biblioteca'};
   }
   document.addEventListener('DOMContentLoaded',()=>setTimeout(install,700));
-  window.FabricaMaterialSelector={version:8,select,masterFor,attach,install,selfTest,usedSlots};
+  window.FabricaMaterialSelector={version:9,select,masterFor,attach,install,selfTest,usedSlots,commit,ledgerKey:LEDGER_KEY};
 })();
