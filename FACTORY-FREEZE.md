@@ -1,6 +1,6 @@
 # FÁBRICA CHAÑAR — BASE CONGELADA
 
-Fecha de congelación: 2026-09-14  
+Fecha de última consolidación: 2026-09-14  
 Rama: `main`
 
 ## Propósito
@@ -9,7 +9,7 @@ Este documento define la **base funcional consolidada** de Fábrica Chañar.
 
 La regla desde este punto es simple: **no se reconstruye lo que ya funciona**. Toda intervención futura debe partir de esta base y modificar solamente el punto que haya sido auditado como necesario.
 
-## Contrato que queda congelado
+## Contrato congelado
 
 - 4 productos soberanos: `postal`, `ficha`, `guide`, `infographic`.
 - 10 slots cerrados por producto.
@@ -19,6 +19,8 @@ La regla desde este punto es simple: **no se reconstruye lo que ya funciona**. T
 - Las fotos `reference` no se consideran automáticamente aptas para venta.
 - Biblioteca conserva y restaura el estado editorial completo.
 - La fabricación automática espera a que esté instalada la curaduría cerrada.
+- Cada slot cerrado se consume una sola vez por producto a través de la Biblioteca; al agotar los 10 slots, la familia se bloquea hasta una decisión explícita de reinicio.
+- Las colecciones utilizan obligatoriamente el mismo motor y selector cerrado que la fabricación individual; no existe una segunda ruta de producción.
 - El reverso agrega contexto, procedencia, fuente y crédito; no duplica el frente.
 - `factory-preview-audit.js` es el control de calidad de la vista.
 - `factory-sales.js` solo considera comercialmente listas las piezas con derechos explícitos.
@@ -27,11 +29,12 @@ La regla desde este punto es simple: **no se reconstruye lo que ya funciona**. T
 
 | Archivo | Versión | SHA del contenido |
 |---|---:|---|
-| `index.html` | integración actual | `5b763c468675a31b420490bbe12968d2851614b2` |
+| `index.html` | integración actual | `bf24b266a270664f84e78c13fd45220b2ec8aa3e` |
 | `app-core.js` | runtime base | `a1b7286f96deb36e1eedc63d3df85565eae3025f` |
-| `factory-engine.js` | v6 | `b41c675f3cdbf303d8ea809486e30b40a122d465` |
-| `factory-central.js` | v9 | `d9b61113c1fbf3d866ddb2f5be127f92451358db` |
-| `factory-material-selector.js` | v7 | `b148016d1aa9473e14c8dd2ceb47bc7e26521806` |
+| `factory-engine.js` | v7 | `30412e09fd5c7aed8989073a646e8f0a9ffa34ae` |
+| `factory-central.js` | v10 | `f4eb6f35eaa834a61387d8ccb82087753b9e654f` |
+| `factory-material-selector.js` | v8 | `e23457059d717fa42235e637dee68b2f6fe264dd` |
+| `factory-collection.js` | v3 | `62be4d8e55444237b17f17070cf9b0af74ac9d17` |
 | `factory-preview-audit.js` | v5 | `8f7325beb375f17237e66f780a427c0d724e4033` |
 | `factory-quality.js` | v3 | `66753743fa69ec1b1b74b914e96d2538bffbe0cf` |
 | `factory-image-resilience.js` | v2 | `06908a30984b09ef0d287121ed5bd993e2e0ff27` |
@@ -59,7 +62,8 @@ No reabrir el catálogo de 4×10 salvo decisión explícita.
 No eliminar `factoryMeta` de los guardados.  
 No convertir referencias públicas en material comercial por comodidad.  
 No volver a introducir archivos de preview eliminados como dependencia obligatoria.  
-No agregar decoración si antes no está resuelto el flujo funcional correspondiente.
+No agregar decoración si antes no está resuelto el flujo funcional correspondiente.  
+No modificar el comportamiento de consumo de slots sin una nueva decisión explícita de edición/reutilización.
 
 ## Regla de intervención
 
@@ -75,10 +79,10 @@ Una mejora visual que rompa persistencia, derechos, catálogo, exportación o fa
 
 ## Estado de producción
 
-El último estado de `main` con integración comprobada por Vercel fue reportado como `success` en el commit `7a019bc72628423d6d3850428b6fd1166170cea5`.
+El último estado histórico de `main` con integración comprobada por Vercel fue reportado como `success` en el commit `7a019bc72628423d6d3850428b6fd1166170cea5`.
 
-La verificación E2E de navegador no se declara realizada hasta ejecutarla realmente.
+El estado actual debe considerarse pendiente de verificación E2E hasta ejecutar una prueba real de navegador.
 
 ## Próxima etapa
 
-La siguiente intervención debe ser de **QA funcional sobre los 4 productos y los 10 slots de cada uno**, partiendo exactamente de esta base. No se debe reiniciar la arquitectura ni reconstruir los módulos congelados.
+La siguiente intervención debe continuar por **QA funcional**, no por reconstrucción: comprobar en navegador la fabricación individual, consumo 1→10 por cada producto, agotamiento, Biblioteca, colecciones, derechos y exportación. No se debe reiniciar la arquitectura.
