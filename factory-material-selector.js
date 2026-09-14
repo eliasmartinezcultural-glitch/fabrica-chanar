@@ -1,25 +1,41 @@
-/* FÁBRICA CHAÑAR — SELECTOR CERRADO v7
+/* FÁBRICA CHAÑAR — SELECTOR CERRADO v8
    4 productos soberanos · 10 fotos por producto · 40 matrices.
-   v7: una foto propia del usuario nunca es reemplazada por el material editorial
-   seleccionado; el material queda como referencia/proveniencia separada.
+   v8: cada slot se consume una sola vez en la Biblioteca antes de volver a admitir producción.
+   Una foto propia del usuario nunca es reemplazada por el material editorial seleccionado.
 */
 (function(){
   const originals={produce:null};
   const PRODUCTS=['postal','ficha','guide','infographic'];
+  const validProducts=new Set(PRODUCTS);
   function materials(){return window.FabricaRawMaterials?.items||[]}
   function catalog(){return window.FabricaClosedCatalog||null}
   function editorials(){return window.FabricaEditorialRealizations||null}
   function masterFor(material){return material?.master&&window.FabricaMasterProducts?.find?.(material.master)||null}
   function materialForMaster(masterId){return materials().find(m=>m.master===masterId)||null}
   function fitFor(material,product){return Number(material?.productFit?.[product]||0)}
+  function savedItems(){try{return typeof library==='function'?library():[]}catch{return[]}}
+  function usedSlots(product){
+    const set=new Set();
+    savedItems().forEach(item=>{
+      if(item?.type!==product)return;
+      const slot=Number(item?.factoryMeta?.closedCatalog?.[product]?.slot||item?.factoryMeta?.editorialRealization?.slot||0);
+      if(slot>=1)set.add(slot);
+    });
+    const currentSlot=Number(typeof state!=='undefined'?state.factoryMeta?.closedCatalog?.[product]?.slot||0:0);
+    if(currentSlot>=1&&typeof state!=='undefined'&&state.factoryMeta?.closedCatalog?.[product]?.committed===true)set.add(currentSlot);
+    return set;
+  }
   function select(product){
-    const closed=catalog()?.forProduct?.(product)||[];
-    const current=typeof state!=='undefined'?(Number(state.factoryMeta?.closedCatalog?.[product]?.slot||0)):0;
-    const slot=closed[current%Math.max(1,closed.length)]||null;
-    const editorial=slot?editorials()?.get?.(product,slot.slot):null;
-    const material=slot?materialForMaster(slot.master):null;
+    const safeProduct=validProducts.has(product)?product:'postal';
+    const closed=catalog()?.forProduct?.(safeProduct)||[];
+    if(!closed.length)return {product:safeProduct,slot:null,closedOptions:0,material:null,master:null,editorial:null,score:0,fit:0,sourceType:'closed-catalog',photoAsset:null,exhausted:true,usedSlots:[]};
+    const used=usedSlots(safeProduct);
+    const next=closed.find(row=>!used.has(Number(row.slot)));
+    if(!next)return {product:safeProduct,slot:null,closedOptions:closed.length,material:null,master:null,editorial:null,score:0,fit:0,sourceType:'closed-catalog',photoAsset:null,exhausted:true,usedSlots:[...used].sort((a,b)=>a-b)};
+    const editorial=editorials()?.get?.(safeProduct,next.slot)||null;
+    const material=materialForMaster(next.master);
     const master=material?masterFor(material):null;
-    return {product,slot:slot?.slot||1,closedOptions:closed.length,material,master,editorial,score:material?(window.FabricaRawMaterials?.materialScore?.(material,product)||0):0,fit:material?fitFor(material,product):0,sourceType:'closed-catalog',photoAsset:slot?.photo||null};
+    return {product:safeProduct,slot:next.slot,closedOptions:closed.length,material,master,editorial,score:material?(window.FabricaRawMaterials?.materialScore?.(material,safeProduct)||0):0,fit:material?fitFor(material,safeProduct):0,sourceType:'closed-catalog',photoAsset:next.photo,exhausted:false,usedSlots:[...used].sort((a,b)=>a-b)};
   }
   function assetForId(id){return id?window.FabricaAssets?.find?.(id)||null:null}
   function rightsFor(asset,editorial,material){
@@ -28,7 +44,7 @@
     return {kind,commercialSafe};
   }
   function attach(selection,product){
-    if(typeof state==='undefined'||!selection?.material)return;
+    if(typeof state==='undefined'||!selection?.material||selection.exhausted)return;
     const previousOwnImage=typeof state.image==='string'&&state.image.startsWith('data:image/');
     const material=selection.material,master=selection.master,editorial=selection.editorial,asset=assetForId(selection.photoAsset)||assetForId(material?.photo?.asset);
     const id=window.FabricaOcarinaSystem?.buildIdentity?.({collection:material.collection||master?.collection||'territorio',number:master?.number||1})||{};
@@ -36,16 +52,17 @@
     const previous=state.factoryMeta?.closedCatalog||{};
     const rights=rightsFor(asset,editorial,material);
     state.factoryMeta={...(state.factoryMeta||{}),
-      rawMaterial:{version:7,masterId:material.master||'',theme:material.theme||'',score:selection.score,fit:selection.fit,sourceType:selection.sourceType,photo:material.photo||null,facts:material.facts||[],microstory:material.microstory||'',sources:material.sources||[],credit:material.credit||''},
+      rawMaterial:{version:8,masterId:material.master||'',theme:material.theme||'',score:selection.score,fit:selection.fit,sourceType:selection.sourceType,photo:material.photo||null,facts:material.facts||[],microstory:material.microstory||'',sources:material.sources||[],credit:material.credit||''},
       masterProduct:{version:1,id:master?.id||material.master||'',number:master?.number||null,collection:master?.collection||material.collection||'',template:master?.template||'',name:master?.name||''},
       ...id,
       productMaterialFit:{product,fit:selection.fit,selectionReason:selection.sourceType},
-      closedCatalog:{...previous,[product]:{slot:selection.slot,total:selection.closedOptions,photo:selection.photoAsset,master:master?.id||selection.material?.master||null,direction:selection.slot&&catalog()?.get?.(product,selection.slot)?.direction||'',execution:catalog()?.get?.(product,selection.slot)?.execution||null}},
+      closedCatalog:{...previous,[product]:{slot:selection.slot,total:selection.closedOptions,photo:selection.photoAsset,master:master?.id||selection.material?.master||null,direction:catalog()?.get?.(product,selection.slot)?.direction||'',execution:catalog()?.get?.(product,selection.slot)?.execution||'',committed:false}},
       editorialRealization:{version:1,slot:selection.slot,product,headline:editorial?.headline||'',subline:editorial?.subline||'',body:editorial?.body||'',fact,factLabel:editorial?.factLabel||'',source:editorial?.source||'',sourceUrl:editorial?.sourceUrl||'',photoSource:editorial?.photoSource||'',photoUrl:editorial?.photoUrl||'',rights:editorial?.rights||'reference',reverse:editorial?.reverse||'',status:editorial?.status||'PROTOTIPO'},
       photoSelection:{asset:asset?.id||selection.photoAsset||null,role:material.photo?.role||'editorial',focus:catalog()?.get?.(product,selection.slot)?.direction||material.photo?.focus||'',crop:material.photo?.crop||'',rights:rights.kind,commercialSafe:previousOwnImage||rights.commercialSafe,source:asset?.source||editorial?.photoSource||'',credit:asset?.author||material.credit||''},
       selectedFact:fact,
       materialSelection:'closed-catalog',
-      materialPhotoApplied:false
+      materialPhotoApplied:false,
+      productionCursor:{version:1,product,slot:selection.slot,total:selection.closedOptions,usedBefore:selection.usedSlots,remainingAfter:Math.max(0,selection.closedOptions-(selection.usedSlots.length+1)),policy:'each closed matrix is consumed once per saved piece'}
     };
     state.factoryMeta.photoProvenance={version:1,asset:asset?.id||selection.photoAsset||null,source:asset?.source||editorial?.photoSource||'',url:asset?.url||editorial?.photoUrl||'',author:asset?.author||material?.photo?.author||material?.credit||'',license:asset?.license||material?.photo?.license||'',rights:rights.kind,commercialSafe:previousOwnImage||rights.commercialSafe};
     if(asset?.photo){
@@ -56,7 +73,6 @@
       state.factoryMeta.photoSelection.src=asset.photo;
       state.factoryMeta.photoSelection.source=asset.source||editorial?.photoSource||'';
       state.factoryMeta.photoSelection.credit=asset.author||material.credit||'';
-      /* A user-uploaded photo has priority over the closed catalog's material image. */
       if(previousOwnImage){
         state.factoryMeta.materialPhotoApplied=false;
         state.factoryMeta.photoMode='own';
@@ -78,20 +94,21 @@
     if(!window.FabricaEngine||originals.produce)return;
     originals.produce=window.FabricaEngine.produce;
     window.FabricaEngine.produce=async function(options={}){
-      const type=options.type||state?.type||'postal';
+      const type=validProducts.has(options.type||state?.type)?(options.type||state?.type):'postal';
       const selected=select(type);
+      if(selected.exhausted)return {ok:false,reason:'closed-catalog-exhausted',type,closedCatalogOptions:selected.closedOptions,usedSlots:selected.usedSlots};
       const result=await originals.produce.call(this,options);
       if(selected.material){attach(selected,type);if(typeof renderPreview==='function')renderPreview();}
-      return {...result,rawMaterial:selected.material,selectedMaster:selected.master,masterProduct:selected.master,editorialRealization:selected.editorial,materialScore:selected.score,materialFit:selected.fit,materialSourceType:selected.sourceType,closedCatalogSlot:selected.slot,closedCatalogOptions:selected.closedOptions,closedCatalogPhoto:selected.photoAsset,photoCommercialSafe:state.factoryMeta?.photoSelection?.commercialSafe===true};
+      return {...result,rawMaterial:selected.material,selectedMaster:selected.master,masterProduct:selected.master,editorialRealization:selected.editorial,materialScore:selected.score,materialFit:selected.fit,materialSourceType:selected.sourceType,closedCatalogSlot:selected.slot,closedCatalogOptions:selected.closedOptions,closedCatalogPhoto:selected.photoAsset,photoCommercialSafe:state.factoryMeta?.photoSelection?.commercialSafe===true,closedCatalogUsedSlots:selected.usedSlots,closedCatalogExhausted:false};
     };
     window.FabricaEngine.selectMaterial=select;
     window.FabricaEngine.materials=materials;
-    window.FabricaEngine.materialSelectorVersion=7;
+    window.FabricaEngine.materialSelectorVersion=8;
   }
   function selfTest(){
-    const results=PRODUCTS.map(product=>{const c=catalog()?.forProduct?.(product)||[];const s=select(product);const e=editorials()?.realizations?.[product]||[];return {product,template:catalog()?.products?.[product]?.template||product,options:c.length,editorialOptions:e.length,master:s.master?.id||null,photo:s.photoAsset,pass:c.length===10&&e.length===10&&!!s.material&&!!s.photoAsset&&!!s.editorial};});
-    return {version:7,ok:results.every(x=>x.pass),results,summary:catalog()?.summary?.()||null,editorialSummary:editorials()?.summary?.()||null,rule:'4 plantillas × 10 fotos = 40 matrices cerradas y realizadas'};
+    const results=PRODUCTS.map(product=>{const c=catalog()?.forProduct?.(product)||[];const s=select(product);const e=editorials()?.realizations?.[product]||[];return {product,template:catalog()?.products?.[product]?.template||product,options:c.length,editorialOptions:e.length,master:s.master?.id||null,photo:s.photoAsset,exhausted:s.exhausted,usedSlots:s.usedSlots,pass:c.length===10&&e.length===10&&((!s.exhausted&&!!s.material&&!!s.photoAsset&&!!s.editorial)||s.exhausted)};});
+    return {version:8,ok:results.every(x=>x.pass),results,summary:catalog()?.summary?.()||null,editorialSummary:editorials()?.summary?.()||null,rule:'4 plantillas × 10 fotos = 40 matrices cerradas y realizadas; cada matriz se consume una vez antes del bloqueo'};
   }
   document.addEventListener('DOMContentLoaded',()=>setTimeout(install,700));
-  window.FabricaMaterialSelector={version:7,select,masterFor,attach,install,selfTest};
+  window.FabricaMaterialSelector={version:8,select,masterFor,attach,install,selfTest,usedSlots};
 })();
