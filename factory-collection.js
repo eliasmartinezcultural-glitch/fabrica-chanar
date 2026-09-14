@@ -1,9 +1,6 @@
-/* FÁBRICA CHAÑAR — COLECCIONES EDITORIALES v5
-   Ley de producción de alto valor:
-   cada serie debe sentirse pensada, curada y armada como una pequeña edición.
-   El volumen nunca manda sobre la calidad.
-   v5: el bloqueo de fabricación es global porque el runtime comparte un único
-   estado; así ninguna colección puede ejecutarse concurrentemente con otra.
+/* FÁBRICA CHAÑAR — COLECCIONES EDITORIALES v6
+   Ley de producción de alto valor: cada serie debe sentirse pensada, curada y armada como una pequeña edición.
+   v6: un único candado global protege el runtime compartido; cada pieza pasa por motor + selector cerrado + Biblioteca antes de continuar.
 */
 (function(){
   const COLLECTIONS=[
@@ -25,37 +22,16 @@
   const $=s=>document.querySelector(s);
   const wait=ms=>new Promise(r=>setTimeout(r,ms));
   function find(id){return COLLECTIONS.find(c=>c.id===id)||COLLECTIONS[0]}
-  function eligible(c){
-    const templates=typeof TEMPLATES==='undefined'?[]:TEMPLATES;
-    return templates.filter(t=>c.types.includes(t.product)&&c.styles.includes(t.style));
-  }
-  function curatedTemplates(c,count){
-    const pool=eligible(c), byId=id=>pool.find(t=>t.id===id);
-    const ordered=c.sequence.map(byId).filter(Boolean);
-    const extras=pool.filter(t=>!ordered.some(x=>x.id===t.id));
-    return [...ordered,...extras].slice(0,Math.min(Math.max(count,1),5));
-  }
-  function renderChooser(){
-    const host=$('#collectionGrid'); if(!host)return;
-    host.innerHTML=COLLECTIONS.map(c=>`<button class="collection-card" type="button" data-collection="${c.id}"><b>${c.emoji}</b><strong>${c.name}</strong><span>Serie curada · ${c.mood}</span></button>`).join('');
-    host.querySelectorAll('[data-collection]').forEach(b=>b.addEventListener('click',()=>produceSeries(b.dataset.collection,3)));
-  }
-  async function snapshotSeriesPiece(c,t,part,total,seriesId){
-    if(typeof validate==='function'&&!validate())return null;
-    return {
-      id:`${seriesId}-${String(part).padStart(2,'0')}-${t.id}`,
-      type:state.type,templateId:state.templateId,data:{...state.data},
-      image:state.image&&typeof compressImage==='function'?await compressImage(state.image):state.image||null,
-      photoId:state.photoId,created:new Date().toISOString(),
-      factoryMeta:{...(state.factoryMeta||{}),collection:{id:c.id,name:c.name,part,total,seriesId,role:ROLES[part-1]||'pieza',seriesMode:true,editorial:true}}
-    };
-  }
+  function eligible(c){const templates=typeof TEMPLATES==='undefined'?[]:TEMPLATES;return templates.filter(t=>c.types.includes(t.product)&&c.styles.includes(t.style))}
+  function curatedTemplates(c,count){const pool=eligible(c),byId=id=>pool.find(t=>t.id===id),ordered=c.sequence.map(byId).filter(Boolean),extras=pool.filter(t=>!ordered.some(x=>x.id===t.id));return [...ordered,...extras].slice(0,Math.min(Math.max(count,1),5))}
+  function renderChooser(){const host=$('#collectionGrid');if(!host)return;host.innerHTML=COLLECTIONS.map(c=>`<button class="collection-card" type="button" data-collection="${c.id}"><b>${c.emoji}</b><strong>${c.name}</strong><span>Serie curada · ${c.mood}</span></button>`).join('');host.querySelectorAll('[data-collection]').forEach(b=>b.addEventListener('click',()=>produceSeries(b.dataset.collection,3)))}
+  async function snapshotSeriesPiece(c,t,part,total,seriesId){if(typeof validate==='function'&&!validate())return null;return{id:`${seriesId}-${String(part).padStart(2,'0')}-${t.id}`,type:state.type,templateId:state.templateId,data:{...state.data},image:state.image&&typeof compressImage==='function'?await compressImage(state.image):state.image||null,photoId:state.photoId,created:new Date().toISOString(),factoryMeta:{...(state.factoryMeta||{}),collection:{id:c.id,name:c.name,part,total,seriesId,role:ROLES[part-1]||'pieza',seriesMode:true,editorial:true}}}}
   async function produceSeries(id,count=3){
     if(busy)return [];
-    const c=find(id), total=Math.min(Math.max(count,1),5), templates=curatedTemplates(c,total), results=[];
+    const c=find(id),total=Math.min(Math.max(count,1),5),templates=curatedTemplates(c,total),results=[];
     const button=$(`[data-collection="${id}"]`);
-    busy=true;button?.classList.add('is-working');document.querySelectorAll('[data-collection]').forEach(b=>b.disabled=true);button?.setAttribute('aria-busy','true');
-    if(typeof FabricaEngine==='undefined'||typeof state==='undefined'){busy=false;document.querySelectorAll('[data-collection]').forEach(b=>b.disabled=false);button?.classList.remove('is-working');button?.removeAttribute('aria-busy');return []}
+    busy=true;button?.classList.add('is-working');button?.setAttribute('aria-busy','true');
+    if(typeof FabricaEngine==='undefined'||typeof state==='undefined'){busy=false;button?.classList.remove('is-working');button?.removeAttribute('aria-busy');return []}
     const seriesId=`SERIE-${c.id.toUpperCase()}-${Date.now()}`;
     const before=state.image||null;
     const saved=[];
@@ -63,10 +39,7 @@
       for(let i=0;i<templates.length;i++){
         const t=templates[i];
         const result=await FabricaEngine.produce({type:t.product,templateId:t.id});
-        if(!result?.ok){
-          status(`${c.emoji} La serie se detuvo en la pieza ${i+1}: ${result?.reason||'fabricación no disponible'}.`);
-          break;
-        }
+        if(!result?.ok){status(`${c.emoji} La serie se detuvo en la pieza ${i+1}: ${result?.reason||'fabricación no disponible'}.`);break}
         if(before)state.image=before;
         state.factoryMeta=state.factoryMeta||{};
         state.factoryMeta.collection={id:c.id,name:c.name,part:i+1,total,seriesId,role:ROLES[i]||'pieza',seriesMode:true,editorial:true};
@@ -78,6 +51,8 @@
           if(typeof setLibrary==='function'){
             const current=typeof library==='function'?library():[];
             setLibrary([item,...current.filter(old=>old.id!==item.id)].slice(0,18));
+            const slot=item.factoryMeta?.closedCatalog?.[t.product]?.slot;
+            window.FabricaMaterialSelector?.commit?.(t.product,slot);
           }
         }
         await wait(220);
@@ -86,14 +61,9 @@
       status(`${c.emoji} Serie curada y guardada: ${saved.length} piezas. La Fábrica armó apertura, desarrollo y cierre.`);
       document.querySelector('.preview-panel')?.scrollIntoView({behavior:'smooth',block:'start'});
       return results;
-    }catch(error){
-      console.error(error);
-      status(`${c.emoji} La serie quedó parcialmente guardada (${saved.length} piezas). La Fábrica no siguió fabricando para no bajar el estándar.`);
-      return results;
-    }finally{
-      busy=false;document.querySelectorAll('[data-collection]').forEach(b=>b.disabled=false);button?.classList.remove('is-working');button?.removeAttribute('aria-busy');
-    }
+    }catch(error){console.error(error);status(`${c.emoji} La serie quedó parcialmente guardada (${saved.length} piezas). La Fábrica no siguió fabricando para no bajar el estándar.`);return results}
+    finally{busy=false;button?.classList.remove('is-working');button?.removeAttribute('aria-busy')}
   }
-  window.FabricaCollections={version:5,collections:COLLECTIONS,produceSeries,phrases:PHRASES,renderChooser};
+  window.FabricaCollections={version:6,collections:COLLECTIONS,produceSeries,phrases:PHRASES,renderChooser};
   document.addEventListener('DOMContentLoaded',()=>setTimeout(renderChooser,220));
 })();
