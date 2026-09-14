@@ -78,9 +78,7 @@
 
   function boot(){
     render();updateMasterCards();
-    const ids=new Set(products().map(m=>m.id));
-    const current=typeof library==='function'?library().filter(x=>x?.master===true&&ids.has(x?.factoryMeta?.masterProduct?.id)&&x?.factoryMeta?.editionRevision===EDITION_REV):[];
-    if(current.length<ids.size)setTimeout(()=>manufactureAll({silent:true}),900);
+    /* No fabricar silenciosamente seis piezas al cargar: el flujo central es el único flujo visible. */
   }
   window.FabricaMasterFactory={version:8,editionRevision:EDITION_REV,manufactureAll,applyMaster,products,commercialReady,validateMaster,rightsNote};
   document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,320));
