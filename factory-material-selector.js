@@ -51,6 +51,8 @@
       state.factoryMeta.photoSelection.credit=asset.author||material.credit||'';
     }
     if(closedOptionsReady(product))state.factoryMeta.closedCatalogComplete=true;
+    renderPreview?.();
+    window.FabricaMasterVisuals?.apply?.();
   }
   function closedOptionsReady(product){const c=catalog()?.forProduct?.(product)||[];return c.length===10}
   function install(){
