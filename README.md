@@ -34,15 +34,16 @@ Cada pieza recibe automáticamente una familia visual, dirección de arte fotogr
 
 ## Arquitectura activa
 
-`index.html` es el punto de entrada único y carga el runtime consolidado. `app-core.js` no es material histórico fuera del runtime: es el núcleo de estado, Biblioteca, edición y exportación utilizado por la superficie activa. El motor y los módulos especializados se enganchan sobre ese mismo estado.
+`index.html` es el punto de entrada único y carga el runtime consolidado. `app-core.js` es el núcleo de estado, Biblioteca, edición y exportación utilizado por la superficie activa. El motor y los módulos especializados se enganchan sobre ese mismo estado.
 
 ```text
 index.html
  ├─ interfaz central
  ├─ app-core.js · estado + Biblioteca + edición + exportación
  ├─ factory-engine.js · contrato de producto
- ├─ factory-material-selector.js · catálogo cerrado + materia + derechos
+ ├─ factory-material-selector.js · catálogo cerrado + materia + derechos + ledger
  ├─ factory-central.js · flujo único de fabricación
+ ├─ factory-collection.js · series sobre la misma cadena
  ├─ factory-preview-audit.js · control de calidad
  ├─ factory-quality.js · salida y leyes editoriales
  ├─ factory-master-* · piezas maestras y foto dirigida
@@ -56,7 +57,9 @@ Los módulos activos trabajan sobre **una sola cadena de producción**. No debe 
 
 La Fábrica trabaja con **4 productos × 10 slots = 40 matrices editoriales**. El catálogo es finito y las realizaciones tienen materia, dirección, ejecución, fuente y procedencia asociadas.
 
-La progresión de fabricación se conserva por producto dentro de `factoryMeta.closedCatalog`, y la Biblioteca conserva el `factoryMeta` completo al guardar y recuperar una pieza.
+El consumo permanente de slots se guarda en `fabrica-chanar-closed-ledger-v1`, separado de la Biblioteca visible. La Biblioteca puede conservar hasta 18 piezas sin liberar matrices ya consumidas. Después de 10 consumos, la familia se bloquea hasta una decisión explícita.
+
+Las colecciones fabrican y guardan cada pieza a través del mismo motor y selector cerrado antes de continuar con la siguiente. El runtime compartido dispone de un único candado global de fabricación.
 
 ## Foto propia y derechos
 
@@ -68,9 +71,9 @@ La exportación de imágenes externas puede depender de las políticas CORS del 
 
 ## Base congelada
 
-Desde el **14 de septiembre de 2026** la arquitectura funcional consolidada queda documentada en `FACTORY-FREEZE.md`.
+Desde el **14 de septiembre de 2026** la arquitectura funcional consolidada queda documentada en `FACTORY-FREEZE.md` y sus condiciones mínimas en `QA-GATE.md`.
 
-Ese documento funciona como contrato de continuidad: las piezas que ya funcionan no se reconstruyen ni se reemplazan por otra arquitectura sin una regresión demostrada o una necesidad concreta. Las futuras intervenciones deben partir de esa base y modificar el punto mínimo necesario.
+Esos documentos funcionan como contrato de continuidad: las piezas que ya funcionan no se reconstruyen ni se reemplazan por otra arquitectura sin una regresión demostrada o una necesidad concreta. Las futuras intervenciones deben partir de esa base y modificar el punto mínimo necesario.
 
 ## Despliegue
 
