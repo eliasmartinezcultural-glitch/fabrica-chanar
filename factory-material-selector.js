@@ -1,14 +1,13 @@
-/* FÁBRICA CHAÑAR — SELECTOR CERRADO v9
+/* FÁBRICA CHAÑAR — SELECTOR CERRADO v10
    4 productos soberanos · 10 slots por producto · 40 matrices.
-   v9: el consumo de slots queda en un ledger persistente separado de la Biblioteca.
-   La Biblioteca es archivo visible; el ledger protege la edición cerrada aunque se borren piezas.
-   Una foto propia del usuario nunca es reemplazada por el material editorial seleccionado.
+   v10: consumo persistente separado de Biblioteca + candado global de fabricación.
 */
 (function(){
   const originals={produce:null};
   const PRODUCTS=['postal','ficha','guide','infographic'];
   const validProducts=new Set(PRODUCTS);
   const LEDGER_KEY='fabrica-chanar-closed-ledger-v1';
+  let producing=false;
   function materials(){return window.FabricaRawMaterials?.items||[]}
   function catalog(){return window.FabricaClosedCatalog||null}
   function editorials(){return window.FabricaEditorialRealizations||null}
@@ -18,114 +17,15 @@
   function savedItems(){try{return typeof library==='function'?library():[]}catch{return[]}}
   function readLedger(){try{const x=JSON.parse(localStorage.getItem(LEDGER_KEY)||'{}');return x&&typeof x==='object'?x:{}}catch{return{}}}
   function writeLedger(ledger){try{localStorage.setItem(LEDGER_KEY,JSON.stringify(ledger));return true}catch{return false}}
-  function syncLedgerFromLibrary(ledger){
-    savedItems().forEach(item=>{
-      const product=item?.type;
-      if(!validProducts.has(product))return;
-      const slot=Number(item?.factoryMeta?.closedCatalog?.[product]?.slot||item?.factoryMeta?.editorialRealization?.slot||0);
-      if(slot<1)return;
-      ledger[product]=Array.isArray(ledger[product])?ledger[product]:[];
-      if(!ledger[product].includes(slot))ledger[product].push(slot);
-    });
-    PRODUCTS.forEach(product=>{ledger[product]=Array.from(new Set(ledger[product]||[])).filter(n=>Number.isInteger(Number(n))&&Number(n)>=1).map(Number).sort((a,b)=>a-b)});
-    writeLedger(ledger);
-    return ledger;
-  }
-  function usedSlots(product){
-    const ledger=syncLedgerFromLibrary(readLedger());
-    return new Set(ledger[product]||[]);
-  }
-  function commit(product,slot){
-    if(!validProducts.has(product))return false;
-    const n=Number(slot||0);
-    const closed=catalog()?.forProduct?.(product)||[];
-    if(n<1||!closed.some(row=>Number(row.slot)===n))return false;
-    const ledger=syncLedgerFromLibrary(readLedger());
-    ledger[product]=Array.isArray(ledger[product])?ledger[product]:[];
-    if(!ledger[product].includes(n))ledger[product].push(n);
-    ledger[product].sort((a,b)=>a-b);
-    const ok=writeLedger(ledger);
-    if(ok&&typeof state!=='undefined'&&state.factoryMeta?.closedCatalog?.[product]?.slot===n){
-      state.factoryMeta.closedCatalog[product].committed=true;
-      state.factoryMeta.productionCursor={...(state.factoryMeta.productionCursor||{}),committed:true,remainingAfterCommit:Math.max(0,closed.length-ledger[product].length)};
-    }
-    return ok;
-  }
-  function select(product){
-    const safeProduct=validProducts.has(product)?product:'postal';
-    const closed=catalog()?.forProduct?.(safeProduct)||[];
-    if(!closed.length)return {product:safeProduct,slot:null,closedOptions:0,material:null,master:null,editorial:null,score:0,fit:0,sourceType:'closed-catalog',photoAsset:null,exhausted:true,usedSlots:[]};
-    const used=usedSlots(safeProduct);
-    const next=closed.find(row=>!used.has(Number(row.slot)));
-    if(!next)return {product:safeProduct,slot:null,closedOptions:closed.length,material:null,master:null,editorial:null,score:0,fit:0,sourceType:'closed-catalog',photoAsset:null,exhausted:true,usedSlots:[...used].sort((a,b)=>a-b)};
-    const editorial=editorials()?.get?.(safeProduct,next.slot)||null;
-    const material=materialForMaster(next.master);
-    const master=material?masterFor(material):null;
-    return {product:safeProduct,slot:next.slot,closedOptions:closed.length,material,master,editorial,score:material?(window.FabricaRawMaterials?.materialScore?.(material,safeProduct)||0):0,fit:material?fitFor(material,safeProduct):0,sourceType:'closed-catalog',photoAsset:next.photo,exhausted:false,usedSlots:[...used].sort((a,b)=>a-b)};
-  }
+  function syncLedgerFromLibrary(ledger){savedItems().forEach(item=>{const product=item?.type;if(!validProducts.has(product))return;const slot=Number(item?.factoryMeta?.closedCatalog?.[product]?.slot||item?.factoryMeta?.editorialRealization?.slot||0);if(slot<1)return;ledger[product]=Array.isArray(ledger[product])?ledger[product]:[];if(!ledger[product].includes(slot))ledger[product].push(slot)});PRODUCTS.forEach(product=>{ledger[product]=Array.from(new Set(ledger[product]||[])).filter(n=>Number.isInteger(Number(n))&&Number(n)>=1).map(Number).sort((a,b)=>a-b)});writeLedger(ledger);return ledger}
+  function usedSlots(product){const ledger=syncLedgerFromLibrary(readLedger());return new Set(ledger[product]||[])}
+  function commit(product,slot){if(!validProducts.has(product))return false;const n=Number(slot||0),closed=catalog()?.forProduct?.(product)||[];if(n<1||!closed.some(row=>Number(row.slot)===n))return false;const ledger=syncLedgerFromLibrary(readLedger());ledger[product]=Array.isArray(ledger[product])?ledger[product]:[];if(!ledger[product].includes(n))ledger[product].push(n);ledger[product].sort((a,b)=>a-b);const ok=writeLedger(ledger);if(ok&&typeof state!=='undefined'&&state.factoryMeta?.closedCatalog?.[product]?.slot===n){state.factoryMeta.closedCatalog[product].committed=true;state.factoryMeta.productionCursor={...(state.factoryMeta.productionCursor||{}),committed:true,remainingAfterCommit:Math.max(0,closed.length-ledger[product].length)}}return ok}
+  function select(product){const safeProduct=validProducts.has(product)?product:'postal',closed=catalog()?.forProduct?.(safeProduct)||[];if(!closed.length)return {product:safeProduct,slot:null,closedOptions:0,material:null,master:null,editorial:null,score:0,fit:0,sourceType:'closed-catalog',photoAsset:null,exhausted:true,usedSlots:[]};const used=usedSlots(safeProduct);const next=closed.find(row=>!used.has(Number(row.slot)));if(!next)return {product:safeProduct,slot:null,closedOptions:closed.length,material:null,master:null,editorial:null,score:0,fit:0,sourceType:'closed-catalog',photoAsset:null,exhausted:true,usedSlots:[...used].sort((a,b)=>a-b)};const editorial=editorials()?.get?.(safeProduct,next.slot)||null,material=materialForMaster(next.master),master=material?masterFor(material):null;return {product:safeProduct,slot:next.slot,closedOptions:closed.length,material,master,editorial,score:material?(window.FabricaRawMaterials?.materialScore?.(material,safeProduct)||0):0,fit:material?fitFor(material,safeProduct):0,sourceType:'closed-catalog',photoAsset:next.photo,exhausted:false,usedSlots:[...used].sort((a,b)=>a-b)}}
   function assetForId(id){return id?window.FabricaAssets?.find?.(id)||null:null}
-  function rightsFor(asset,editorial,material){
-    const kind=asset?.kind||editorial?.rights||material?.photo?.rights||'unknown';
-    const commercialSafe=asset?.kind==='usable'||asset?.kind==='own'||asset?.kind==='authorized'||asset?.kind==='licensed'||material?.photo?.commercialSafe===true;
-    return {kind,commercialSafe};
-  }
-  function attach(selection,product){
-    if(typeof state==='undefined'||!selection?.material||selection.exhausted)return;
-    const previousOwnImage=typeof state.image==='string'&&state.image.startsWith('data:image/');
-    const material=selection.material,master=selection.master,editorial=selection.editorial,asset=assetForId(selection.photoAsset)||assetForId(material?.photo?.asset);
-    const id=window.FabricaOcarinaSystem?.buildIdentity?.({collection:material.collection||master?.collection||'territorio',number:master?.number||1})||{};
-    const fact=editorial?.fact||material.facts?.[0]||null;
-    const previous=state.factoryMeta?.closedCatalog||{};
-    const rights=rightsFor(asset,editorial,material);
-    state.factoryMeta={...(state.factoryMeta||{}),
-      rawMaterial:{version:9,masterId:material.master||'',theme:material.theme||'',score:selection.score,fit:selection.fit,sourceType:selection.sourceType,photo:material.photo||null,facts:material.facts||[],microstory:material.microstory||'',sources:material.sources||[],credit:material.credit||''},
-      masterProduct:{version:1,id:master?.id||material.master||'',number:master?.number||null,collection:master?.collection||material.collection||'',template:master?.template||'',name:master?.name||''},
-      ...id,
-      productMaterialFit:{product,fit:selection.fit,selectionReason:selection.sourceType},
-      closedCatalog:{...previous,[product]:{slot:selection.slot,total:selection.closedOptions,photo:selection.photoAsset,master:master?.id||selection.material?.master||null,direction:catalog()?.get?.(product,selection.slot)?.direction||'',execution:catalog()?.get?.(product,selection.slot)?.execution||'',committed:false}},
-      editorialRealization:{version:1,slot:selection.slot,product,headline:editorial?.headline||'',subline:editorial?.subline||'',body:editorial?.body||'',fact,factLabel:editorial?.factLabel||'',source:editorial?.source||'',sourceUrl:editorial?.sourceUrl||'',photoSource:editorial?.photoSource||'',photoUrl:editorial?.photoUrl||'',rights:editorial?.rights||'reference',reverse:editorial?.reverse||'',status:editorial?.status||'PROTOTIPO'},
-      photoSelection:{asset:asset?.id||selection.photoAsset||null,role:material.photo?.role||'editorial',focus:catalog()?.get?.(product,selection.slot)?.direction||material.photo?.focus||'',crop:material.photo?.crop||'',rights:rights.kind,commercialSafe:previousOwnImage||rights.commercialSafe,source:asset?.source||editorial?.photoSource||'',credit:asset?.author||material.credit||''},
-      selectedFact:fact,
-      materialSelection:'closed-catalog',
-      materialPhotoApplied:false,
-      productionCursor:{version:1,product,slot:selection.slot,total:selection.closedOptions,usedBefore:selection.usedSlots,remainingAfter:Math.max(0,selection.closedOptions-(selection.usedSlots.length+1)),policy:'each closed matrix is consumed once; persistent ledger is finalized on save'}
-    };
-    state.factoryMeta.photoProvenance={version:1,asset:asset?.id||selection.photoAsset||null,source:asset?.source||editorial?.photoSource||'',url:asset?.url||editorial?.photoUrl||'',author:asset?.author||material?.photo?.author||material?.credit||'',license:asset?.license||material?.photo?.license||'',rights:rights.kind,commercialSafe:previousOwnImage||rights.commercialSafe};
-    if(asset?.photo){
-      state.photoId=asset.id;
-      state.factoryMeta.photoId=asset.id;
-      state.factoryMeta.materialPhotoSource=asset.source||'';
-      state.factoryMeta.materialPhotoCredit=asset.author||material.credit||'';
-      state.factoryMeta.photoSelection.src=asset.photo;
-      state.factoryMeta.photoSelection.source=asset.source||editorial?.photoSource||'';
-      state.factoryMeta.photoSelection.credit=asset.author||material.credit||'';
-      if(previousOwnImage){state.factoryMeta.materialPhotoApplied=false;state.factoryMeta.photoMode='own'}
-      else{state.image=rights.commercialSafe?asset.photo:null;state.factoryMeta.materialPhotoApplied=!!rights.commercialSafe;state.factoryMeta.photoMode=rights.commercialSafe?'safe-asset':'reference-only'}
-    }else if(previousOwnImage){state.factoryMeta.photoMode='own';state.factoryMeta.materialPhotoApplied=false}
-    if(closedOptionsReady(product))state.factoryMeta.closedCatalogComplete=true;
-    renderPreview?.();
-    window.FabricaMasterVisuals?.apply?.();
-  }
-  function closedOptionsReady(product){const c=catalog()?.forProduct?.(product)||[];return c.length===10}
-  function install(){
-    if(!window.FabricaEngine||originals.produce)return;
-    originals.produce=window.FabricaEngine.produce;
-    window.FabricaEngine.produce=async function(options={}){
-      const type=validProducts.has(options.type||state?.type)?(options.type||state?.type):'postal';
-      const selected=select(type);
-      if(selected.exhausted)return {ok:false,reason:'closed-catalog-exhausted',type,closedCatalogOptions:selected.closedOptions,usedSlots:selected.usedSlots};
-      const result=await originals.produce.call(this,options);
-      if(selected.material){attach(selected,type);if(typeof renderPreview==='function')renderPreview()}
-      return {...result,rawMaterial:selected.material,selectedMaster:selected.master,masterProduct:selected.master,editorialRealization:selected.editorial,materialScore:selected.score,materialFit:selected.fit,materialSourceType:selected.sourceType,closedCatalogSlot:selected.slot,closedCatalogOptions:selected.closedOptions,closedCatalogPhoto:selected.photoAsset,photoCommercialSafe:state.factoryMeta?.photoSelection?.commercialSafe===true,closedCatalogUsedSlots:selected.usedSlots,closedCatalogExhausted:false};
-    };
-    window.FabricaEngine.selectMaterial=select;
-    window.FabricaEngine.materials=materials;
-    window.FabricaEngine.materialSelectorVersion=9;
-  }
-  function selfTest(){
-    const results=PRODUCTS.map(product=>{const c=catalog()?.forProduct?.(product)||[];const s=select(product);const e=editorials()?.realizations?.[product]||[];return {product,template:catalog()?.products?.[product]?.template||product,options:c.length,editorialOptions:e.length,master:s.master?.id||null,photo:s.photoAsset,exhausted:s.exhausted,usedSlots:s.usedSlots,remaining:c.length-s.usedSlots.length,pass:c.length===10&&e.length===10&&((!s.exhausted&&!!s.material&&!!s.photoAsset&&!!s.editorial)||s.exhausted)};});
-    return {version:9,ok:results.every(x=>x.pass),results,summary:catalog()?.summary?.()||null,editorialSummary:editorials()?.summary?.()||null,ledgerKey:LEDGER_KEY,rule:'4 productos × 10 matrices cerradas; el consumo queda protegido en un ledger persistente separado de la Biblioteca'};
-  }
-  document.addEventListener('DOMContentLoaded',()=>setTimeout(install,700));
-  window.FabricaMaterialSelector={version:9,select,masterFor,attach,install,selfTest,usedSlots,commit,ledgerKey:LEDGER_KEY};
+  function rightsFor(asset,editorial,material){const kind=asset?.kind||editorial?.rights||material?.photo?.rights||'unknown',commercialSafe=asset?.kind==='usable'||asset?.kind==='own'||asset?.kind==='authorized'||asset?.kind==='licensed'||material?.photo?.commercialSafe===true;return {kind,commercialSafe}}
+  function attach(selection,product){if(typeof state==='undefined'||!selection?.material||selection.exhausted)return;const previousOwnImage=typeof state.image==='string'&&state.image.startsWith('data:image/'),material=selection.material,master=selection.master,editorial=selection.editorial,asset=assetForId(selection.photoAsset)||assetForId(material?.photo?.asset),id=window.FabricaOcarinaSystem?.buildIdentity?.({collection:material.collection||master?.collection||'territorio',number:master?.number||1})||{},fact=editorial?.fact||material.facts?.[0]||null,previous=state.factoryMeta?.closedCatalog||{},rights=rightsFor(asset,editorial,material);state.factoryMeta={...(state.factoryMeta||{}),rawMaterial:{version:10,masterId:material.master||'',theme:material.theme||'',score:selection.score,fit:selection.fit,sourceType:selection.sourceType,photo:material.photo||null,facts:material.facts||[],microstory:material.microstory||'',sources:material.sources||[],credit:material.credit||''},masterProduct:{version:1,id:master?.id||material.master||'',number:master?.number||null,collection:master?.collection||material.collection||'',template:master?.template||'',name:master?.name||''},...id,productMaterialFit:{product,fit:selection.fit,selectionReason:selection.sourceType},closedCatalog:{...previous,[product]:{slot:selection.slot,total:selection.closedOptions,photo:selection.photoAsset,master:master?.id||selection.material?.master||null,direction:catalog()?.get?.(product,selection.slot)?.direction||'',execution:catalog()?.get?.(product,selection.slot)?.execution||'',committed:false}},editorialRealization:{version:1,slot:selection.slot,product,headline:editorial?.headline||'',subline:editorial?.subline||'',body:editorial?.body||'',fact,factLabel:editorial?.factLabel||'',source:editorial?.source||'',sourceUrl:editorial?.sourceUrl||'',photoSource:editorial?.photoSource||'',photoUrl:editorial?.photoUrl||'',rights:editorial?.rights||'reference',reverse:editorial?.reverse||'',status:editorial?.status||'PROTOTIPO'},photoSelection:{asset:asset?.id||selection.photoAsset||null,role:material.photo?.role||'editorial',focus:catalog()?.get?.(product,selection.slot)?.direction||material.photo?.focus||'',crop:material.photo?.crop||'',rights:rights.kind,commercialSafe:previousOwnImage||rights.commercialSafe,source:asset?.source||editorial?.photoSource||'',credit:asset?.author||material.credit||''},selectedFact:fact,materialSelection:'closed-catalog',materialPhotoApplied:false,productionCursor:{version:1,product,slot:selection.slot,total:selection.closedOptions,usedBefore:selection.usedSlots,remainingAfter:Math.max(0,selection.closedOptions-(selection.usedSlots.length+1)),policy:'each closed matrix is consumed once; persistent ledger is finalized on save'}};state.factoryMeta.photoProvenance={version:1,asset:asset?.id||selection.photoAsset||null,source:asset?.source||editorial?.photoSource||'',url:asset?.url||editorial?.photoUrl||'',author:asset?.author||material?.photo?.author||material?.credit||'',license:asset?.license||material?.photo?.license||'',rights:rights.kind,commercialSafe:previousOwnImage||rights.commercialSafe};if(asset?.photo){state.photoId=asset.id;state.factoryMeta.photoId=asset.id;state.factoryMeta.materialPhotoSource=asset.source||'';state.factoryMeta.materialPhotoCredit=asset.author||material.credit||'';state.factoryMeta.photoSelection.src=asset.photo;state.factoryMeta.photoSelection.source=asset.source||editorial?.photoSource||'';state.factoryMeta.photoSelection.credit=asset.author||material.credit||'';if(previousOwnImage){state.factoryMeta.materialPhotoApplied=false;state.factoryMeta.photoMode='own'}else{state.image=rights.commercialSafe?asset.photo:null;state.factoryMeta.materialPhotoApplied=!!rights.commercialSafe;state.factoryMeta.photoMode=rights.commercialSafe?'safe-asset':'reference-only'}}else if(previousOwnImage){state.factoryMeta.photoMode='own';state.factoryMeta.materialPhotoApplied=false}if(closedOptionsReady(product))state.factoryMeta.closedCatalogComplete=true;renderPreview?.();window.FabricaMasterVisuals?.apply?.()}
+  function closedOptionsReady(product){return(catalog()?.forProduct?.(product)||[]).length===10}
+  function install(){if(!window.FabricaEngine||originals.produce)return;originals.produce=window.FabricaEngine.produce;window.FabricaEngine.produce=async function(options={}){if(producing)return{ok:false,reason:'production-busy'};producing=true;try{const type=validProducts.has(options.type||state?.type)?(options.type||state?.type):'postal',selected=select(type);if(selected.exhausted)return{ok:false,reason:'closed-catalog-exhausted',type,closedCatalogOptions:selected.closedOptions,usedSlots:selected.usedSlots};const result=await originals.produce.call(this,options);if(selected.material){attach(selected,type);if(typeof renderPreview==='function')renderPreview()}return {...result,rawMaterial:selected.material,selectedMaster:selected.master,masterProduct:selected.master,editorialRealization:selected.editorial,materialScore:selected.score,materialFit:selected.fit,materialSourceType:selected.sourceType,closedCatalogSlot:selected.slot,closedCatalogOptions:selected.closedOptions,closedCatalogPhoto:selected.photoAsset,photoCommercialSafe:state.factoryMeta?.photoSelection?.commercialSafe===true,closedCatalogUsedSlots:selected.usedSlots,closedCatalogExhausted:false}}finally{producing=false}};window.FabricaEngine.selectMaterial=select;window.FabricaEngine.materials=materials;window.FabricaEngine.materialSelectorVersion=10}
+  function selfTest(){const results=PRODUCTS.map(product=>{const c=catalog()?.forProduct?.(product)||[],s=select(product),e=editorials()?.realizations?.[product]||[];return {product,template:catalog()?.products?.[product]?.template||product,options:c.length,editorialOptions:e.length,master:s.master?.id||null,photo:s.photoAsset,exhausted:s.exhausted,usedSlots:s.usedSlots,remaining:c.length-s.usedSlots.length,pass:c.length===10&&e.length===10&&((!s.exhausted&&!!s.material&&!!s.photoAsset&&!!s.editorial)||s.exhausted)}});return {version:10,ok:results.every(x=>x.pass),results,summary:catalog()?.summary?.()||null,editorialSummary:editorials()?.summary?.()||null,ledgerKey:LEDGER_KEY,rule:'4 productos × 10 matrices cerradas; consumo persistente independiente de la Biblioteca'}}
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(install,700));window.FabricaMaterialSelector={version:10,select,masterFor,attach,install,selfTest,usedSlots,commit,ledgerKey:LEDGER_KEY};
 })();
