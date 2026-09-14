@@ -56,6 +56,7 @@ La regla desde este punto es simple: **no se reconstruye lo que ya funciona**. T
 | `data/product-laws.js` | v1 | `d6e621107711f60a246eaed8d1d5d44018bb4065` |
 | `data/ocarina-system.js` | v1 | `86824e6ce1fc810826a5e5bf5165188a878b6f4b` |
 | `QA-GATE.md` | v1 | `db027faa72a062de0c1405422d9896d0ec47cdf5` |
+| `README.md` | contrato público | `740389f989a283a156487e0db6ade6f8bc740ccf` |
 
 ## Zonas congeladas
 
@@ -88,4 +89,4 @@ El estado actual debe considerarse pendiente de verificación E2E hasta ejecutar
 
 ## Próxima etapa
 
-La próxima intervención debe continuar por **QA funcional real en navegador**: fabricación individual, consumo 1→10 por producto, agotamiento, persistencia pese al límite de Biblioteca, colecciones, concurrencia, derechos y exportación. La arquitectura queda cerrada mientras esas pruebas no encuentren una regresión.
+La arquitectura queda cerrada. La siguiente intervención corresponde exclusivamente a **QA funcional real en navegador**: fabricación individual, consumo 1→10 por producto, agotamiento, persistencia pese al límite de Biblioteca, colecciones, concurrencia, derechos y exportación. No se debe reconstruir el runtime para realizar esas pruebas.
