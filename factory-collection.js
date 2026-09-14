@@ -1,7 +1,10 @@
-/* FÁBRICA CHAÑAR — COLECCIONES EDITORIALES v2
+/* FÁBRICA CHAÑAR — COLECCIONES EDITORIALES v3
    Ley de producción de alto valor:
    cada serie debe sentirse pensada, curada y armada como una pequeña edición.
    El volumen nunca manda sobre la calidad.
+   v3: las colecciones pasan obligatoriamente por el motor único y el selector
+   cerrado; cada pieza se guarda antes de fabricar la siguiente para que el
+   consumo de slots sea real y no se repita dentro de la misma serie.
 */
 (function(){
   const COLLECTIONS=[
@@ -54,35 +57,40 @@
     if(typeof FabricaEngine==='undefined'||typeof state==='undefined')return;
     const seriesId=`SERIE-${c.id.toUpperCase()}-${Date.now()}`;
     const before=state.image||null;
-    const existing=typeof library==='function'?library():[];
     const saved=[];
     try{
       for(let i=0;i<templates.length;i++){
         const t=templates[i];
-        state.type=t.product;state.templateId=t.id;
-        applyTemplate(t,{keepImage:!!before});state.image=before;
-        if(!before)state.photoId=t.photo||null;
+        const result=await FabricaEngine.produce({type:t.product,templateId:t.id});
+        if(!result?.ok){
+          status(`${c.emoji} La serie se detuvo en la pieza ${i+1}: ${result?.reason||'fabricación no disponible'}.`);
+          break;
+        }
+        if(before)state.image=before;
         state.factoryMeta=state.factoryMeta||{};
         state.factoryMeta.collection={id:c.id,name:c.name,part:i+1,total,seriesId,role:ROLES[i]||'pieza',seriesMode:true,editorial:true};
         state.factoryMeta.friendlyLine=PHRASES[c.id][i]||PHRASES[c.id][PHRASES[c.id].length-1];
         renderProducts();renderTemplates();renderForm();renderPreview();
         const item=await snapshotSeriesPiece(c,t,i+1,total,seriesId);
-        if(item){saved.push(item);results.push({id:t.id,type:t.product,title:t.title,part:i+1,role:ROLES[i]||'pieza'});}
+        if(item){
+          saved.push(item);results.push({id:t.id,type:t.product,title:t.title,part:i+1,role:ROLES[i]||'pieza',closedCatalogSlot:item.factoryMeta?.closedCatalog?.[t.product]?.slot||null});
+          if(typeof setLibrary==='function'){
+            const current=typeof library==='function'?library():[];
+            setLibrary([item,...current.filter(old=>old.id!==item.id)].slice(0,18));
+          }
+        }
         await wait(220);
-      }
-      if(saved.length&&typeof setLibrary==='function'){
-        const dedup=saved.filter(item=>!existing.some(old=>old.id===item.id));
-        setLibrary([...dedup,...existing].slice(0,18));
       }
       document.dispatchEvent(new CustomEvent('fabrica:series-ready',{detail:{collection:c,results,saved:saved.length,seriesId}}));
       status(`${c.emoji} Serie curada y guardada: ${saved.length} piezas. La Fábrica armó apertura, desarrollo y cierre.`);
       document.querySelector('.preview-panel')?.scrollIntoView({behavior:'smooth',block:'start'});
       return results;
     }catch(error){
+      console.error(error);
       status(`${c.emoji} La serie quedó parcialmente guardada (${saved.length} piezas). La Fábrica no siguió fabricando para no bajar el estándar.`);
       return results;
     }finally{button?.classList.remove('is-working');}
   }
-  window.FabricaCollections={version:2,collections:COLLECTIONS,produceSeries,phrases:PHRASES,renderChooser};
+  window.FabricaCollections={version:3,collections:COLLECTIONS,produceSeries,phrases:PHRASES,renderChooser};
   document.addEventListener('DOMContentLoaded',()=>setTimeout(renderChooser,220));
 })();
