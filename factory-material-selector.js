@@ -1,9 +1,7 @@
-/* FÁBRICA CHAÑAR — SELECTOR CERRADO v6
+/* FÁBRICA CHAÑAR — SELECTOR CERRADO v7
    4 productos soberanos · 10 fotos por producto · 40 matrices.
-   La Fábrica no inventa nuevas familias: recorre el catálogo cerrado
-   y aplica la realización editorial correspondiente al slot.
-   v6: la identidad maestra y los derechos fotográficos quedan unidos
-   al resultado de fabricación, no implícitos en otra capa.
+   v7: una foto propia del usuario nunca es reemplazada por el material editorial
+   seleccionado; el material queda como referencia/proveniencia separada.
 */
 (function(){
   const originals={produce:null};
@@ -31,24 +29,25 @@
   }
   function attach(selection,product){
     if(typeof state==='undefined'||!selection?.material)return;
+    const previousOwnImage=typeof state.image==='string'&&state.image.startsWith('data:image/');
     const material=selection.material,master=selection.master,editorial=selection.editorial,asset=assetForId(selection.photoAsset)||assetForId(material?.photo?.asset);
     const id=window.FabricaOcarinaSystem?.buildIdentity?.({collection:material.collection||master?.collection||'territorio',number:master?.number||1})||{};
     const fact=editorial?.fact||material.facts?.[0]||null;
     const previous=state.factoryMeta?.closedCatalog||{};
     const rights=rightsFor(asset,editorial,material);
     state.factoryMeta={...(state.factoryMeta||{}),
-      rawMaterial:{version:6,masterId:material.master||'',theme:material.theme||'',score:selection.score,fit:selection.fit,sourceType:selection.sourceType,photo:material.photo||null,facts:material.facts||[],microstory:material.microstory||'',sources:material.sources||[],credit:material.credit||''},
+      rawMaterial:{version:7,masterId:material.master||'',theme:material.theme||'',score:selection.score,fit:selection.fit,sourceType:selection.sourceType,photo:material.photo||null,facts:material.facts||[],microstory:material.microstory||'',sources:material.sources||[],credit:material.credit||''},
       masterProduct:{version:1,id:master?.id||material.master||'',number:master?.number||null,collection:master?.collection||material.collection||'',template:master?.template||'',name:master?.name||''},
       ...id,
       productMaterialFit:{product,fit:selection.fit,selectionReason:selection.sourceType},
       closedCatalog:{...previous,[product]:{slot:selection.slot,total:selection.closedOptions,photo:selection.photoAsset,master:master?.id||selection.material?.master||null,direction:selection.slot&&catalog()?.get?.(product,selection.slot)?.direction||'',execution:catalog()?.get?.(product,selection.slot)?.execution||null}},
       editorialRealization:{version:1,slot:selection.slot,product,headline:editorial?.headline||'',subline:editorial?.subline||'',body:editorial?.body||'',fact,factLabel:editorial?.factLabel||'',source:editorial?.source||'',sourceUrl:editorial?.sourceUrl||'',photoSource:editorial?.photoSource||'',photoUrl:editorial?.photoUrl||'',rights:editorial?.rights||'reference',reverse:editorial?.reverse||'',status:editorial?.status||'PROTOTIPO'},
-      photoSelection:{asset:asset?.id||selection.photoAsset||null,role:material.photo?.role||'editorial',focus:catalog()?.get?.(product,selection.slot)?.direction||material.photo?.focus||'',crop:material.photo?.crop||'',rights:rights.kind,commercialSafe:rights.commercialSafe,source:asset?.source||editorial?.photoSource||'',credit:asset?.author||material.credit||''},
+      photoSelection:{asset:asset?.id||selection.photoAsset||null,role:material.photo?.role||'editorial',focus:catalog()?.get?.(product,selection.slot)?.direction||material.photo?.focus||'',crop:material.photo?.crop||'',rights:rights.kind,commercialSafe:previousOwnImage||rights.commercialSafe,source:asset?.source||editorial?.photoSource||'',credit:asset?.author||material.credit||''},
       selectedFact:fact,
       materialSelection:'closed-catalog',
       materialPhotoApplied:false
     };
-    state.factoryMeta.photoProvenance={version:1,asset:asset?.id||selection.photoAsset||null,source:asset?.source||editorial?.photoSource||'',url:asset?.url||editorial?.photoUrl||'',author:asset?.author||material?.photo?.author||material?.credit||'',license:asset?.license||material?.photo?.license||'',rights:rights.kind,commercialSafe:rights.commercialSafe};
+    state.factoryMeta.photoProvenance={version:1,asset:asset?.id||selection.photoAsset||null,source:asset?.source||editorial?.photoSource||'',url:asset?.url||editorial?.photoUrl||'',author:asset?.author||material?.photo?.author||material?.credit||'',license:asset?.license||material?.photo?.license||'',rights:rights.kind,commercialSafe:previousOwnImage||rights.commercialSafe};
     if(asset?.photo){
       state.photoId=asset.id;
       state.factoryMeta.photoId=asset.id;
@@ -57,10 +56,18 @@
       state.factoryMeta.photoSelection.src=asset.photo;
       state.factoryMeta.photoSelection.source=asset.source||editorial?.photoSource||'';
       state.factoryMeta.photoSelection.credit=asset.author||material.credit||'';
-      /* Never masquerade a reference image as an uploaded/owned photo. */
-      state.image=rights.commercialSafe?asset.photo:null;
-      state.factoryMeta.materialPhotoApplied=!!rights.commercialSafe;
-      state.factoryMeta.photoMode=rights.commercialSafe?'safe-asset':'reference-only';
+      /* A user-uploaded photo has priority over the closed catalog's material image. */
+      if(previousOwnImage){
+        state.factoryMeta.materialPhotoApplied=false;
+        state.factoryMeta.photoMode='own';
+      }else{
+        state.image=rights.commercialSafe?asset.photo:null;
+        state.factoryMeta.materialPhotoApplied=!!rights.commercialSafe;
+        state.factoryMeta.photoMode=rights.commercialSafe?'safe-asset':'reference-only';
+      }
+    }else if(previousOwnImage){
+      state.factoryMeta.photoMode='own';
+      state.factoryMeta.materialPhotoApplied=false;
     }
     if(closedOptionsReady(product))state.factoryMeta.closedCatalogComplete=true;
     renderPreview?.();
@@ -79,12 +86,12 @@
     };
     window.FabricaEngine.selectMaterial=select;
     window.FabricaEngine.materials=materials;
-    window.FabricaEngine.materialSelectorVersion=6;
+    window.FabricaEngine.materialSelectorVersion=7;
   }
   function selfTest(){
     const results=PRODUCTS.map(product=>{const c=catalog()?.forProduct?.(product)||[];const s=select(product);const e=editorials()?.realizations?.[product]||[];return {product,template:catalog()?.products?.[product]?.template||product,options:c.length,editorialOptions:e.length,master:s.master?.id||null,photo:s.photoAsset,pass:c.length===10&&e.length===10&&!!s.material&&!!s.photoAsset&&!!s.editorial};});
-    return {version:6,ok:results.every(x=>x.pass),results,summary:catalog()?.summary?.()||null,editorialSummary:editorials()?.summary?.()||null,rule:'4 plantillas × 10 fotos = 40 matrices cerradas y realizadas'};
+    return {version:7,ok:results.every(x=>x.pass),results,summary:catalog()?.summary?.()||null,editorialSummary:editorials()?.summary?.()||null,rule:'4 plantillas × 10 fotos = 40 matrices cerradas y realizadas'};
   }
   document.addEventListener('DOMContentLoaded',()=>setTimeout(install,700));
-  window.FabricaMaterialSelector={version:6,select,masterFor,attach,install,selfTest};
+  window.FabricaMaterialSelector={version:7,select,masterFor,attach,install,selfTest};
 })();
