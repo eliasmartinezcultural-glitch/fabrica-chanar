@@ -25,3 +25,4 @@
   window.FABRICA_V3_PHOTOS=Object.freeze(raw.map(Object.freeze));
   window.FABRICA_V3_TERRITORY=Object.freeze({location:LOCAL,total:raw.length,verifiedTerritory:verified.length,pendingPhotos:pending.length});
 })();
+(()=>{const load=()=>{if(document.getElementById('artDirectionScript'))return;const s=document.createElement('script');s.id='artDirectionScript';s.src='./art-direction.js';s.defer=true;document.head.appendChild(s)};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',load);else load()})();
