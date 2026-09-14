@@ -1,10 +1,9 @@
-/* FÁBRICA CHAÑAR — COLECCIONES EDITORIALES v4
+/* FÁBRICA CHAÑAR — COLECCIONES EDITORIALES v5
    Ley de producción de alto valor:
    cada serie debe sentirse pensada, curada y armada como una pequeña edición.
    El volumen nunca manda sobre la calidad.
-   v4: una misma colección no puede iniciar dos fabricaciones concurrentes;
-   cada pieza sigue pasando por el motor único, el selector cerrado y el
-   guardado antes de permitir fabricar la siguiente.
+   v5: el bloqueo de fabricación es global porque el runtime comparte un único
+   estado; así ninguna colección puede ejecutarse concurrentemente con otra.
 */
 (function(){
   const COLLECTIONS=[
@@ -22,7 +21,7 @@
     cultura:['Una pequeña historia de este lugar.','Historias, personas y territorio.','Una mirada local para guardar.']
   };
   const ROLES=['apertura','desarrollo','cierre'];
-  const busy=new Set();
+  let busy=false;
   const $=s=>document.querySelector(s);
   const wait=ms=>new Promise(r=>setTimeout(r,ms));
   function find(id){return COLLECTIONS.find(c=>c.id===id)||COLLECTIONS[0]}
@@ -52,11 +51,11 @@
     };
   }
   async function produceSeries(id,count=3){
-    if(busy.has(id))return [];
+    if(busy)return [];
     const c=find(id), total=Math.min(Math.max(count,1),5), templates=curatedTemplates(c,total), results=[];
     const button=$(`[data-collection="${id}"]`);
-    busy.add(id);button?.classList.add('is-working');button?.setAttribute('aria-busy','true');
-    if(typeof FabricaEngine==='undefined'||typeof state==='undefined'){busy.delete(id);button?.classList.remove('is-working');button?.removeAttribute('aria-busy');return []}
+    busy=true;button?.classList.add('is-working');document.querySelectorAll('[data-collection]').forEach(b=>b.disabled=true);button?.setAttribute('aria-busy','true');
+    if(typeof FabricaEngine==='undefined'||typeof state==='undefined'){busy=false;document.querySelectorAll('[data-collection]').forEach(b=>b.disabled=false);button?.classList.remove('is-working');button?.removeAttribute('aria-busy');return []}
     const seriesId=`SERIE-${c.id.toUpperCase()}-${Date.now()}`;
     const before=state.image||null;
     const saved=[];
@@ -92,9 +91,9 @@
       status(`${c.emoji} La serie quedó parcialmente guardada (${saved.length} piezas). La Fábrica no siguió fabricando para no bajar el estándar.`);
       return results;
     }finally{
-      busy.delete(id);button?.classList.remove('is-working');button?.removeAttribute('aria-busy');
+      busy=false;document.querySelectorAll('[data-collection]').forEach(b=>b.disabled=false);button?.classList.remove('is-working');button?.removeAttribute('aria-busy');
     }
   }
-  window.FabricaCollections={version:4,collections:COLLECTIONS,produceSeries,phrases:PHRASES,renderChooser};
+  window.FabricaCollections={version:5,collections:COLLECTIONS,produceSeries,phrases:PHRASES,renderChooser};
   document.addEventListener('DOMContentLoaded',()=>setTimeout(renderChooser,220));
 })();
