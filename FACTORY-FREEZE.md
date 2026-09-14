@@ -50,12 +50,12 @@ La regla desde este punto es simple: **no se reconstruye lo que ya funciona**. T
 | `factory-curation.css` | activa | `62227562ce9888a9d779a308f94485b34fecf437` |
 | `factory-final.css` | v3 | `e77c1151169bf4046f0021a0450c755ed162a565` |
 | `data/factory-closed-catalog.js` | v2 | `de389bfb689ec79d34eba12ec6bf7b23bea6278a` |
-| `data/editorial-realizations.js` | v1 | `e86027628fcf454cdd5d8082b30e59986006048` |
+| `data/editorial-realizations.js` | v1 | `e86027628fcf454cdd5d8082b30e599860060348` |
 | `data/factory-raw-materials.js` | v2 | `78e167ffba957efd00e06df43a68aae2b9890cda` |
 | `data/master-products.js` | v6 | `10aa9e6f31d8dc8f2f311b1c962d52de839f5d97` |
 | `data/product-laws.js` | v1 | `d6e621107711f60a246eaed8d1d5d44018bb4065` |
-| `data/ocarina-system.js` | v1 | `86824e6ce1fc826a5e5bf5165188a878b6f4b` |
-| `QA-GATE.md` | v1 | `62be4d8e55444237b17f17070cf9b0af74ac9d17` |
+| `data/ocarina-system.js` | v1 | `86824e6ce1fc810826a5e5bf5165188a878b6f4b` |
+| `QA-GATE.md` | v1 | `db027faa72a062de0c1405422d9896d0ec47cdf5` |
 
 ## Zonas congeladas
 
