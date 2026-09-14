@@ -34,39 +34,53 @@ Cada pieza recibe automáticamente una familia visual, dirección de arte fotogr
 
 ## Arquitectura activa
 
-El runtime visible está consolidado en una única superficie:
+`index.html` es el punto de entrada único y carga el runtime consolidado. `app-core.js` no es material histórico fuera del runtime: es el núcleo de estado, Biblioteca, edición y exportación utilizado por la superficie activa. El motor y los módulos especializados se enganchan sobre ese mismo estado.
 
 ```text
 index.html
- ├─ interfaz
- ├─ catálogo de 4 productos
- ├─ banco fotográfico 40/40
- ├─ dirección de arte por fotografía
- ├─ estado + localStorage
- ├─ Biblioteca
- ├─ Mesa de venta
- └─ exportación PNG/JPG + impresión
+ ├─ interfaz central
+ ├─ app-core.js · estado + Biblioteca + edición + exportación
+ ├─ factory-engine.js · contrato de producto
+ ├─ factory-material-selector.js · catálogo cerrado + materia + derechos
+ ├─ factory-central.js · flujo único de fabricación
+ ├─ factory-preview-audit.js · control de calidad
+ ├─ factory-quality.js · salida y leyes editoriales
+ ├─ factory-master-* · piezas maestras y foto dirigida
+ ├─ factory-sales.js · mesa comercial
+ └─ data/* · catálogo, realizaciones, materias, leyes e identidad Ocarina
 ```
 
-`app-core.js` y los demás módulos históricos permanecen en el repositorio como material experimental/documental y **no forman parte del runtime que carga actualmente `index.html`**. Esto evita mantener dos motores activos al mismo tiempo.
+Los módulos activos trabajan sobre **una sola cadena de producción**. No debe existir un segundo motor paralelo.
+
+## Contrato cerrado
+
+La Fábrica trabaja con **4 productos × 10 slots = 40 matrices editoriales**. El catálogo es finito y las realizaciones tienen materia, dirección, ejecución, fuente y procedencia asociadas.
+
+La progresión de fabricación se conserva por producto dentro de `factoryMeta.closedCatalog`, y la Biblioteca conserva el `factoryMeta` completo al guardar y recuperar una pieza.
 
 ## Foto propia y derechos
 
 La prioridad comercial es utilizar fotografías propias de Ocarina, del cliente o activos con derechos documentados. Las imágenes externas de referencia no deben interpretarse como material automáticamente autorizado para venta.
 
-La exportación de imágenes externas puede depender de las políticas CORS del proveedor. Por eso la estrategia definitiva de producción debe favorecer activos controlados.
+Una fotografía propia tiene prioridad sobre la materia fotográfica editorial del catálogo y no debe ser reemplazada al fabricar una pieza.
+
+La exportación de imágenes externas puede depender de las políticas CORS del proveedor. Por eso la producción comercial definitiva debe favorecer activos controlados.
+
+## Base congelada
+
+Desde el **14 de septiembre de 2026** la arquitectura funcional consolidada queda documentada en `FACTORY-FREEZE.md`.
+
+Ese documento funciona como contrato de continuidad: las piezas que ya funcionan no se reconstruyen ni se reemplazan por otra arquitectura sin una regresión demostrada o una necesidad concreta. Las futuras intervenciones deben partir de esa base y modificar el punto mínimo necesario.
 
 ## Despliegue
 
-Ruta primaria:
+Ruta primaria del repositorio:
 
-`main → GitHub Pages`
+`main`
 
-URL:
+La integración Vercel fue comprobada con estado `success` en el commit `7a019bc72628423d6d3850428b6fd1166170cea5` durante esta auditoría.
 
-`https://eliasmartinezcultural-glitch.github.io/fabrica-chanar/`
-
-No se declara una prueba E2E de navegador como realizada si no se ejecutó realmente.
+No se declara una prueba E2E de navegador como realizada hasta ejecutarla realmente.
 
 ## Prioridad actual
 
@@ -78,4 +92,4 @@ Cada cambio debe hacer una de estas tres cosas:
 2. reducir trabajo de Elías;
 3. reducir errores o riesgos.
 
-La auditoría funcional V2 queda documentada en `AUDITORIA-FUNCIONAL-V2.md`.
+La auditoría funcional histórica queda documentada en `AUDITORIA-FUNCIONAL-V2.md`. La base consolidada y las reglas de continuidad quedan documentadas en `FACTORY-FREEZE.md`.
