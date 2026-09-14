@@ -20,21 +20,23 @@ La regla desde este punto es simple: **no se reconstruye lo que ya funciona**. T
 - Biblioteca conserva y restaura el estado editorial completo.
 - La fabricación automática espera a que esté instalada la curaduría cerrada.
 - Cada slot cerrado se consume una sola vez por producto a través de la Biblioteca; al agotar los 10 slots, la familia se bloquea hasta una decisión explícita de reinicio.
-- Las colecciones utilizan obligatoriamente el mismo motor y selector cerrado que la fabricación individual; no existe una segunda ruta de producción.
+- Las colecciones utilizan obligatoriamente el mismo motor y selector cerrado que la fabricación individual.
+- Las colecciones guardan cada pieza antes de fabricar la siguiente.
+- El runtime compartido tiene un único candado global para evitar dos series concurrentes.
 - El reverso agrega contexto, procedencia, fuente y crédito; no duplica el frente.
 - `factory-preview-audit.js` es el control de calidad de la vista.
 - `factory-sales.js` solo considera comercialmente listas las piezas con derechos explícitos.
 
-## Archivos canónicos
+## Archivos canónicos actualizados
 
 | Archivo | Versión | SHA del contenido |
 |---|---:|---|
-| `index.html` | integración actual | `bf24b266a270664f84e78c13fd45220b2ec8aa3e` |
+| `index.html` | integración actual | `434ceb01ad4d6c5b662dac754d8aa62aba3daa11` |
 | `app-core.js` | runtime base | `a1b7286f96deb36e1eedc63d3df85565eae3025f` |
 | `factory-engine.js` | v7 | `30412e09fd5c7aed8989073a646e8f0a9ffa34ae` |
 | `factory-central.js` | v10 | `f4eb6f35eaa834a61387d8ccb82087753b9e654f` |
 | `factory-material-selector.js` | v8 | `e23457059d717fa42235e637dee68b2f6fe264dd` |
-| `factory-collection.js` | v3 | `62be4d8e55444237b17f17070cf9b0af74ac9d17` |
+| `factory-collection.js` | v5 | `e9bc573aa56a61433fc6848dd84d51015b1d4eb0` |
 | `factory-preview-audit.js` | v5 | `8f7325beb375f17237e66f780a427c0d724e4033` |
 | `factory-quality.js` | v3 | `66753743fa69ec1b1b74b914e96d2538bffbe0cf` |
 | `factory-image-resilience.js` | v2 | `06908a30984b09ef0d287121ed5bd993e2e0ff27` |
@@ -63,7 +65,7 @@ No eliminar `factoryMeta` de los guardados.
 No convertir referencias públicas en material comercial por comodidad.  
 No volver a introducir archivos de preview eliminados como dependencia obligatoria.  
 No agregar decoración si antes no está resuelto el flujo funcional correspondiente.  
-No modificar el comportamiento de consumo de slots sin una nueva decisión explícita de edición/reutilización.
+No modificar el comportamiento de consumo de slots ni eliminar el candado de concurrencia sin una nueva decisión explícita.
 
 ## Regla de intervención
 
@@ -85,4 +87,4 @@ El estado actual debe considerarse pendiente de verificación E2E hasta ejecutar
 
 ## Próxima etapa
 
-La siguiente intervención debe continuar por **QA funcional**, no por reconstrucción: comprobar en navegador la fabricación individual, consumo 1→10 por cada producto, agotamiento, Biblioteca, colecciones, derechos y exportación. No se debe reiniciar la arquitectura.
+La próxima intervención debe continuar por **QA funcional real en navegador**: fabricación individual, consumo 1→10 por producto, agotamiento, Biblioteca, colecciones, derechos y exportación. La arquitectura queda cerrada mientras esas pruebas no encuentren una regresión.
