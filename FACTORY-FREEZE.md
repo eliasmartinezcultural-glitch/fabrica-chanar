@@ -18,11 +18,11 @@ La regla desde este punto es simple: **no se reconstruye lo que ya funciona**. T
 - Una foto propia nunca es reemplazada por una foto editorial del catálogo.
 - Las fotos `reference` no se consideran automáticamente aptas para venta.
 - Biblioteca conserva y restaura el estado editorial completo.
-- La fabricación automática espera a que esté instalada la curaduría cerrada.
-- Cada slot cerrado se consume una sola vez por producto a través de la Biblioteca; al agotar los 10 slots, la familia se bloquea hasta una decisión explícita de reinicio.
+- El consumo permanente de slots vive en `fabrica-chanar-closed-ledger-v1`, separado de la Biblioteca visible y de su límite de 18 piezas.
+- Cada slot cerrado se consume una sola vez por producto y, una vez agotados los 10, la familia queda bloqueada hasta una decisión explícita.
 - Las colecciones utilizan obligatoriamente el mismo motor y selector cerrado que la fabricación individual.
-- Las colecciones guardan cada pieza antes de fabricar la siguiente.
-- El runtime compartido tiene un único candado global para evitar dos series concurrentes.
+- Las colecciones guardan y confirman cada pieza antes de fabricar la siguiente.
+- El runtime compartido tiene un único candado global para evitar dos fabricaciones concurrentes.
 - El reverso agrega contexto, procedencia, fuente y crédito; no duplica el frente.
 - `factory-preview-audit.js` es el control de calidad de la vista.
 - `factory-sales.js` solo considera comercialmente listas las piezas con derechos explícitos.
@@ -31,12 +31,12 @@ La regla desde este punto es simple: **no se reconstruye lo que ya funciona**. T
 
 | Archivo | Versión | SHA del contenido |
 |---|---:|---|
-| `index.html` | integración actual | `434ceb01ad4d6c5b662dac754d8aa62aba3daa11` |
-| `app-core.js` | runtime base | `a1b7286f96deb36e1eedc63d3df85565eae3025f` |
+| `index.html` | integración actual | `7bfa980da5a3924fba4678164422dc105db7a582` |
+| `app-core.js` | runtime base + commit de slots al guardar | `58abebc10db012cf7e938a50bb4b949ac30866cc` |
 | `factory-engine.js` | v7 | `30412e09fd5c7aed8989073a646e8f0a9ffa34ae` |
-| `factory-central.js` | v10 | `f4eb6f35eaa834a61387d8ccb82087753b9e654f` |
-| `factory-material-selector.js` | v8 | `e23457059d717fa42235e637dee68b2f6fe264dd` |
-| `factory-collection.js` | v5 | `e9bc573aa56a61433fc6848dd84d51015b1d4eb0` |
+| `factory-central.js` | v11 | `52b0eaabf96b2cf008751d1a0db1fb573a64cbb4` |
+| `factory-material-selector.js` | v10 | `03475ffd1ea8e25624a63fedfa99723ec8c62ce5` |
+| `factory-collection.js` | v6 | `907677b8e3d458b1d76abfc8d076e54aa5a076c1` |
 | `factory-preview-audit.js` | v5 | `8f7325beb375f17237e66f780a427c0d724e4033` |
 | `factory-quality.js` | v3 | `66753743fa69ec1b1b74b914e96d2538bffbe0cf` |
 | `factory-image-resilience.js` | v2 | `06908a30984b09ef0d287121ed5bd993e2e0ff27` |
@@ -50,11 +50,12 @@ La regla desde este punto es simple: **no se reconstruye lo que ya funciona**. T
 | `factory-curation.css` | activa | `62227562ce9888a9d779a308f94485b34fecf437` |
 | `factory-final.css` | v3 | `e77c1151169bf4046f0021a0450c755ed162a565` |
 | `data/factory-closed-catalog.js` | v2 | `de389bfb689ec79d34eba12ec6bf7b23bea6278a` |
-| `data/editorial-realizations.js` | v1 | `e86027628fcf454cdd5d8082b30e599860060348` |
+| `data/editorial-realizations.js` | v1 | `e86027628fcf454cdd5d8082b30e59986006048` |
 | `data/factory-raw-materials.js` | v2 | `78e167ffba957efd00e06df43a68aae2b9890cda` |
 | `data/master-products.js` | v6 | `10aa9e6f31d8dc8f2f311b1c962d52de839f5d97` |
 | `data/product-laws.js` | v1 | `d6e621107711f60a246eaed8d1d5d44018bb4065` |
-| `data/ocarina-system.js` | v1 | `86824e6ce1fc810826a5e5bf5165188a878b6f4b` |
+| `data/ocarina-system.js` | v1 | `86824e6ce1fc826a5e5bf5165188a878b6f4b` |
+| `QA-GATE.md` | v1 | `62be4d8e55444237b17f17070cf9b0af74ac9d17` |
 
 ## Zonas congeladas
 
@@ -65,7 +66,7 @@ No eliminar `factoryMeta` de los guardados.
 No convertir referencias públicas en material comercial por comodidad.  
 No volver a introducir archivos de preview eliminados como dependencia obligatoria.  
 No agregar decoración si antes no está resuelto el flujo funcional correspondiente.  
-No modificar el comportamiento de consumo de slots ni eliminar el candado de concurrencia sin una nueva decisión explícita.
+No modificar el ledger de consumo ni eliminar el candado global sin una nueva auditoría y decisión explícita.
 
 ## Regla de intervención
 
@@ -87,4 +88,4 @@ El estado actual debe considerarse pendiente de verificación E2E hasta ejecutar
 
 ## Próxima etapa
 
-La próxima intervención debe continuar por **QA funcional real en navegador**: fabricación individual, consumo 1→10 por producto, agotamiento, Biblioteca, colecciones, derechos y exportación. La arquitectura queda cerrada mientras esas pruebas no encuentren una regresión.
+La próxima intervención debe continuar por **QA funcional real en navegador**: fabricación individual, consumo 1→10 por producto, agotamiento, persistencia pese al límite de Biblioteca, colecciones, concurrencia, derechos y exportación. La arquitectura queda cerrada mientras esas pruebas no encuentren una regresión.
