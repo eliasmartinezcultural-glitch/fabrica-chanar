@@ -11,9 +11,10 @@ Este gate queda congelado junto con la arquitectura actual.
 - Biblioteca limitada a 18 piezas sin liberar slots.
 - Foto propia con prioridad.
 - `reference` no implica derechos comerciales.
-- Colecciones usan el mismo motor y selector.
-- Una fabricación global a la vez.
-- El guardado confirma el slot antes de habilitar la siguiente fabricación.
+- Colecciones usan el mismo motor y selector cerrado.
+- Una fabricación global a la vez, incluyendo colecciones completas.
+- El candado global del selector bloquea producción central y otras series mientras una serie está fabricándose.
+- El guardado confirma el slot antes de habilitar la siguiente fabricación central.
 - Agotamiento devuelve `closed-catalog-exhausted`.
 - Segunda fabricación concurrente devuelve `production-busy`.
 - `factoryMeta` sobrevive a guardado y recuperación.
