@@ -37,7 +37,7 @@ La arquitectura funcional consolidada queda congelada sobre una sola cadena de p
 | `factory-master-photo-layer.js` | v5 | `47da585830eb6488958215a61e12bf2daa0632e0` |
 | `factory-product-template.js` | v3 | `dd229760ba4f572122a73fedd519727fbdc02a14` |
 | `factory-piece.js` | v3 | `0b3d567b62e1f3ff9974345ac5e5641d25f2a1a3` |
-| `factory-master-products.js` | v8 | `488c83042a6acdcf8fef?` |
+| `factory-master-products.js` | v8 | `488c83042a6ac54438dd4f840fec3925dc1f78dc` |
 | `factory-master-visuals.js` | v4 | `661ddc3450407b7e45d7277f703570b51eecc10d` |
 | `factory-sales.js` | v4 | `08aaf5db420fe3c2f98a690060d0df0261af631d` |
 | `factory-art-direction.js` | v1 | `5f7d1eca157192bd1dea5bf6090a6be10f0ede6d` |
