@@ -50,7 +50,7 @@ La arquitectura funcional consolidada queda congelada sobre una sola cadena de p
 | `data/master-products.js` | v6 | `10aa9e6f31d8dc8f2f311b1c962d52de839f5d97` |
 | `data/product-laws.js` | v1 | `d6e621107711f60a246eaed8d1d5d44018bb4065` |
 | `data/ocarina-system.js` | v1 | `86824e6ce1fc810826a5e5bf5165188a878b6f4b` |
-| `QA-GATE.md` | actualizado | `d2a24f10b6b56829f905608530dd718cebf258ba` |
+| `QA-GATE.md` | actualizado | `a86aab921601155b4099a75b942d40f9f5df62bd` |
 | `README.md` | contrato público | `ed560211edc3e8ac925a512ae91caf727260ef47` |
 
 ## Zonas bloqueadas
