@@ -17,6 +17,7 @@ La arquitectura funcional consolidada queda congelada sobre una sola cadena de p
 - Las series poseen un token de lote para atravesar su propia producción sin abrir el candado a otras rutas.
 - Los slots seleccionados quedan reservados transitoriamente hasta el commit, evitando doble asignación durante guardados asíncronos.
 - El candado global del selector protege la producción central frente a colecciones y colecciones entre sí.
+- El preview tiene una sola superficie visual: la pieza maestra reemplaza la previsualización base y no se apila sobre ella.
 - El guardado se confirma antes de habilitar la siguiente fabricación central.
 - Al agotarse los 10 slots de una familia, la familia se bloquea hasta una decisión explícita.
 - `QA-GATE.md` define los gates que no deben romperse.
@@ -25,7 +26,7 @@ La arquitectura funcional consolidada queda congelada sobre una sola cadena de p
 
 | Archivo | Versión | SHA del contenido |
 |---|---:|---|
-| `index.html` | integración v14 | `c83af4313f8641002e23bf79fe1e00bc8d6cd7d9` |
+| `index.html` | integración v15 | `73df397a9bcffa78e3728378c5be6963a14fb393` |
 | `app-core.js` | runtime base + commit de slots al guardar | `58abebc10db012cf7e938a50bb4b949ac30866cc` |
 | `factory-engine.js` | v7 | `30412e09fd5c7aed8989073a646e8f0a9ffa34ae` |
 | `factory-central.js` | v13 | `6770b71f9229516bfacd338cd23962783e0a9b45` |
@@ -38,7 +39,7 @@ La arquitectura funcional consolidada queda congelada sobre una sola cadena de p
 | `factory-product-template.js` | v3 | `dd229760ba4f572122a73fedd519727fbdc02a14` |
 | `factory-piece.js` | v3 | `0b3d567b62e1f3ff9974345ac5e5641d25f2a1a3` |
 | `factory-master-products.js` | v8 | `488c83042a6ac54438dd4f840fec3925dc1f78dc` |
-| `factory-master-visuals.js` | v4 | `661ddc3450407b7e45d7277f703570b51eecc10d` |
+| `factory-master-visuals.js` | v5 | `85c3c58b401b494d19dcaa7da170fb692fb5d303` |
 | `factory-sales.js` | v4 | `08aaf5db420fe3c2f98a690060d0df0261af631d` |
 | `factory-art-direction.js` | v1 | `5f7d1eca157192bd1dea5bf6090a6be10f0ede6d` |
 | `factory-curation.css` | activa | `62227562ce9888a9d779a308f94485b34fecf437` |
@@ -54,8 +55,8 @@ La arquitectura funcional consolidada queda congelada sobre una sola cadena de p
 
 ## Zonas bloqueadas
 
-No crear otro runtime. No crear otra ruta de fabricación. No reabrir 4×10 sin decisión explícita. No eliminar `factoryMeta`. No convertir referencias en comerciales. No eliminar ledger, reserva transitoria, candado global ni confirmación de guardado. No agregar decoración antes de resolver QA funcional.
+No crear otro runtime. No crear otra ruta de fabricación. No reabrir 4×10 sin decisión explícita. No eliminar `factoryMeta`. No convertir referencias en comerciales. No eliminar ledger, reserva transitoria, candado global ni confirmación de guardado. No volver a apilar la pieza maestra sobre el preview base. No agregar decoración antes de resolver QA funcional.
 
 ## Estado
 
-La arquitectura está **cerrada para cambios estructurales**. La entrada HTML ya quedó alineada con `factory-material-selector.js` v12 y `factory-collection.js` v8. La prueba E2E real en navegador sigue pendiente y no se declara realizada sin ejecutarla.
+La arquitectura está **cerrada para cambios estructurales**. La entrada HTML está alineada con las versiones actuales de selector, colecciones y visual maestro. La prueba E2E real en navegador sigue pendiente y no se declara realizada sin ejecutarla.
