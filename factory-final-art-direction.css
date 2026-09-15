@@ -1,0 +1,65 @@
+/* FÁBRICA CHAÑAR — REDISEÑO FINAL v1
+   Capa de acabado: geometría interna, jerarquía, tipografía artística,
+   sellos contenidos y dorso coleccionable. No altera el contrato físico.
+*/
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap');
+
+/* El producto es una pieza cerrada: nada puede vivir fuera de sus bordes. */
+#canvasPreview{overflow:visible!important;display:flex!important;justify-content:center!important;align-items:flex-start!important}
+#canvasPreview .piece,#canvasPreview .master-product-preview{position:relative!important;overflow:hidden!important;contain:layout paint!important;isolation:isolate!important}
+#canvasPreview .piece>*{max-width:100%;min-width:0}
+#canvasPreview .piece-image{position:relative!important;overflow:hidden!important;flex-shrink:0!important}
+#canvasPreview .piece-image img{width:100%!important;height:100%!important;object-fit:cover!important;object-position:50% 50%!important;display:block!important}
+
+/* Tipografía de autor: títulos de cartel/pincel y cuerpo editorial sobrio. */
+#canvasPreview .piece h3{font-family:'Cormorant Garamond',serif!important;font-weight:700!important;letter-spacing:-.035em!important;line-height:.94!important;text-wrap:balance!important}
+#canvasPreview .piece .piece-kicker{font-family:'DM Sans',sans-serif!important;font-size:clamp(7px,1.15vw,11px)!important;letter-spacing:.22em!important;font-weight:600!important}
+#canvasPreview .piece .piece-subtitle,#canvasPreview .piece .piece-content p,#canvasPreview .piece .piece-content li{font-family:'DM Sans',sans-serif!important;line-height:1.42!important}
+#canvasPreview .piece .piece-brand,#canvasPreview .piece .piece-meta,#canvasPreview .piece .piece-source,#canvasPreview .piece .piece-credit{font-family:'Caveat',cursive!important;letter-spacing:.03em!important}
+
+/* Reservas seguras: el sello nunca invade el bloque textual. */
+#canvasPreview .factory-art-seal{position:absolute!important;right:clamp(12px,2.6%,24px)!important;bottom:clamp(12px,2.6%,24px)!important;width:clamp(48px,11%,82px)!important;height:clamp(48px,11%,82px)!important;z-index:6!important;pointer-events:none!important;box-sizing:border-box!important}
+#canvasPreview .piece-content{position:relative!important;z-index:3!important;overflow:hidden!important}
+#canvasPreview .piece-content>*{position:relative;z-index:2}
+#canvasPreview .piece-content:has(.factory-art-seal){padding-bottom:clamp(78px,15%,112px)!important}
+
+/* Postal: recuerdo cálido, aire entre fotografía y texto. */
+#canvasPreview .piece.postal{background:#f4e5cc!important;color:#3d2b22!important}
+#canvasPreview .piece.postal .piece-image{height:46%!important;padding:10px 10px 0!important;background:#ead5b5!important}
+#canvasPreview .piece.postal .piece-content{padding:24px 28px 30px!important;background:linear-gradient(180deg,#f4e5cc 0%,#efddbf 100%)!important}
+#canvasPreview .piece.postal h3{font-size:clamp(30px,5.2vw,54px)!important;max-width:82%!important}
+#canvasPreview .piece.postal .piece-subtitle{max-width:84%!important}
+
+/* Ficha: archivo de museo, cuadrícula tenue y lectura vertical. */
+#canvasPreview .piece.ficha{background:#eee7d6!important;color:#30352b!important}
+#canvasPreview .piece.ficha .piece-image{height:37%!important;padding:12px 12px 0!important;background:#d9d5c2!important}
+#canvasPreview .piece.ficha .piece-content{padding:23px 30px 30px!important;background:#eee7d6!important}
+#canvasPreview .piece.ficha h3{font-size:clamp(28px,4.7vw,46px)!important;max-width:84%!important}
+#canvasPreview .piece.ficha .piece-meta{margin-top:10px!important;display:inline-block!important}
+
+/* Guía: cuaderno de campo, bloques numerados y espacio para respirar. */
+#canvasPreview .piece.guide{background:#e9e4d5!important;color:#29464a!important}
+#canvasPreview .piece.guide .piece-image{height:30%!important;padding:11px 11px 0!important;background:#d2ddd6!important}
+#canvasPreview .piece.guide .piece-content{padding:22px 28px 30px!important;background:linear-gradient(180deg,#e9e4d5,#e2dac7)!important}
+#canvasPreview .piece.guide h3{font-family:'Fraunces',serif!important;font-size:clamp(29px,4.8vw,48px)!important;max-width:82%!important}
+#canvasPreview .piece.guide .piece-content ul{gap:7px!important;margin-top:14px!important}
+#canvasPreview .piece.guide .piece-content li{padding:7px 8px 7px 31px!important;font-size:12px!important}
+
+/* Infografía: póster editorial, contraste y lectura rápida. */
+#canvasPreview .piece.infographic{background:#efe7d6!important;color:#202d34!important}
+#canvasPreview .piece.infographic .piece-image{flex-basis:29%!important;height:29%!important;padding:13px 13px 0!important;background:#d8d6c9!important}
+#canvasPreview .piece.infographic .piece-content{padding:22px 29px 26px!important;background:#efe7d6!important}
+#canvasPreview .piece.infographic h3{font-size:clamp(24px,4.1vw,40px)!important;max-width:86%!important}
+#canvasPreview .piece.infographic .piece-headline{font-family:'DM Sans',sans-serif!important;letter-spacing:.09em!important;line-height:1.3!important}
+
+/* Dorso: si existe en cualquier renderer, se convierte en reverso de colección. */
+#canvasPreview .piece-back,#canvasPreview .piece-reverse,#canvasPreview .master-reverse,.factory-product-back{position:relative!important;overflow:hidden!important;background:#eee5d3!important;color:#34342e!important}
+#canvasPreview .piece-back::before,#canvasPreview .piece-reverse::before,#canvasPreview .master-reverse::before,.factory-product-back::before{content:'';position:absolute;inset:10px;border:1px solid currentColor;opacity:.35;pointer-events:none}
+#canvasPreview .piece-back::after,#canvasPreview .piece-reverse::after,#canvasPreview .master-reverse::after,.factory-product-back::after{content:'✦  CHAÑAR  ·  OCARINA PRODUCCIONES  ✦';position:absolute;left:12%;right:12%;bottom:9%;text-align:center;font:600 clamp(10px,1.7vw,15px) 'Caveat',cursive;letter-spacing:.08em;opacity:.72;pointer-events:none}
+#canvasPreview .piece-back .back-brand,#canvasPreview .piece-reverse .back-brand,#canvasPreview .master-reverse .back-brand,.factory-product-back .back-brand{font-family:'Cormorant Garamond',serif!important;font-size:clamp(22px,4vw,40px)!important;text-align:center!important;letter-spacing:.04em!important}
+#canvasPreview .piece-back .back-signature,#canvasPreview .piece-reverse .back-signature,#canvasPreview .master-reverse .back-signature,.factory-product-back .back-signature{font-family:'Caveat',cursive!important;font-size:clamp(20px,3.5vw,34px)!important}
+
+/* Nunca usar el dorso como espacio accidental de overflow. */
+#canvasPreview .piece-back *,#canvasPreview .piece-reverse *,#canvasPreview .master-reverse *, .factory-product-back *{max-width:100%!important;overflow-wrap:anywhere!important}
+
+@media(max-width:700px){#canvasPreview .piece-content{padding-left:20px!important;padding-right:20px!important}#canvasPreview .piece-content:has(.factory-art-seal){padding-bottom:84px!important}}
