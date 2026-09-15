@@ -29,12 +29,12 @@ La arquitectura funcional consolidada queda congelada sobre una sola cadena de p
 | `index.html` | integración v15 | `73df397a9bcffa78e3728378c5be6963a14fb393` |
 | `app-core.js` | runtime base + commit de slots al guardar | `58abebc10db012cf7e938a50bb4b949ac30866cc` |
 | `factory-engine.js` | v7 | `30412e09fd5c7aed8989073a646e8f0a9ffa34ae` |
-| `factory-central.js` | v13 | `6770b71f9229516bfacd338cd23962783c5a76c9d6` |
+| `factory-central.js` | v13 | `b851a14222b71e07daaefeeca412e77c5a76c9d6` |
 | `factory-material-selector.js` | v12 | `cd2c37ba752c6a144b0f6d48f067365ed1c9adfe` |
 | `factory-collection.js` | v8 | `cce3ee01ffe7098572f88c76e89bf79de698383c` |
 | `factory-preview-audit.js` | v5 | `8f7325beb375f17237e66f780a427c0d724e4033` |
 | `factory-quality.js` | v3 | `66753743fa69ec1b1b74b914e96d2538bffbe0cf` |
-| `factory-image-resilience.js` | v2 | `06908a30984b09ef0d287121ed5bd9932e0ff27` |
+| `factory-image-resilience.js` | v2 | `06908a30984b09ef0d287121ed5bd993e2e0ff27` |
 | `factory-master-photo-layer.js` | v5 | `47da585830eb6488958215a61e12bf2daa0632e0` |
 | `factory-product-template.js` | v3 | `dd229760ba4f572122a73fedd519727fbdc02a14` |
 | `factory-piece.js` | v3 | `0b3d567b62e1f3ff9974345ac5e5641d25f2a1a3` |
