@@ -73,3 +73,76 @@
   .master-product-preview .master-skin-bottom{right:30%}
   .master-product-preview .master-fact-plaque{bottom:15%}
 }
+
+/* ============================================================
+   AUDITORÍA QUIRÚRGICA V2 — ÚLTIMA CAPA REAL
+   Esta capa vive al final del CSS para ganar a reglas antiguas.
+   Objetivo: cero desbordes, cero solapamientos entre superficies.
+   ============================================================ */
+
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+*,*::before,*::after{box-sizing:border-box}
+
+.topbar,.app-shell,.workspace,.controls,.preview-panel,.preview-head,.central-shell,
+.central-products,.central-product,.central-product-copy,.preview-wrap,.canvas-preview,
+.library-panel,.sales-panel,.library-head,.sales-head{min-width:0;max-width:100%}
+
+.workspace{align-items:start}
+.controls,.preview-panel{overflow:hidden}
+.preview-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
+.preview-head>div{min-width:0}
+.preview-head h2,.preview-head p{overflow-wrap:anywhere}
+.export-actions{position:relative;z-index:30;min-width:0;max-width:100%;align-items:center;justify-content:flex-end}
+.export-actions button{flex:0 1 auto;max-width:100%;white-space:nowrap}
+
+.central-shell{overflow:hidden}
+.central-products{grid-template-columns:repeat(2,minmax(0,1fr))}
+.central-product{overflow:hidden}
+.central-product-copy{overflow:hidden;padding-right:8px}
+.central-product-copy strong,.central-product-copy small,.central-product-copy em,.central-product-copy i{display:block;max-width:100%;overflow-wrap:anywhere;white-space:normal}
+.central-selected{min-width:0;max-width:100%}
+.central-selected-copy{min-width:0;max-width:100%;overflow:hidden}
+.central-selected-copy b,.central-selected-copy small{display:block;max-width:100%;overflow-wrap:anywhere;white-space:normal}
+.central-action-row{min-width:0;max-width:100%;flex-wrap:wrap}
+.central-produce{max-width:100%;white-space:normal}
+
+.preview-wrap{width:100%;max-width:100%;overflow:auto}
+.canvas-preview{width:min(100%,820px);max-width:100%;overflow:visible}
+.canvas-preview img,.canvas-preview svg,.canvas-preview canvas,.canvas-preview video{max-width:100%;height:auto}
+.master-product-preview{width:100%;max-width:100%;overflow:hidden}
+.master-front,.master-reverse,.master-product-skin{max-width:100%;min-width:0}
+
+/* Evita que el botón de reverso invada la fila de exportación. */
+#btnMasterFlip{position:relative;left:auto;bottom:auto;display:inline-flex;margin-top:10px;z-index:31}
+.preview-head{flex-wrap:wrap;margin-bottom:14px}
+.preview-head>div:first-child{flex:1 1 240px}
+.export-actions{flex:0 1 auto}
+
+@media(max-width:900px){
+  .workspace{grid-template-columns:minmax(0,1fr)}
+  .controls,.preview-panel{width:100%}
+  .preview-head{align-items:flex-start}
+}
+
+@media(max-width:760px){
+  .app-shell{padding-left:14px;padding-right:14px}
+  .topbar{height:auto;min-height:70px;flex-wrap:wrap;gap:10px}
+  .brand{min-width:0;max-width:100%}
+  .top-actions{min-width:0;max-width:100%;flex-wrap:wrap}
+  .preview-head{margin-bottom:14px;gap:10px}
+  .preview-head>div:first-child{flex-basis:100%}
+  .export-actions{width:100%;justify-content:flex-start}
+  .export-actions button{flex:1 1 auto}
+  #btnMasterFlip{width:100%;justify-content:center;margin-top:8px}
+  .central-products{grid-template-columns:1fr}
+  .central-action-row{flex-direction:column;align-items:stretch}
+  .central-produce{width:100%;min-width:0}
+  .central-option-grid{grid-template-columns:1fr}
+}
+
+@media(max-width:420px){
+  .app-shell{padding-left:10px;padding-right:10px}
+  .top-actions{width:100%;justify-content:flex-start}
+  .top-actions button{flex:1 1 120px}
+  .export-actions button{min-width:0;font-size:12px;padding-left:8px;padding-right:8px}
+}
