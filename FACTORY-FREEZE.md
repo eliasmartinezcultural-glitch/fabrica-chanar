@@ -13,7 +13,8 @@ La arquitectura funcional consolidada queda congelada sobre una sola cadena de p
 - `reference` no implica autorización comercial.
 - El consumo permanente vive en `fabrica-chanar-closed-ledger-v1`, independiente del límite visible de 18 piezas de Biblioteca.
 - Las colecciones pasan por el mismo motor y selector cerrado.
-- Una sola fabricación puede ejecutarse a la vez.
+- Una sola fabricación puede ejecutarse a la vez, incluyendo una serie completa.
+- El candado global del selector protege la producción central frente a colecciones y colecciones entre sí.
 - El guardado se confirma antes de habilitar la siguiente fabricación central.
 - Al agotarse los 10 slots de una familia, la familia se bloquea hasta una decisión explícita.
 - `QA-GATE.md` define los gates que no deben romperse.
@@ -22,12 +23,12 @@ La arquitectura funcional consolidada queda congelada sobre una sola cadena de p
 
 | Archivo | Versión | SHA del contenido |
 |---|---:|---|
-| `index.html` | integración actual | `143d2c6822f7af860ed0e0bb49b4a210ed572b94` |
+| `index.html` | integración v13 | `739a5776e77671880ba109bfa2991132eb758f4b` |
 | `app-core.js` | runtime base + commit de slots al guardar | `58abebc10db012cf7e938a50bb4b949ac30866cc` |
 | `factory-engine.js` | v7 | `30412e09fd5c7aed8989073a646e8f0a9ffa34ae` |
-| `factory-central.js` | v12 | `b851a14222b71e07daaefeeca412e77c5a76c9d6` |
-| `factory-material-selector.js` | v10 | `03475ffd1ea8e25624a63fedfa99723ec8c62ce5` |
-| `factory-collection.js` | v6 | `907677b8e3d458b1d76abfc8d076e54aa5a076c1` |
+| `factory-central.js` | v13 | `6770b71f9229516bfacd338cd23962783e0a9b45` |
+| `factory-material-selector.js` | v11 | `811942e3173336f51fa90df09af83b534baf314f` |
+| `factory-collection.js` | v7 | `63ec7fca15c49a6b6fc2e7caa5d49c19033143fa` |
 | `factory-preview-audit.js` | v5 | `8f7325beb375f17237e66f780a427c0d724e4033` |
 | `factory-quality.js` | v3 | `66753743fa69ec1b1b74b914e96d2538bffbe0cf` |
 | `factory-image-resilience.js` | v2 | `06908a30984b09ef0d287121ed5bd993e2e0ff27` |
@@ -46,7 +47,7 @@ La arquitectura funcional consolidada queda congelada sobre una sola cadena de p
 | `data/master-products.js` | v6 | `10aa9e6f31d8dc8f2f311b1c962d52de839f5d97` |
 | `data/product-laws.js` | v1 | `d6e621107711f60a246eaed8d1d5d44018bb4065` |
 | `data/ocarina-system.js` | v1 | `86824e6ce1fc810826a5e5bf5165188a878b6f4b` |
-| `QA-GATE.md` | v1 | `db027faa72a062de0c1405422d9896d0ec47cdf5` |
+| `QA-GATE.md` | actualizado | `9423e6f03b5f2e59e51e7dc6d6d96f4720384e04` |
 | `README.md` | contrato público | `ed560211edc3e8ac925a512ae91caf727260ef47` |
 
 ## Zonas bloqueadas
