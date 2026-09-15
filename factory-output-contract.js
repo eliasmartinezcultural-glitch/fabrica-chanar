@@ -1,7 +1,9 @@
-/* FÁBRICA CHAÑAR — CONTRATO FÍSICO ÚNICO v5
+/* FÁBRICA CHAÑAR — CONTRATO FÍSICO ÚNICO v6
    ÚNICA FUENTE DE DIMENSIONES.
    PRODUCTO → CONTRATO → PREVIEW → PNG/JPG/PDF.
    Ningún otro módulo define medidas físicas o píxeles de salida.
+   v6: el observador solo reacciona a montaje de nodos; no observa los
+   atributos/estilos que el propio contrato modifica, evitando bucles.
 */
 (function(){
   const SPECS={
@@ -82,8 +84,14 @@
     if(jpg&&!jpg.dataset.factoryOutputBound){jpg.dataset.factoryOutputBound='1';jpg.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();raster('jpg')},true)}
     if(pdf&&!pdf.dataset.factoryOutputBound){pdf.dataset.factoryOutputBound='1';pdf.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();printPdf()},true)}
   }
-  function observe(){const root=document.querySelector('#canvasPreview');if(!root)return;new MutationObserver(()=>applyPreviewGeometry()).observe(root,{childList:true,subtree:true});applyPreviewGeometry()}
+  let observerScheduled=false;
+  function observe(){
+    const root=document.querySelector('#canvasPreview');if(!root)return;
+    const refresh=()=>{if(observerScheduled)return;observerScheduled=true;requestAnimationFrame(()=>{observerScheduled=false;applyPreviewGeometry()})};
+    new MutationObserver(mutations=>{if(mutations.some(m=>m.type==='childList'))refresh()}).observe(root,{childList:true,subtree:true});
+    applyPreviewGeometry();
+  }
   function boot(){bind();observe();setTimeout(()=>{bind();applyPreviewGeometry()},250);setTimeout(()=>{bind();applyPreviewGeometry()},700);setTimeout(()=>{bind();applyPreviewGeometry()},1600)}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
-  window.FabricaOutputContract={version:5,specs:SPECS,spec,specForType,currentType,applyPreviewGeometry,getTarget:target,printPdf,raster,px:PX};
+  window.FabricaOutputContract={version:6,specs:SPECS,spec,specForType,currentType,applyPreviewGeometry,getTarget:target,printPdf,raster,px:PX};
 })();
