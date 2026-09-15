@@ -13,7 +13,9 @@ Este gate queda congelado junto con la arquitectura actual.
 - `reference` no implica derechos comerciales.
 - Colecciones usan el mismo motor y selector cerrado.
 - Una fabricación global a la vez, incluyendo colecciones completas.
-- El candado global del selector bloquea producción central y otras series mientras una serie está fabricándose.
+- Las series toman un token de lote válido y no se auto-bloquean contra su propia fabricación.
+- Los slots quedan reservados transitoriamente desde la selección hasta el commit para impedir doble asignación durante guardados asíncronos.
+- El candado global bloquea producción central y otras series mientras un lote está activo.
 - El guardado confirma el slot antes de habilitar la siguiente fabricación central.
 - Agotamiento devuelve `closed-catalog-exhausted`.
 - Segunda fabricación concurrente devuelve `production-busy`.
