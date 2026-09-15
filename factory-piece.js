@@ -1,8 +1,6 @@
 /* FÁBRICA CHAÑAR — CAPA PIEZA v4
    CURADURÍA UNIVERSAL.
-   Las fotografías pueden cambiar sin dejar textos huérfanos o demasiado específicos.
-   La imagen aporta el tema; la estructura editorial aporta el sentido.
-   La fabricación sigue siendo precisa, repetible y profesional.
+   La fotografía puede cambiar sin arrastrar textos de otra escena.
 */
 (function(){
   const UNIVERSAL={
@@ -14,7 +12,7 @@
   function product(){return typeof state!=='undefined'?(state.type||state.centralProduct||'postal'):'postal'}
   function current(){return UNIVERSAL[product()]||UNIVERSAL.postal}
   function style(){if(typeof state==='undefined')return'patagonia';const t=typeof TEMPLATES!=='undefined'?TEMPLATES.find(x=>x.id===state.templateId):null;return t?.style||'patagonia'}
-  function setText(el,text){if(el&&text)el.textContent=text}
+  function setText(el,text){if(el)el.textContent=text||''}
   function normalizePiece(){
     const box=document.querySelector('#canvasPreview');if(!box||typeof state==='undefined')return;
     const p=product(),u=current(),piece=box.querySelector('.piece');if(!piece)return;
@@ -22,7 +20,7 @@
     const paragraphs=piece.querySelectorAll('.piece-content p');if(paragraphs.length)setText(paragraphs[0],u.body);
     if(p==='guide'){const list=piece.querySelector('.piece-content ul');if(list){list.innerHTML='';u.items.forEach(item=>{const li=document.createElement('li');li.textContent=item;list.appendChild(li)})}}
     piece.querySelectorAll('.piece-meta,.piece-source,.piece-credit').forEach(el=>{const text=(el.textContent||'').trim().toLowerCase();if(text.includes('dato real')||text.includes('fecha local')||text.includes('identidad')||text.includes('territorio'))el.textContent='CONTEXTO LOCAL · REVISAR FUENTE'});
-    const existing=state.factoryMeta?.friendlyLine,phrase=existing||u.friendly;
+    const phrase=u.friendly;
     state.factoryMeta={...(state.factoryMeta||{}),friendlyLine:phrase,localPiece:true,pieceLanguageVersion:4,editorialMode:'universal-photo-independent',editorialRule:'La fotografía puede cambiar sin exigir reescritura específica del producto.'};
     const info=box.querySelector('.factory-curation-info');if(info){info.querySelector('.factory-friendly-line')?.remove();const line=document.createElement('span');line.className='factory-friendly-line';line.textContent=phrase;info.appendChild(line)}
     box.classList.toggle('piece-postal',p==='postal');box.classList.toggle('piece-vino',style()==='vino'||style()==='vendimia'||style()==='cava');
