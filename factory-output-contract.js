@@ -1,6 +1,7 @@
-/* FÁBRICA CHAÑAR — SALIDA FÍSICA CERRADA v3
-   Una única verdad física para PREVIEW + PNG + JPG + PDF.
-   El tamaño de pantalla NO define el tamaño de la pieza.
+/* FÁBRICA CHAÑAR — CONTRATO FÍSICO ÚNICO v4
+   ÚNICA FUENTE DE DIMENSIONES.
+   PRODUCTO → CONTRATO → PREVIEW → PNG/JPG/PDF.
+   Ningún otro módulo define medidas físicas o píxeles de salida.
 */
 (function(){
   const SPECS={
@@ -10,26 +11,34 @@
     infographic:{key:'21x29.7',name:'Infografía',widthMm:210,heightMm:297,dpi:300,previewWidthPx:794}
   };
   const PX=(mm,dpi)=>Math.round(mm/25.4*dpi);
+  const specForType=type=>SPECS[type]||SPECS.postal;
   function currentType(){
     if(typeof state!=='undefined'&&state?.centralProduct&&SPECS[state.centralProduct])return state.centralProduct;
     if(typeof state!=='undefined'&&state?.type&&SPECS[state.type])return state.type;
     const preview=document.querySelector('#canvasPreview .master-product-preview');
     if(preview){const hit=[...preview.classList].find(c=>/^master-product-(postal|ficha|guide|infographic)$/.test(c));if(hit)return hit.replace('master-product-','')}
+    const physical=document.querySelector('#canvasPreview [data-physical-product]');
+    if(physical&&SPECS[physical.dataset.physicalProduct])return physical.dataset.physicalProduct;
     return 'postal';
   }
-  function spec(){return SPECS[currentType()]||SPECS.postal}
-  function target(){return document.querySelector('#canvasPreview .master-product-preview')||document.querySelector('#canvasPreview > *')||document.querySelector('.master-product-preview')}
+  function spec(){return specForType(currentType())}
+  function target(){return document.querySelector('#canvasPreview .master-product-preview')||document.querySelector('#canvasPreview .piece')||document.querySelector('#canvasPreview [data-product-template]')||document.querySelector('#canvasPreview > *')}
   function setStatus(text){const el=document.querySelector('#status')||document.querySelector('#centralStatus');if(el)el.textContent=text}
   function applyPreviewGeometry(){
     const el=target();if(!el)return false;
-    const s=spec();
+    const s=spec(),previewHeight=Math.round(s.previewWidthPx*(s.heightMm/s.widthMm));
     el.dataset.physicalFormat=s.key;
+    el.dataset.physicalProduct=currentType();
     el.dataset.physicalWidthMm=String(s.widthMm);
     el.dataset.physicalHeightMm=String(s.heightMm);
+    el.dataset.physicalDpi=String(s.dpi);
+    el.dataset.physicalPreviewWidthPx=String(s.previewWidthPx);
+    el.dataset.physicalPreviewHeightPx=String(previewHeight);
     el.style.setProperty('--factory-physical-width',s.previewWidthPx+'px');
-    el.style.setProperty('--factory-physical-height',s.previewWidthPx*(s.heightMm/s.widthMm)+'px');
+    el.style.setProperty('--factory-physical-height',previewHeight+'px');
     el.style.setProperty('--factory-physical-width-mm',s.widthMm+'mm');
     el.style.setProperty('--factory-physical-height-mm',s.heightMm+'mm');
+    el.style.setProperty('--factory-physical-ratio',String(s.widthMm/s.heightMm));
     return true;
   }
   function installPrintStyle(s){
@@ -47,11 +56,17 @@
   }
   async function raster(kind){
     const el=target(),s=spec();if(!el||typeof window.html2canvas!=='function'){setStatus('No se pudo preparar la imagen.');return}
-    applyPreviewGeometry();const width=PX(s.widthMm,s.dpi),height=PX(s.heightMm,s.dpi);
+    applyPreviewGeometry();
+    const width=PX(s.widthMm,s.dpi),height=PX(s.heightMm,s.dpi);
     const clone=el.cloneNode(true);clone.removeAttribute('id');
     Object.assign(clone.style,{width:width+'px',height:height+'px',maxWidth:'none',maxHeight:'none',aspectRatio:'auto',position:'fixed',left:'-100000px',top:'0',margin:'0',boxSizing:'border-box'});
     document.body.appendChild(clone);
-    try{const canvas=await window.html2canvas(clone,{width,height,scale:1,useCORS:true,allowTaint:false,backgroundColor:'#ffffff',logging:false,imageTimeout:15000});const mime=kind==='jpg'?'image/jpeg':'image/png',quality=kind==='jpg'?0.94:1;const a=document.createElement('a');a.download=`fabrica-chanar-${s.key}-${Date.now()}.${kind==='jpg'?'jpg':'png'}`;a.href=canvas.toDataURL(mime,quality);a.click();setStatus(`${kind.toUpperCase()} generado: ${s.name} · ${s.widthMm} × ${s.heightMm} mm · ${width} × ${height} px a ${s.dpi} dpi.`)}catch(err){console.error(err);setStatus('No se pudo exportar la pieza sin alterar su formato.')}finally{clone.remove()}
+    try{
+      const canvas=await window.html2canvas(clone,{width,height,scale:1,useCORS:true,allowTaint:false,backgroundColor:'#ffffff',logging:false,imageTimeout:15000});
+      const mime=kind==='jpg'?'image/jpeg':'image/png',quality=kind==='jpg'?0.94:1;
+      const a=document.createElement('a');a.download=`fabrica-chanar-${s.key}-${Date.now()}.${kind==='jpg'?'jpg':'png'}`;a.href=canvas.toDataURL(mime,quality);a.click();
+      setStatus(`${kind.toUpperCase()} generado: ${s.name} · ${s.widthMm} × ${s.heightMm} mm · ${width} × ${height} px a ${s.dpi} dpi.`)
+    }catch(err){console.error(err);setStatus('No se pudo exportar la pieza sin alterar su formato.')}finally{clone.remove()}
   }
   function bind(){
     const png=document.querySelector('#btnPng'),jpg=document.querySelector('#btnJpg'),pdf=document.querySelector('#btnPrint');
@@ -62,5 +77,5 @@
   function observe(){const root=document.querySelector('#canvasPreview');if(!root)return;new MutationObserver(()=>applyPreviewGeometry()).observe(root,{childList:true,subtree:true});applyPreviewGeometry()}
   function boot(){bind();observe();setTimeout(()=>{bind();applyPreviewGeometry()},600);setTimeout(()=>{bind();applyPreviewGeometry()},1800)}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
-  window.FabricaOutputContract={version:3,specs:SPECS,spec,currentType,applyPreviewGeometry,getTarget:target,printPdf,raster};
+  window.FabricaOutputContract={version:4,specs:SPECS,spec,specForType,currentType,applyPreviewGeometry,getTarget:target,printPdf,raster,px:PX};
 })();
