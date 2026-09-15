@@ -25,7 +25,7 @@ La arquitectura funcional consolidada queda congelada sobre una sola cadena de p
 
 | Archivo | Versión | SHA del contenido |
 |---|---:|---|
-| `index.html` | integración v13; caché aún bajo revisión | `739a5776e77671880ba109bfa299113eb758f4b` |
+| `index.html` | integración v13; caché aún bajo revisión | `739a5776e77671880ba109bfa2991132eb758f4b` |
 | `app-core.js` | runtime base + commit de slots al guardar | `58abebc10db012cf7e938a50bb4b949ac30866cc` |
 | `factory-engine.js` | v7 | `30412e09fd5c7aed8989073a646e8f0a9ffa34ae` |
 | `factory-central.js` | v13 | `6770b71f9229516bfacd338cd23962783e0a9b45` |
@@ -58,6 +58,6 @@ No crear otro runtime. No crear otra ruta de fabricación. No reabrir 4×10 sin 
 
 ## Estado
 
-La arquitectura está **cerrada para cambios estructurales**. Queda pendiente una prueba E2E real en navegador, y una verificación final de que `index.html` esté sirviendo las versiones cache-busted más recientes del selector y las colecciones.
+La arquitectura está **cerrada para cambios estructurales**. Queda pendiente una prueba E2E real en navegador y una verificación de que el HTML publicado sirva las nuevas versiones de los scripts de selector y colecciones, aunque los archivos canónicos de `main` ya están consolidados.
 
 La prueba E2E no se declara realizada hasta ejecutarla realmente.
