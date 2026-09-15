@@ -1,6 +1,6 @@
-/* FÁBRICA CHAÑAR — COLECCIONES EDITORIALES v7
+/* FÁBRICA CHAÑAR — COLECCIONES EDITORIALES v8
    Ley de producción de alto valor: cada serie debe sentirse pensada, curada y armada como una pequeña edición.
-   v7: el candado global del selector cubre la serie completa y evita interferencia con producción central u otra serie.
+   v8: el candado de lote se usa con token de propietario; la serie puede fabricar a través del selector sin auto-bloquearse.
 */
 (function(){
   const COLLECTIONS=[
@@ -33,14 +33,15 @@
     busy=true;button?.classList.add('is-working');button?.setAttribute('aria-busy','true');
     if(typeof FabricaEngine==='undefined'||typeof state==='undefined'){busy=false;button?.classList.remove('is-working');button?.removeAttribute('aria-busy');return []}
     const selector=window.FabricaMaterialSelector;
-    if(!selector?.beginBatch?.()){status('La Fábrica está ocupada con otra producción. La serie no empezó.');busy=false;button?.classList.remove('is-working');button?.removeAttribute('aria-busy');return []}
+    const batchToken=selector?.beginBatch?.();
+    if(!batchToken){status('La Fábrica está ocupada con otra producción. La serie no empezó.');busy=false;button?.classList.remove('is-working');button?.removeAttribute('aria-busy');return []}
     const seriesId=`SERIE-${c.id.toUpperCase()}-${Date.now()}`;
     const before=state.image||null;
     const saved=[];
     try{
       for(let i=0;i<templates.length;i++){
         const t=templates[i];
-        const result=await FabricaEngine.produce({type:t.product,templateId:t.id});
+        const result=await FabricaEngine.produce({type:t.product,templateId:t.id,_batchToken:batchToken});
         if(!result?.ok){status(`${c.emoji} La serie se detuvo en la pieza ${i+1}: ${result?.reason||'fabricación no disponible'}.`);break}
         if(before)state.image=before;
         state.factoryMeta=state.factoryMeta||{};
@@ -64,8 +65,8 @@
       document.querySelector('.preview-panel')?.scrollIntoView({behavior:'smooth',block:'start'});
       return results;
     }catch(error){console.error(error);status(`${c.emoji} La serie quedó parcialmente guardada (${saved.length} piezas). La Fábrica no siguió fabricando para no bajar el estándar.`);return results}
-    finally{selector?.endBatch?.();busy=false;button?.classList.remove('is-working');button?.removeAttribute('aria-busy')}
+    finally{selector?.endBatch?.(batchToken);busy=false;button?.classList.remove('is-working');button?.removeAttribute('aria-busy')}
   }
-  window.FabricaCollections={version:7,collections:COLLECTIONS,produceSeries,phrases:PHRASES,renderChooser};
+  window.FabricaCollections={version:8,collections:COLLECTIONS,produceSeries,phrases:PHRASES,renderChooser};
   document.addEventListener('DOMContentLoaded',()=>setTimeout(renderChooser,220));
 })();
