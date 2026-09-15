@@ -21,7 +21,6 @@
     node.innerHTML=`<div style="position:absolute;inset:24px;border:1px solid ${cfg.accent};opacity:.55;pointer-events:none"></div><div style="position:relative;z-index:2;text-align:center"><div style="font-size:26px;letter-spacing:.32em;color:${cfg.accent};font-family:Arial,sans-serif">✦ OCARINA PRODUCCIONES ✦</div><div style="margin-top:22px;font-size:16px;letter-spacing:.22em;font-family:Arial,sans-serif">FÁBRICA CHAÑAR · PIEZA COLECCIONABLE</div></div><div style="position:relative;z-index:2;text-align:center;padding:20px 40px"><div style="font-size:20px;letter-spacing:.18em;color:${cfg.accent};font-family:Arial,sans-serif">${cfg.name}</div><h2 style="margin:28px 0 16px;font-size:58px;line-height:1.02;font-weight:400">${title()}</h2><p style="margin:0 auto;max-width:760px;font-size:23px;line-height:1.55">Historias, personas y territorio. Una pieza producida para mirar, guardar y compartir.</p></div><div style="position:relative;z-index:2;text-align:center"><div style="display:inline-flex;width:150px;height:150px;border:3px solid ${cfg.accent};border-radius:50%;align-items:center;justify-content:center;box-shadow:inset 0 0 0 8px ${cfg.paper},inset 0 0 0 10px ${cfg.accent};transform:rotate(-7deg);font-family:Arial,sans-serif"><span style="font-size:17px;line-height:1.25;letter-spacing:.08em">CHAÑAR<br><small style="font-size:10px">PIEZA CURADA</small><br><i style="font-size:24px;font-family:cursive">Ocarina</i></span></div><div style="margin-top:28px;font-size:17px;letter-spacing:.14em;font-family:Arial,sans-serif">PRODUCCIÓN · OCARINA · CHAÑAR</div><div style="margin-top:12px;font-size:15px;opacity:.72">${meta()}</div></div>`;
     return node;
   }
-  async function capture(node,options){if(typeof html2canvas!=='function')throw new Error('html2canvas no disponible');return html2canvas(node,{backgroundColor:null,useCORS:true: true,allowTaint:false,scale:2,logging:false,...options})}
   function canvasToBlob(canvas,type='image/png',quality=.94){return new Promise(resolve=>canvas.toBlob(resolve,type,quality))}
   async function buildShareBlob(){
     const front=$('#canvasPreview .piece');if(!front)throw new Error('No hay una pieza fabricada para compartir.');
@@ -46,9 +45,7 @@
     }catch(err){console.error(err);const wa='https://wa.me/?text='+encodeURIComponent(`${title()} · Fábrica Chañar · Ocarina Producciones`);window.open(wa,'_blank','noopener,noreferrer')}
     finally{if(b)b.disabled=false}
   }
-  function boot(){
-    const b=$('#btnShare');if(!b||b.dataset.shareBound)return;b.dataset.shareBound='1';b.addEventListener('click',share);
-  }
+  function boot(){const b=$('#btnShare');if(!b||b.dataset.shareBound)return;b.dataset.shareBound='1';b.addEventListener('click',share)}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
   window.FabricaShare={version:1,share,buildShareBlob,backNode};
 })();
