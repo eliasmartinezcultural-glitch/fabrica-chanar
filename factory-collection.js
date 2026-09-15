@@ -1,6 +1,6 @@
-/* FÁBRICA CHAÑAR — COLECCIONES EDITORIALES v6
+/* FÁBRICA CHAÑAR — COLECCIONES EDITORIALES v7
    Ley de producción de alto valor: cada serie debe sentirse pensada, curada y armada como una pequeña edición.
-   v6: un único candado global protege el runtime compartido; cada pieza pasa por motor + selector cerrado + Biblioteca antes de continuar.
+   v7: el candado global del selector cubre la serie completa y evita interferencia con producción central u otra serie.
 */
 (function(){
   const COLLECTIONS=[
@@ -32,6 +32,8 @@
     const button=$(`[data-collection="${id}"]`);
     busy=true;button?.classList.add('is-working');button?.setAttribute('aria-busy','true');
     if(typeof FabricaEngine==='undefined'||typeof state==='undefined'){busy=false;button?.classList.remove('is-working');button?.removeAttribute('aria-busy');return []}
+    const selector=window.FabricaMaterialSelector;
+    if(!selector?.beginBatch?.()){status('La Fábrica está ocupada con otra producción. La serie no empezó.');busy=false;button?.classList.remove('is-working');button?.removeAttribute('aria-busy');return []}
     const seriesId=`SERIE-${c.id.toUpperCase()}-${Date.now()}`;
     const before=state.image||null;
     const saved=[];
@@ -62,8 +64,8 @@
       document.querySelector('.preview-panel')?.scrollIntoView({behavior:'smooth',block:'start'});
       return results;
     }catch(error){console.error(error);status(`${c.emoji} La serie quedó parcialmente guardada (${saved.length} piezas). La Fábrica no siguió fabricando para no bajar el estándar.`);return results}
-    finally{busy=false;button?.classList.remove('is-working');button?.removeAttribute('aria-busy')}
+    finally{selector?.endBatch?.();busy=false;button?.classList.remove('is-working');button?.removeAttribute('aria-busy')}
   }
-  window.FabricaCollections={version:6,collections:COLLECTIONS,produceSeries,phrases:PHRASES,renderChooser};
+  window.FabricaCollections={version:7,collections:COLLECTIONS,produceSeries,phrases:PHRASES,renderChooser};
   document.addEventListener('DOMContentLoaded',()=>setTimeout(renderChooser,220));
 })();
